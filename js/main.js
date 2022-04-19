@@ -9,9 +9,11 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+const material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+const light = new THREE.HemisphereLight(0x404040, 0xfc28dc, 0.8);
 const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+scene.add(cube);
+scene.add(light);
 
 camera.position.z = 5;
 
