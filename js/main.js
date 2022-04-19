@@ -15,9 +15,9 @@ const floorMat = new THREE.MeshLambertMaterial({color: 0x404040});
 const light = new THREE.HemisphereLight(0x00ff00, 0x404040, 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh( geometry, material );
-scene.add(cube.translateZ(-6).translateY(0.5));
+scene.add(cube.translateZ(-6).translateY(-1));
 scene.add(light);
-scene.add(floor.rotateX(Math.PI/15).translateZ(-6).translateY(-2));
+scene.add(floor.translateZ(-6).translateY(-2));
 
 camera.position.z = 5;
 
