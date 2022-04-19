@@ -13,4 +13,4 @@ Arcade style leaderboard stored on wits servers (database)
 - Physics (jumping etc)
 - Shooting
 - Basic World
-- Working targets?
+- Working targets (with hit detection - hitscan)
