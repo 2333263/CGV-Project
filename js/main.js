@@ -1,6 +1,10 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 import {FirstPersonControls} from '/js/FirstPersonControls.js';
+import {GLTFLoader} from '/js/GLTFLoader.js';
+
+
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -37,6 +41,32 @@ camera.position.z = 5;
 
 controls.maxPolarAngle=Math.PI/2;
 controls.movementSpeed=0;
+
+/* --------------------------------------------------------------------------------------------
+Load and add GLTF file to the scene
+--------------------------------------------------------------------------------------------*/
+
+const manager = new THREE.LoadingManager();
+//manager.onLoad = init;
+//init function?????????
+const models = {
+  body:    { url: '/Objects/TestBody.gltf' },
+};
+{
+  const gltfLoader = new GLTFLoader(manager);
+  for (const model of Object.values(models)) {
+    gltfLoader.load(model.url, (gltf) => {
+      const root = gltf.scene;
+	  //Add body (scene of the gltf file)
+	  scene.add(root.translateY(1));
+	  //Treat the head (child of body) as a separate object to manipulate
+	  let headOfBody = root.getObjectByName('Head');
+	  //Add Head
+	  scene.add(headOfBody.translateY(2))
+    });
+  }
+}
+
 
 document.addEventListener("mousemove",onMouseMove);
 
