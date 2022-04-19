@@ -10,9 +10,9 @@ document.body.appendChild( renderer.domElement );
 
 const geometry = new THREE.BoxGeometry();
 const floorGeo = new THREE.BoxGeometry(15,0.1,15);
-const material = new THREE.MeshLambertMaterial({color: 0x00ff00 });
-const floorMat = new THREE.MeshLambertMaterial({color: 0xb0b0b0});
-const light = new THREE.HemisphereLight(0x404040, 0x010101, 3.5);
+const material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+const floorMat = new THREE.MeshLambertMaterial({color: 0x404040});
+const light = new THREE.HemisphereLight(0x00ff00, 0x404040, 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh( geometry, material );
 scene.add(cube.translateZ(-6).translateY(-1));
