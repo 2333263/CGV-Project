@@ -1,6 +1,5 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
-
-
+import {FirstPersonControls} from '/js/FirstPersonControls.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 var mouse=new THREE.Vector2(0,0);
@@ -8,7 +7,7 @@ var mouseDown=false;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
-
+const controls=new FirstPersonControls(camera,renderer.domElement);
 const loader = new THREE.TextureLoader();
 const material = new THREE.MeshStandardMaterial({
 	map: loader.load('textureOne.jpg')
@@ -26,34 +25,17 @@ scene.add(floor.translateZ(-6).translateY(-2));
 
 camera.position.z = 5;
 
-document.addEventListener("mousedown",onMouseDown);
-document.addEventListener("mouseup",onMouseUp);
-document.addEventListener("mousemove",onMouseMove);
-
-function onMouseDown(event){
-	mouseDown=true;
-	
-}
-function onMouseUp(event){
-	mouseDown=false;
-}
-function onMouseMove(event){
-	if(mouseDown){
-		mouse.x=(event.clientX/window.innerWidth);
-		mouse.y=-(event.clientY/window.innerHeight);
-		console.log(mouse.x+" "+ mouse.y);
-	}
-}
+controls.maxPolarAngle=Math.PI/2;
+controls.movementSpeed=0;
 
 
 
 function animate() {
 	requestAnimationFrame( animate );
-
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
-
+	controls.update(1.0);
 	renderer.render( scene, camera );
 };
 
