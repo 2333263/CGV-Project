@@ -3,7 +3,8 @@ import {FirstPersonControls} from '/js/FirstPersonControls.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 var mouse=new THREE.Vector2(0,0);
-var mouseDown=false;
+var mouseMove=false;
+var TimeOut;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -27,6 +28,25 @@ camera.position.z = 5;
 
 controls.maxPolarAngle=Math.PI/2;
 controls.movementSpeed=0;
+
+document.addEventListener("mousemove",onMouseMove);
+
+function onMouseMove(event){
+		clearTimeout(TimeOut);
+		TimeOut=setTimeout(onMouseNotMove,100);
+		mouse.x=(event.clientX/window.innerWidth);
+		mouse.y=-(event.clientY/window.innerHeight);
+		controls.activeLook=true;
+		//console.log("moved");
+
+}
+
+
+function onMouseNotMove(){
+	controls.activeLook=false;
+	//console.log("not moving");
+}
+
 
 
 
