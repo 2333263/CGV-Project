@@ -9,7 +9,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const loader = new THREE.TextureLoader();
-const material = new THREE.MeshBasicMaterial({
+const textureOne = new THREE.MeshBasicMaterial({
 	//color: 0xFF8844,
 	map: loader.load('textureOne.jpg')
 });
