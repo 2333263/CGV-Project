@@ -1,36 +1,36 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
-import {FirstPersonControls} from '/js/FirstPersonControls.js';
-import {GLTFLoader} from '/js/GLTFLoader.js';
+import { FirstPersonControls } from '/js/FirstPersonControls.js';
+import { GLTFLoader } from '/js/GLTFLoader.js';
 
 
 
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-var mouse=new THREE.Vector2(0,0);
-var mouseMove=false;
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var mouse = new THREE.Vector2(0, 0);
+var mouseMove = false;
 var TimeOut;
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-const controls=new FirstPersonControls(camera,renderer.domElement);
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+const controls = new FirstPersonControls(camera, renderer.domElement);
 const loader = new THREE.TextureLoader();
-const timestep=1/60
+const timestep = 1 / 60
 const material = new THREE.MeshStandardMaterial({
 	map: loader.load('textureOne.jpg')
 });
-const world= new CANNON.World({
-	gravity: new CANNON.Vec3(0,-9.81,0)
+const world = new CANNON.World({
+	gravity: new CANNON.Vec3(0, -9.81, 0)
 });
 const geometry = new THREE.BoxGeometry();
-const floorGeo = new THREE.BoxGeometry(15,0.1,15);
-const floorMat = new THREE.MeshLambertMaterial({color: 0x404040});
+const floorGeo = new THREE.BoxGeometry(15, 0.1, 15);
+const floorMat = new THREE.MeshLambertMaterial({ color: 0x404040 });
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
-const cube = new THREE.Mesh( geometry, material );
-const groundBody= new CANNON.Body({
-shape: new CANNON.Plane()
+const cube = new THREE.Mesh(geometry, material);
+const groundBody = new CANNON.Body({
+	shape: new CANNON.Plane()
 });
 world.addBody(groundBody)
 scene.add(cube.translateZ(-6).translateY(-1));
@@ -39,50 +39,50 @@ scene.add(floor.translateZ(-6).translateY(-2));
 
 camera.position.z = 5;
 
-controls.maxPolarAngle=Math.PI/2;
-controls.movementSpeed=0;
+controls.maxPolarAngle = Math.PI / 2;
+controls.movementSpeed = 0;
 
 /* --------------------------------------------------------------------------------------------
 Load and add GLTF file to the scene
---------------------------------------------------------------------------------------------*/
+-------------------------------------------------------------------------------------------- */
 
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
 //init function?????????
 const models = {
-  body:    { url: '/Objects/TestBody.gltf' },
+	body: { url: '/Objects/TestBody.gltf' },
 };
 {
-  const gltfLoader = new GLTFLoader(manager);
-  for (const model of Object.values(models)) {
-    gltfLoader.load(model.url, (gltf) => {
-      const root = gltf.scene;
-	  //Add body (scene of the gltf file)
-	  scene.add(root.translateY(1));
-	  //Treat the head (child of body) as a separate object to manipulate
-	  let headOfBody = root.getObjectByName('Head');
-	  //Add Head
-	  scene.add(headOfBody.translateY(2))
-    });
-  }
+	const gltfLoader = new GLTFLoader(manager);
+	for (const model of Object.values(models)) {
+		gltfLoader.load(model.url, (gltf) => {
+			const root = gltf.scene;
+			//Add body (scene of the gltf file)
+			scene.add(root.translateY(1));
+			//Treat the head (child of body) as a separate object to manipulate
+			let headOfBody = root.getObjectByName('Head');
+			//Add Head
+			scene.add(headOfBody.translateY(2))
+		});
+	}
 }
 
 
-document.addEventListener("mousemove",onMouseMove);
+document.addEventListener("mousemove", onMouseMove);
 
-function onMouseMove(event){
-		clearTimeout(TimeOut);
-		TimeOut=setTimeout(onMouseNotMove,100);
-		mouse.x=(event.clientX/window.innerWidth);
-		mouse.y=-(event.clientY/window.innerHeight);
-		controls.activeLook=true;
-		//console.log("moved");
+function onMouseMove(event) {
+	clearTimeout(TimeOut);
+	TimeOut = setTimeout(onMouseNotMove, 100);
+	mouse.x = (event.clientX / window.innerWidth);
+	mouse.y = -(event.clientY / window.innerHeight);
+	controls.activeLook = true;
+	//console.log("moved");
 
 }
 
 
-function onMouseNotMove(){
-	controls.activeLook=false;
+function onMouseNotMove() {
+	controls.activeLook = false;
 	//console.log("not moving");
 }
 
@@ -91,14 +91,14 @@ function onMouseNotMove(){
 
 function animate() {
 	world.step(timestep);
-	requestAnimationFrame( animate );
+	requestAnimationFrame(animate);
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
 	//controls.update(1.0);
 	//floorMat.position.copy(groundBody.position);
 	//floorMat.quaternion.copy(groundBody.quaternion);
-	renderer.render( scene, camera );
+	renderer.render(scene, camera);
 };
 
 animate();
