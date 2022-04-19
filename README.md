@@ -5,4 +5,4 @@ Score based
 
 Shooting targets
 
-Arcade style leaderboard stored on wits servers
+Arcade style leaderboard stored on wits servers (database)
