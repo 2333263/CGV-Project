@@ -25,18 +25,21 @@ const floorMat = new THREE.MeshLambertMaterial({color: 0x404040});
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh( geometry, material );
+var planeShape=new CANNON.Plane()
 const groundBody= new CANNON.Body({
-shape: new CANNON.Plane()
+shape: planeShape,
+mass: 0
 });
+//groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+groundBody.position.set(-1,-3,-1);
 world.addBody(groundBody)
 scene.add(cube.translateZ(-6).translateY(-1));
 scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
-
 camera.position.z = 5;
 
 controls.maxPolarAngle=Math.PI/2;
-controls.movementSpeed=0;
+//controls.movementSpeed=0;
 
 document.addEventListener("mousemove",onMouseMove);
 
@@ -66,8 +69,8 @@ function animate() {
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
 	controls.update(1.0);
-	//floorMat.position.copy(groundBody.position);
-	//floorMat.quaternion.copy(groundBody.quaternion);
+	floor.position.copy(groundBody.position);
+	floor.quaternion.copy(groundBody.quaternion);
 	renderer.render( scene, camera );
 };
 
