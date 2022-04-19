@@ -3,6 +3,6 @@
 
 Score based
 
-Shoorign targets
+Shooting targets
 
 Arcade style leaderboard stored on wits servers
