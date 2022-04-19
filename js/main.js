@@ -26,7 +26,7 @@ scene.add(floor.translateZ(-6).translateY(-2));
 camera.position.z = 5;
 
 controls.maxPolarAngle=Math.PI/2;
-controls.movementSpeed=0.5;
+controls.movementSpeed=0;
 
 
 
