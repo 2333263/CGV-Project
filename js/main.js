@@ -1,4 +1,5 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
+import * as CANNON from '/node_modules/cannon-es/dist/cannon-es.js'
 import {FirstPersonControls} from '/js/FirstPersonControls.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -12,7 +13,9 @@ const loader = new THREE.TextureLoader();
 const material = new THREE.MeshStandardMaterial({
 	map: loader.load('textureOne.jpg')
 });
-
+const world= new CANNON.World({
+	gravity: new CANNON.Vec3(0,-9.81,0)
+});
 const geometry = new THREE.BoxGeometry();
 const floorGeo = new THREE.BoxGeometry(15,0.1,15);
 const floorMat = new THREE.MeshLambertMaterial({color: 0x404040});
