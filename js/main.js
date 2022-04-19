@@ -8,6 +8,12 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+const loader = new THREE.TextureLoader();
+const material = new THREE.MeshBasicMaterial({
+	//color: 0xFF8844,
+	map: loader.load('textureOne.jpg')
+});
+
 const geometry = new THREE.BoxGeometry();
 const floorGeo = new THREE.BoxGeometry(15,0.1,15);
 const material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
