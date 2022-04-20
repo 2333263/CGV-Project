@@ -39,7 +39,7 @@ scene.add(floor.translateZ(-6).translateY(-2));
 camera.position.z = 5;
 
 
-
+/*
 const player = new THREE.Mesh(geometry, material);
 
 var playerShape = new CANNON.Sphere(1.5);
@@ -51,10 +51,10 @@ playerBody.linearDamping = 0.9;
 //playerBody.addShape(playerShape);
 playerBody.position.set(0, 0, 5);
 world.addBody(playerBody);
-
+*/
 //ADD PLAYER CONTROLS
 const controls = new PointerLockControls(camera, renderer.domElement);
-//controls.maxPolarAngle=Math.PI/2;
+//controls.maxPolarAngle=Math.PI/2+2;
 //controls.movementSpeed=0;
 
 scene.add(controls.getObject());
@@ -71,6 +71,66 @@ controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 })
 
+const pressedKeys={};
+
+//pressedKeys['w']=true;
+
+document.addEventListener("keydown",(e)=> {
+	pressedKeys[e.key]=true;
+});
+document.addEventListener("keyup",(e)=>{
+	pressedKeys[e.key]=false;
+});
+
+
+
+
+function move(){
+if(controls.isLocked){
+	if(pressedKeys['w']){
+		controls.moveForward(0.5);
+	}
+	if(pressedKeys['a']){
+		controls.moveRight(-0.5);
+
+	}
+	if(pressedKeys["d"]){
+		controls.moveRight(0.5);
+	}
+	if(pressedKeys['s']){
+		controls.moveForward(-0.5);
+	}
+	if(pressedKeys[" "]){
+		console.log("space");
+	}
+
+
+
+
+	/*switch(key){
+		case (87): //press W
+			console.log("W");
+			break;
+		case 83: //press S
+			
+				break;
+			case 65: //press A
+
+				break;
+			case 68: //press D
+
+				break;
+			case 32: //press space
+
+				break;
+			default:
+				break;
+
+		}*/
+	}
+}
+
+
 
 
 function animate() {
@@ -80,6 +140,7 @@ function animate() {
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
 	//	controls.update(1.0);
+	move();
 	floor.position.copy(groundBody.position);
 	floor.quaternion.copy(groundBody.quaternion);
 	renderer.render(scene, camera);
