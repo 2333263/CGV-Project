@@ -99,20 +99,25 @@ function move() {
 	if (controls.isLocked) {
 		if (pressedKeys['w']) {
 			//playerBody.applyImpulse()
-			playerBody.applyLocalForce(tempVec,playerBody.position)
+			playerBody.velocity.x=tempVec.x*10;
+			playerBody.velocity.z=tempVec.z*10
+			//playerBody.applyLocalImpulse(tempVec,playerBody.position)
 			//controls.moveForward(0.5);
 		}
 		if (pressedKeys['a']) {
-			controls.moveRight(-0.5);
+			playerBody.velocity.x=tempVec.z*10;
+			playerBody.velocity.z=-tempVec.x*10
+			//controls.moveRight(-0.5);
 
 		}
 		if (pressedKeys["d"]) {
-			controls.moveRight(0.5);
+			playerBody.velocity.x=-tempVec.z*10;
+			playerBody.velocity.z=tempVec.x*10
+			//controls.moveRight(0.5);
 		}
 		if (pressedKeys['s']) {
-			tempVec.x=tempVec.x*-1
-			tempVec.z=tempVec.z*-1
-			playerBody.applyLocalForce(tempVec,playerBody.position)
+			playerBody.velocity.x=-tempVec.x*10;
+			playerBody.velocity.z=-tempVec.z*10
 			//controls.moveForward(-0.5);
 		}
 		if (pressedKeys[" "]) {
@@ -120,7 +125,7 @@ function move() {
 		}
 
 	}
-	//camera.position.copy(playerBody.position);
+	camera.position.copy(playerBody.position);
 	console.log(playerBody.position)
 }
 
