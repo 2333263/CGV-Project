@@ -20,13 +20,13 @@ const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -9.81, 0)
 });
 const geometry = new THREE.BoxGeometry();
-const floorGeo = new THREE.BoxGeometry(15, 0.1, 15);
+const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
 const floorMat = new THREE.MeshLambertMaterial({ color: 0x404040 });
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh(geometry, material);
 const groundBody = new CANNON.Body({
-	shape: new CANNON.Box(new CANNON.Vec3(15,0.125,15)),
+	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)),
 	mass: 0,
 	type: CANNON.Body.STATIC
 });
