@@ -4,9 +4,6 @@ import { PointerLockControls } from '/js/PointerLockControls.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var mouse = new THREE.Vector2(0, 0);
-var mouseMove = false;
-var TimeOut;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -14,51 +11,86 @@ document.body.appendChild(renderer.domElement);
 const loader = new THREE.TextureLoader();
 const timestep = 1 / 60
 const material = new THREE.MeshStandardMaterial({
-	map: loader.load('textureOne.jpg')
+	map: loader.load('textureOne.jpg') //test texture
 });
+
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -9.81, 0)
+	gravity: new CANNON.Vec3(0, -18, 0) //Middle value is gravity in the y direction 
 });
-const geometry = new THREE.BoxGeometry();
+
+const planeMaterial =new CANNON.Material({
+	friction: 10,
+	restitution: 0
+})
+const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
-const floorMat = new THREE.MeshLambertMaterial({ color: 0x404040 });
+const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh(geometry, material);
 const groundBody = new CANNON.Body({
-	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)),
-	mass: 0,
-	type: CANNON.Body.STATIC
+	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)), //have floor be really thin box since plane was having collision issues 
+	mass: 0, //no mass so it does not fall
+	type: CANNON.Body.STATIC, //does not move
+	material:planeMaterial //to add friction 
 });
-//groundBody.addShape(planeShape);
-//groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-//groundBody.position.set(-1, -3, -1);
-groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5);
-world.addBody(groundBody)
-scene.add(cube.translateZ(-6).translateY(-1));
+groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
+world.addBody(groundBody) //add floor to world
+scene.add(cube.translateZ(-6).translateY(2));
 scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
-camera.position.z = 5;
-camera.position.y = 2;
+camera.position.z = 9;
+camera.position.y = 9;
 
 
 
-const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);
+const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
 scene.add(player);
 const playerShape = new CANNON.Sphere(1.5);
-const playerBody = new CANNON.Body({
+const playerBody = new CANNON.Body({ //player hitbox represented by sphere 
 	mass: 1,
 	shape: playerShape,
-	position: new CANNON.Vec3(0, 5, 4)
+	position: new CANNON.Vec3(0, 5, 4),
+	quaternion: new THREE.Quaternion(),
+	material:planeMaterial //to add friction 
 });
-//playerBody.linearDamping = 0.9;
-//playerBody.addShape(playerShape);
+
+playerBody.pitchObject=new THREE.Object3D()
+playerBody.pitchObject.add(camera)
+
+playerBody.yawObject=new THREE.Object3D()
+playerBody.yawObject.position.z=5;
+playerBody.yawObject.position.y=2;
+playerBody.yawObject.add(playerBody.pitchObject)
+playerBody.euler=new THREE.Euler()
+playerBody.canJump=false;
+
+const contNorm=new CANNON.Vec3()
+const upAxis=new CANNON.Vec3(0,1,0);
+playerBody.addEventListener('collide', (event)=>{
+	const {contact}=event
+	if(contact.bi.id== playerBody.id){
+		contact.ni.negate(contNorm)
+	}else{
+		contNorm.copy(contact.ni)
+	}
+	if(contNorm.dot(upAxis)>0.5){
+		playerBody.canJump=true
+	}
+})
+
+const cubeBody=new CANNON.Body({
+	mass:0,
+	shape: new CANNON.Box(new CANNON.Vec3(1,1,1))
+})
+world.addBody(cubeBody)
+
+
+playerBody.linearDamping = 0.9;
+
 world.addBody(playerBody);
 
-//ADD PLAYER CONTROLS
 const controls = new PointerLockControls(camera, renderer.domElement);
-//controls.maxPolarAngle=Math.PI/2+2;
-//controls.movementSpeed=0;
 
 scene.add(controls.getObject());
 
@@ -76,7 +108,6 @@ controls.addEventListener('unlocked', () => {
 
 const pressedKeys = {};
 
-//pressedKeys['w']=true;
 
 document.addEventListener("keydown", (e) => {
 	pressedKeys[e.key] = true;
@@ -89,44 +120,43 @@ document.addEventListener("keyup", (e) => {
 
 
 function move() {
-	//console.log(camera.getWorldDirection());
-	var tempVec=new THREE.Vector3();
-	tempVec.y=0;
-	tempVec.x=tempVec.x+8;
-	tempVec.z=tempVec.z+8;
-	camera.getWorldDirection(tempVec)
-	//console.log(tempVec);
+
+	playerBody.pitchObject.rotation.x=Math.max(-Math.PI / 2, Math.min(Math.PI / 2,camera.rotation.x))
+	
+	playerBody.yawObject.rotation.y=camera.rotation.y;
+
+	var tempVec=new THREE.Vector3(0,0,0);
+
 	if (controls.isLocked) {
+	
 		if (pressedKeys['w']) {
-			//playerBody.applyImpulse()
-			playerBody.velocity.x=tempVec.x*10;
-			playerBody.velocity.z=tempVec.z*10
-			//playerBody.applyLocalImpulse(tempVec,playerBody.position)
-			//controls.moveForward(0.5);
+			tempVec.z=-0.4
 		}
 		if (pressedKeys['a']) {
-			playerBody.velocity.x=tempVec.z*10;
-			playerBody.velocity.z=-tempVec.x*10
-			//controls.moveRight(-0.5);
-
+			tempVec.x=-0.4
 		}
 		if (pressedKeys["d"]) {
-			playerBody.velocity.x=-tempVec.z*10;
-			playerBody.velocity.z=tempVec.x*10
-			//controls.moveRight(0.5);
+			tempVec.x=0.4
 		}
 		if (pressedKeys['s']) {
-			playerBody.velocity.x=-tempVec.x*10;
-			playerBody.velocity.z=-tempVec.z*10
-			//controls.moveForward(-0.5);
+			tempVec.z=0.4
 		}
-		if (pressedKeys[" "]) {
-			console.log("space");
+		if (pressedKeys[" "] ) {
+			if( playerBody.canJump==true){
+			var newTemp=new THREE.Vector3(0,15,0);
+			var pos=new THREE.Vector3(0,0,0)
+			playerBody.applyLocalImpulse(newTemp,pos)
+			}
+			playerBody.canJump=false
 		}
-
+	
 	}
+	playerBody.quaternion.copy(camera.quaternion)
+	tempVec.applyQuaternion(playerBody.quaternion);
+	playerBody.velocity.x+=tempVec.x
+	playerBody.velocity.z+=tempVec.z
+	playerBody.yawObject.position.copy(playerBody.position)
 	camera.position.copy(playerBody.position);
-	console.log(playerBody.position)
 }
 
 
@@ -142,7 +172,8 @@ function animate() {
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
 	move();
-
+	cubeBody.position.copy(cube.position)
+	cubeBody.quaternion.copy(cube.quaternion)
 	renderer.render(scene, camera);
 };
 
