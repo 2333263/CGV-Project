@@ -25,33 +25,36 @@ const floorMat = new THREE.MeshLambertMaterial({ color: 0x404040 });
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh(geometry, material);
-var planeShape = new CANNON.Plane()
 const groundBody = new CANNON.Body({
-	shape: planeShape,
-	mass: 0
+shape: new CANNON.Plane(),
+mass:0,
+type:CANNON.Body.STATIC
 });
+//groundBody.addShape(planeShape);
 //groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-groundBody.position.set(-1, -3, -1);
+//groundBody.position.set(-1, -3, -1);
+groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5);
 world.addBody(groundBody)
 scene.add(cube.translateZ(-6).translateY(-1));
 scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
 camera.position.z = 5;
+camera.position.y=2;
 
 
-/*
-const player = new THREE.Mesh(geometry, material);
 
-var playerShape = new CANNON.Sphere(1.5);
-var playerBody = new CANNON.Body({
-	mass: 0,
-	shape: playerShape
+const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);
+scene.add(player);
+const playerShape = new CANNON.Sphere(1.5);
+const playerBody = new CANNON.Body({
+	mass: 1,
+	shape: playerShape,
+	position: new CANNON.Vec3(0,5,4)
 });
-playerBody.linearDamping = 0.9;
+//playerBody.linearDamping = 0.9;
 //playerBody.addShape(playerShape);
-playerBody.position.set(0, 0, 5);
 world.addBody(playerBody);
-*/
+
 //ADD PLAYER CONTROLS
 const controls = new PointerLockControls(camera, renderer.domElement);
 //controls.maxPolarAngle=Math.PI/2+2;
@@ -104,45 +107,23 @@ if(controls.isLocked){
 		console.log("space");
 	}
 
-
-
-
-	/*switch(key){
-		case (87): //press W
-			console.log("W");
-			break;
-		case 83: //press S
-			
-				break;
-			case 65: //press A
-
-				break;
-			case 68: //press D
-
-				break;
-			case 32: //press space
-
-				break;
-			default:
-				break;
-
-		}*/
 	}
 }
 
 
 
-
 function animate() {
 	world.step(timestep);
+	floor.position.copy(groundBody.position);
+	floor.quaternion.copy(groundBody.quaternion);
+	player.position.copy(playerBody.position);
+	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
 	cube.rotation.x += 0.01;
 	cube.rotation.y += 0.01;
 	cube.rotation.z += 0.01;
-	//	controls.update(1.0);
 	move();
-	floor.position.copy(groundBody.position);
-	floor.quaternion.copy(groundBody.quaternion);
+
 	renderer.render(scene, camera);
 };
 
