@@ -89,19 +89,35 @@ document.addEventListener("keyup", (e) => {
 
 
 function move() {
+	//console.log(camera.getWorldDirection());
+	var tempVec=new THREE.Vector3();
+	tempVec.y=0;
+	tempVec.x=tempVec.x+8;
+	tempVec.z=tempVec.z+8;
+	camera.getWorldDirection(tempVec)
+	//console.log(tempVec);
 	if (controls.isLocked) {
 		if (pressedKeys['w']) {
-			playerBody.applyForce(camera.getWorldDirection(),(0,0,0))
+			//playerBody.applyImpulse()
+			playerBody.velocity.x=tempVec.x*10;
+			playerBody.velocity.z=tempVec.z*10
+			//playerBody.applyLocalImpulse(tempVec,playerBody.position)
 			//controls.moveForward(0.5);
 		}
 		if (pressedKeys['a']) {
+			playerBody.velocity.x=tempVec.z*10;
+			playerBody.velocity.z=-tempVec.x*10
 			//controls.moveRight(-0.5);
 
 		}
 		if (pressedKeys["d"]) {
+			playerBody.velocity.x=-tempVec.z*10;
+			playerBody.velocity.z=tempVec.x*10
 			//controls.moveRight(0.5);
 		}
 		if (pressedKeys['s']) {
+			playerBody.velocity.x=-tempVec.x*10;
+			playerBody.velocity.z=-tempVec.z*10
 			//controls.moveForward(-0.5);
 		}
 		if (pressedKeys[" "]) {
@@ -109,8 +125,8 @@ function move() {
 		}
 
 	}
-	//camera.position.copy(playerBody.position);
-
+	camera.position.copy(playerBody.position);
+	console.log(playerBody.position)
 }
 
 
