@@ -26,9 +26,9 @@ const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh(geometry, material);
 const groundBody = new CANNON.Body({
-shape: new CANNON.Plane(),
-mass:0,
-type:CANNON.Body.STATIC
+	shape: new CANNON.Box(new CANNON.Vec3(15,0.125,15)),
+	mass: 0,
+	type: CANNON.Body.STATIC
 });
 //groundBody.addShape(planeShape);
 //groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
@@ -39,7 +39,7 @@ scene.add(cube.translateZ(-6).translateY(-1));
 scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
 camera.position.z = 5;
-camera.position.y=2;
+camera.position.y = 2;
 
 
 
@@ -49,7 +49,7 @@ const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({
 	mass: 1,
 	shape: playerShape,
-	position: new CANNON.Vec3(0,5,4)
+	position: new CANNON.Vec3(0, 5, 4)
 });
 //playerBody.linearDamping = 0.9;
 //playerBody.addShape(playerShape);
@@ -74,38 +74,38 @@ controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 })
 
-const pressedKeys={};
+const pressedKeys = {};
 
 //pressedKeys['w']=true;
 
-document.addEventListener("keydown",(e)=> {
-	pressedKeys[e.key]=true;
+document.addEventListener("keydown", (e) => {
+	pressedKeys[e.key] = true;
 });
-document.addEventListener("keyup",(e)=>{
-	pressedKeys[e.key]=false;
+document.addEventListener("keyup", (e) => {
+	pressedKeys[e.key] = false;
 });
 
 
 
 
-function move(){
-if(controls.isLocked){
-	if(pressedKeys['w']){
-		controls.moveForward(0.5);
-	}
-	if(pressedKeys['a']){
-		controls.moveRight(-0.5);
+function move() {
+	if (controls.isLocked) {
+		if (pressedKeys['w']) {
+			controls.moveForward(0.5);
+		}
+		if (pressedKeys['a']) {
+			controls.moveRight(-0.5);
 
-	}
-	if(pressedKeys["d"]){
-		controls.moveRight(0.5);
-	}
-	if(pressedKeys['s']){
-		controls.moveForward(-0.5);
-	}
-	if(pressedKeys[" "]){
-		console.log("space");
-	}
+		}
+		if (pressedKeys["d"]) {
+			controls.moveRight(0.5);
+		}
+		if (pressedKeys['s']) {
+			controls.moveForward(-0.5);
+		}
+		if (pressedKeys[" "]) {
+			console.log("space");
+		}
 
 	}
 }
