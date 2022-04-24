@@ -91,23 +91,26 @@ document.addEventListener("keyup", (e) => {
 function move() {
 	if (controls.isLocked) {
 		if (pressedKeys['w']) {
-			controls.moveForward(0.5);
+			playerBody.applyForce(camera.getWorldDirection(),(0,0,0))
+			//controls.moveForward(0.5);
 		}
 		if (pressedKeys['a']) {
-			controls.moveRight(-0.5);
+			//controls.moveRight(-0.5);
 
 		}
 		if (pressedKeys["d"]) {
-			controls.moveRight(0.5);
+			//controls.moveRight(0.5);
 		}
 		if (pressedKeys['s']) {
-			controls.moveForward(-0.5);
+			//controls.moveForward(-0.5);
 		}
 		if (pressedKeys[" "]) {
 			console.log("space");
 		}
 
 	}
+	//camera.position.copy(playerBody.position);
+
 }
 
 
