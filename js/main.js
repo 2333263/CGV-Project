@@ -5,7 +5,10 @@ import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const aspectRatio= window.innerWidth / window.innerHeight
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+var frustumSize = 10;	
+const pipcamera =  new THREE.OrthographicCamera(  2*frustumSize,  2*-frustumSize , frustumSize , -frustumSize , 0, 10 );
 var Clock=new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
@@ -44,6 +47,7 @@ HudPlane.onBeforeRender=function(renderer){
 
 camera.add(HudPlane.translateZ(-1));
 
+
 for(var i=0;i<5;i++){
 	var target=new Targets(i,0,2+2*i,0);
 	TargetArr.push(target)
@@ -56,10 +60,13 @@ hud.updateTargetNumbers(TargetArr.length,0)
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
+floorGeo.rotateZ(Math.PI/6)
 const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
+
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 const cube = new THREE.Mesh(geometry, material);
+
 const groundBody = new CANNON.Body({
 	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)), //have floor be really thin box since plane was having collision issues 
 	mass: 0, //no mass so it does not fall
@@ -74,6 +81,10 @@ scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
 camera.position.z = 9;
 camera.position.y = 9;
+pipcamera.position.set( 0,1, 0);
+pipcamera.rotateX(Math.PI/2)
+
+
 
 
 
@@ -207,6 +218,8 @@ function move() {
 	playerBody.velocity.z+=tempVec.z
 	playerBody.yawObject.position.copy(playerBody.position)
 	camera.position.copy(playerBody.position);
+	pipcamera.position.x=(playerBody.position.x);
+	pipcamera.position.z=(playerBody.position.z);
 }
 
 floor.position.copy(groundBody.position);
@@ -227,7 +240,8 @@ function animate() {
 	hud.updateAmmoCount(playerBody.noBullets,30)
 	hud.draw();
 	hudTexture.needsUpdate=true;
-	renderer.render(scene, camera);
+
+	renderer.render(scene, pipcamera);
 };
 
 animate();
