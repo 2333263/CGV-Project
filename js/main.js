@@ -32,17 +32,16 @@ hudTexture.needsUpdate=true;
 var hudMat=new THREE.MeshBasicMaterial({map:hudTexture});
 hudMat.transparent=true
 
-var HudGeom=new THREE.BoxGeometry(16,9,0)
+var HudGeom=new THREE.BoxGeometry(3.25,1.9,0)
 var HudPlane=new THREE.Mesh(HudGeom,hudMat)
 HudPlane.material.depthTest=false;
 HudPlane.material.depthWrite=false;
 HudPlane.onBeforeRender=function(renderer){
 	renderer.clearDepth();
 }
-//HudPlane.position.copy(camera.position.copy)
-//HudPlane.position.z+=0.1
-camera.add(HudPlane.translateZ(-5));
-//scene.add(HudPlane)
+
+camera.add(HudPlane.translateZ(-1));
+
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
@@ -58,6 +57,7 @@ const groundBody = new CANNON.Body({
 });
 groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
 world.addBody(groundBody) //add floor to world
+
 scene.add(cube.translateZ(-6).translateY(2));
 scene.add(light);
 scene.add(floor.translateZ(-6).translateY(-2));
@@ -181,12 +181,12 @@ function move() {
 	camera.position.copy(playerBody.position);
 }
 
-
+floor.position.copy(groundBody.position);
+floor.quaternion.copy(groundBody.quaternion);
 
 function animate() {
 	world.step(timestep);
-	floor.position.copy(groundBody.position);
-	floor.quaternion.copy(groundBody.quaternion);
+
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
@@ -198,20 +198,7 @@ function animate() {
 	cubeBody.quaternion.copy(cube.quaternion)
 	hud.draw();
 	hudTexture.needsUpdate=true;
-	/*var hudOffset=new THREE.Vector3(0,5,0)
-	hudOffset.applyQuaternion(camera.quaternion);
-	hudOffset.x=hudOffset.x+camera.position.x
-	hudOffset.y=hudOffset.y+camera.position.y
-	hudOffset.z=hudOffset.z+camera.position.z
-	console.log(hudOffset)
-	HudPlane.position.copy(hudOffset)
-	HudPlane.quaternion.copy(camera.quaternion)
-	//HUDcamera.position.copy(camera.position)
-	//HUDcamera.quaternion.copy(camera.quaternion)
-	*/
 	renderer.render(scene, camera);
-	//renderer.render(SceneHUD,HUDcamera)
-	
 };
 
 animate();
