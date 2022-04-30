@@ -8,7 +8,7 @@ var pixelSize;
 
 
 class HUD{
-    constructor(currammo,totalammo){
+    constructor(currammo,totalammo, totaltarget, currtargets){
         this.currammo=currammo
         this.totalammo=totalammo
         this.document=document
@@ -16,7 +16,8 @@ class HUD{
         this.canvas.id="HUD";
         this.canvas.width=width-20;
         this.canvas.height=height-20;
-    
+        this.totaltarget=totaltarget
+        this.currtargets=currtargets
 
 //var body=document.getElementsByTagName("body")[0];
 //document.body.appendChild(this.canvas)
@@ -24,7 +25,14 @@ class HUD{
 //body.appendChild(this.canvas)
 var graphics=this.canvas.getContext("2d")
 
-
+this.updateTargetNumbers=function(totaltarget,currtargets){
+    graphics.save();
+    graphics.setTransform(1, 0, 0, 1, 0, 0)
+    graphics.clearRect(0,0,this.canvas.width,this.canvas.height)
+    graphics.restore();
+    this.totaltarget=totaltarget;
+    this.currtargets=currtargets;
+}
 
 
 //applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
@@ -49,6 +57,7 @@ drawBullet();
 graphics.translate(25,0)
 drawBullet();
 graphics.restore();
+targetCount(this.currtargets,this.totaltarget);
 };
 
 function drawCrossHair(){
@@ -111,6 +120,12 @@ function bulletCount(currammo,totalammo){
     var word=currammo+" / "+totalammo;
     graphics.fillText(word,X_LEFT+70,Y_BOTTOM-120)
 }
+function targetCount(currHits,totaltarget){
+    graphics.fillStyle="rgb(25,25,25)"
+    graphics.font="30px Arial"
+    var word=currHits+" / "+totaltarget;
+    graphics.fillText(word,X_LEFT+70,Y_TOP+120)
+}
 function drawBullet(){
     graphics.save();
     graphics.lineWidth=1;
@@ -152,6 +167,10 @@ this.updateAmmoCount=function(currammo,totalammo){
 
 this.getCanvas=function(){
     return(this.canvas)
+}
+this.increaseTarget=function(){
+    this.currtargets++
+    updateTargetNumbers(this.totaltarget,this.currtargets)
 }
 
 function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
