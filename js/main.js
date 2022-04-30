@@ -3,6 +3,7 @@ import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
+import { GLTFLoader } from '/js/GLTFLoader.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
