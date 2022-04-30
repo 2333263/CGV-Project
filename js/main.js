@@ -89,7 +89,7 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere
 
 playerBody.pitchObject=new THREE.Object3D()
 playerBody.pitchObject.add(camera)
-
+playerBody.noBullets=20;
 playerBody.yawObject=new THREE.Object3D()
 playerBody.yawObject.position.z=5;
 playerBody.yawObject.position.y=2;
@@ -139,6 +139,8 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown",(e)=>{
+	playerBody.noBullets--;
+
 raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
 const intersects=raycaster.intersectObjects(scene.children);
 outer:for(let i=0;i<intersects.length;i++){
@@ -220,6 +222,7 @@ function animate() {
 	move();
 	cubeBody.position.copy(cube.position)
 	cubeBody.quaternion.copy(cube.quaternion)
+	hud.updateAmmoCount(playerBody.noBullets,30)
 	hud.draw();
 	hudTexture.needsUpdate=true;
 	renderer.render(scene, camera);

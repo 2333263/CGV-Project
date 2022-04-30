@@ -10,8 +10,7 @@ class Targets{
           
         })
         this.TickMat=new THREE.MeshBasicMaterial({
-            map: loader.load("ticktarget.png"),
-          
+            map: loader.load("tickCrop.jpg")
 
         })
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)

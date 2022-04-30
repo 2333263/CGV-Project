@@ -33,6 +33,7 @@ graphics.translate(width/2,height/2)
 
 
 this.draw=function(){
+graphics.clearRect(0,0,width/1900,height/935)
 graphics.save();
 //graphics.scale(10,10)
 //semiCircle(0.1)
@@ -140,9 +141,13 @@ function semiCircle(size){
 
 }
 this.updateAmmoCount=function(currammo,totalammo){
-
+    graphics.save();
+    graphics.setTransform(1, 0, 0, 1, 0, 0)
+    graphics.clearRect(0,0,this.canvas.width,this.canvas.height)
+    graphics.restore();
     this.currammo=currammo;
     this.totalammo=totalammo;
+   
 }
 
 this.getCanvas=function(){
