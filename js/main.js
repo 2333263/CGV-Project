@@ -1,9 +1,10 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
-import { GLTFLoader } from '/js/GLTFLoader.js';
+import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import * as threeToCannon from 'three-to-cannon';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -56,7 +57,7 @@ scene.add(target.getCylinder())
 hud.updateTargetNumbers(TargetArr.length,0)
 
 
-//Import the levelScale
+//Import the level from Blender
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
 //init function ?????????
@@ -68,8 +69,20 @@ const models = {
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
-			//Add body (scene of the gltf file)
-			scene.add(root.translateY(0));
+			//TODO FIX THIS BROKEN CODE BELOW -----------------------------------------------------------
+			//Convert root to cannon object
+			const result = threeToCannon(object3D);
+			const {shapeLevel1, offsetLevel1, quaternionLevel1} = result;
+			const level1CollisionBody=new CANNON.Body()
+			level1CollisionBody.addShape(shapeLevel1, offsetLevel1, quaternionLevel1)
+			world.addBody(level1CollisionBody);
+			//-------------------------------------------------------------------------------------------
+
+
+			//Ignore but do no delete -------------------------------------------------------------------
+			// //Add body (scene of the gltf file)
+			// scene.add(root.translateY(0));
+
 			//Treat the head (child of body) as a separate object to manipulate
 			// let headOfBody = root.getObjectByName('Head');
 			// //Add Head
