@@ -4,7 +4,7 @@ import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
+var Clock=new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.setClearColor(0xADD8E6,1)
@@ -17,7 +17,7 @@ const material = new THREE.MeshStandardMaterial({
 });
 
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -18, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -22, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial =new CANNON.Material({
@@ -142,37 +142,40 @@ document.addEventListener("keyup", (e) => {
 
 
 function move() {
-
+	
 	playerBody.pitchObject.rotation.x=Math.max(-Math.PI / 2, Math.min(Math.PI / 2,camera.rotation.x))
 	
 	playerBody.yawObject.rotation.y=camera.rotation.y;
 
 	var tempVec=new THREE.Vector3(0,0,0);
-
+	var delta=Clock.getDelta()*1000
 	if (controls.isLocked) {
 	
 		if (pressedKeys['w']) {
-			tempVec.z=-0.4
+			tempVec.z=-0.05*delta
 		}
 		if (pressedKeys['a']) {
-			tempVec.x=-0.4
+			tempVec.x=-0.05*delta
 		}
 		if (pressedKeys["d"]) {
-			tempVec.x=0.4
+			tempVec.x=0.05*delta
 		}
 		if (pressedKeys['s']) {
-			tempVec.z=0.4
+			tempVec.z=0.05*delta
 		}
 		if (pressedKeys[" "] ) {
 			if( playerBody.canJump==true){
-			var newTemp=new THREE.Vector3(0,15,0);
-			var pos=new THREE.Vector3(0,0,0)
-			playerBody.applyLocalImpulse(newTemp,pos)
+				playerBody.velocity.y=20
+
+		//	var newTemp=new THREE.Vector3(0,2*delta,0);
+	//		var pos=new THREE.Vector3(0,0,0)
+	//		playerBody.applyLocalImpulse(newTemp,pos)
 			}
 			playerBody.canJump=false
 		}
 	
 	}
+
 	playerBody.quaternion.copy(camera.quaternion)
 	tempVec.applyQuaternion(playerBody.quaternion);
 	playerBody.velocity.x+=tempVec.x
