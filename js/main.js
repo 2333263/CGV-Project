@@ -4,7 +4,7 @@ import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import * as threeToCannon from 'three-to-cannon';
+import { threeToCannon, ShapeType } from 'three-to-cannon';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -57,7 +57,7 @@ scene.add(target.getCylinder())
 hud.updateTargetNumbers(TargetArr.length,0)
 
 
-//Import the level from Blender
+//Import the level from Blender and apply physics bounding
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
 //init function ?????????
@@ -69,13 +69,19 @@ const models = {
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
+			const obj3D = root.getObjectByName('Base')
+			scene.add(root);
 			//TODO FIX THIS BROKEN CODE BELOW -----------------------------------------------------------
 			//Convert root to cannon object
-			const result = threeToCannon(object3D);
+			const result = threeToCannon(obj3D);
 			const {shapeLevel1, offsetLevel1, quaternionLevel1} = result;
+			//console.log(result.offset)
+
 			const level1CollisionBody=new CANNON.Body()
-			level1CollisionBody.addShape(shapeLevel1, offsetLevel1, quaternionLevel1)
+			result.offset
+			level1CollisionBody.addShape(result.shape,result.offset, result.quaternion)
 			world.addBody(level1CollisionBody);
+			//console.log("added House")
 			//-------------------------------------------------------------------------------------------
 
 
