@@ -55,6 +55,30 @@ TargetArr.push(target)
 scene.add(target.getCylinder())
 hud.updateTargetNumbers(TargetArr.length,0)
 
+
+//Import the levelScale
+const manager = new THREE.LoadingManager();
+//manager.onLoad = init;
+//init function ?????????
+const models = {
+	body: { url: '/Objects/Level_1/Level_1.gltf' },
+};
+{
+	const gltfLoader = new GLTFLoader(manager);
+	for (const model of Object.values(models)) {
+		gltfLoader.load(model.url, (gltf) => {
+			const root = gltf.scene;
+			//Add body (scene of the gltf file)
+			scene.add(root.translateY(1));
+			//Treat the head (child of body) as a separate object to manipulate
+			// let headOfBody = root.getObjectByName('Head');
+			// //Add Head
+			// scene.add(headOfBody.translateY(2))
+		});
+	}
+}
+
+
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
 const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
