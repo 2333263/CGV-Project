@@ -2,6 +2,8 @@ import * as THREE from '../node_modules/three/build/three.module.js';
 import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
+import { Targets } from '/js/targets.js';
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var Clock=new THREE.Clock(true)
@@ -9,13 +11,13 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.setClearColor(0xADD8E6,1)
 document.body.appendChild(renderer.domElement);
-
+const raycaster = new THREE.Raycaster();
 const loader = new THREE.TextureLoader();
 const timestep = 1 / 60
 const material = new THREE.MeshStandardMaterial({
 	map: loader.load('textureOne.jpg') //test texture
 });
-
+const TargetArr=[];
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -22, 0) //Middle value is gravity in the y direction 
 });
@@ -42,6 +44,14 @@ HudPlane.onBeforeRender=function(renderer){
 
 camera.add(HudPlane.translateZ(-1));
 
+for(var i=0;i<5;i++){
+	var target=new Targets(i,0,2+2*i,0);
+	TargetArr.push(target)
+	scene.add(target.getCylinder())
+}
+var target=new Targets(5,5,2,0);
+TargetArr.push(target)
+scene.add(target.getCylinder())
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
@@ -128,6 +138,20 @@ controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 })
 
+document.addEventListener("mousedown",(e)=>{
+raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+const intersects=raycaster.intersectObjects(scene.children);
+outer:for(let i=0;i<intersects.length;i++){
+	for (let j=0;j<TargetArr.length;j++){
+		if(intersects[i].object==TargetArr[j].getCylinder()){
+			HitTarget(intersects[i].object.name)
+			break outer;
+		}
+	}
+}
+renderer.readRenderTargetPixels(scene,camera)
+})
+
 const pressedKeys = {};
 
 
@@ -138,8 +162,9 @@ document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
 });
 
-
-
+function HitTarget(name){
+	TargetArr[parseInt(name)].hit();
+}
 
 function move() {
 	
@@ -166,10 +191,6 @@ function move() {
 		if (pressedKeys[" "] ) {
 			if( playerBody.canJump==true){
 				playerBody.velocity.y=20
-
-		//	var newTemp=new THREE.Vector3(0,2*delta,0);
-	//		var pos=new THREE.Vector3(0,0,0)
-	//		playerBody.applyLocalImpulse(newTemp,pos)
 			}
 			playerBody.canJump=false
 		}
