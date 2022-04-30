@@ -27,7 +27,7 @@ const planeMaterial =new CANNON.Material({
 	restitution: 0
 })
 
-var hud=new HUD(20,30);
+var hud=new HUD(20,30,5,0);
 
 var hudTexture=new THREE.Texture(hud.getCanvas())
 hudTexture.needsUpdate=true;
@@ -52,6 +52,7 @@ for(var i=0;i<5;i++){
 var target=new Targets(5,5,2,0);
 TargetArr.push(target)
 scene.add(target.getCylinder())
+hud.updateTargetNumbers(TargetArr.length,0)
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
@@ -145,8 +146,9 @@ raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
 const intersects=raycaster.intersectObjects(scene.children);
 outer:for(let i=0;i<intersects.length;i++){
 	for (let j=0;j<TargetArr.length;j++){
-		if(intersects[i].object==TargetArr[j].getCylinder()){
+		if(intersects[i].object==TargetArr[j].getCylinder() && TargetArr[j].isHit==false){
 			HitTarget(intersects[i].object.name)
+			hud.increaseTarget();
 			break outer;
 		}
 	}
