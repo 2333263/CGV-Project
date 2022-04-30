@@ -69,7 +69,7 @@ const models = {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
 			//Add body (scene of the gltf file)
-			scene.add(root.translateY(1));
+			scene.add(root.translateY(0));
 			//Treat the head (child of body) as a separate object to manipulate
 			// let headOfBody = root.getObjectByName('Head');
 			// //Add Head
