@@ -1,11 +1,13 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 import { PointerLockControls } from '/js/PointerLockControls.js';
-
+import {HUD} from "/js/HUD.js"
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+renderer.setClearColor(0xADD8E6,1)
 document.body.appendChild(renderer.domElement);
 
 const loader = new THREE.TextureLoader();
@@ -22,6 +24,26 @@ const planeMaterial =new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
+
+var hud=new HUD(20,30);
+
+var hudTexture=new THREE.Texture(hud.getCanvas())
+hudTexture.needsUpdate=true;
+var hudMat=new THREE.MeshBasicMaterial({map:hudTexture});
+hudMat.transparent=true
+
+var HudGeom=new THREE.BoxGeometry(16,9,0)
+var HudPlane=new THREE.Mesh(HudGeom,hudMat)
+HudPlane.material.depthTest=false;
+HudPlane.material.depthWrite=false;
+HudPlane.onBeforeRender=function(renderer){
+	renderer.clearDepth();
+}
+//HudPlane.position.copy(camera.position.copy)
+//HudPlane.position.z+=0.1
+camera.add(HudPlane.translateZ(-5));
+//scene.add(HudPlane)
+
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
 const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
@@ -174,7 +196,22 @@ function animate() {
 	move();
 	cubeBody.position.copy(cube.position)
 	cubeBody.quaternion.copy(cube.quaternion)
+	hud.draw();
+	hudTexture.needsUpdate=true;
+	/*var hudOffset=new THREE.Vector3(0,5,0)
+	hudOffset.applyQuaternion(camera.quaternion);
+	hudOffset.x=hudOffset.x+camera.position.x
+	hudOffset.y=hudOffset.y+camera.position.y
+	hudOffset.z=hudOffset.z+camera.position.z
+	console.log(hudOffset)
+	HudPlane.position.copy(hudOffset)
+	HudPlane.quaternion.copy(camera.quaternion)
+	//HUDcamera.position.copy(camera.position)
+	//HUDcamera.quaternion.copy(camera.quaternion)
+	*/
 	renderer.render(scene, camera);
+	//renderer.render(SceneHUD,HUDcamera)
+	
 };
 
 animate();
