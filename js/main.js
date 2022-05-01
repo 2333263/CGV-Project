@@ -1,8 +1,10 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
+import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { threeToCannon, ShapeType } from 'three-to-cannon';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -53,6 +55,48 @@ var target=new Targets(5,5,2,0);
 TargetArr.push(target)
 scene.add(target.getCylinder())
 hud.updateTargetNumbers(TargetArr.length,0)
+
+
+//Import the level from Blender and apply physics bounding
+const manager = new THREE.LoadingManager();
+//manager.onLoad = init;
+//init function ?????????
+const models = {
+	body: { url: '/Objects/Level_1/Level_1.gltf' },
+};
+{
+	const gltfLoader = new GLTFLoader(manager);
+	for (const model of Object.values(models)) {
+		gltfLoader.load(model.url, (gltf) => {
+			const root = gltf.scene;
+			const obj3D = root.getObjectByName('Base')
+			scene.add(root);
+			//TODO FIX THIS BROKEN CODE BELOW -----------------------------------------------------------
+			//Convert root to cannon object
+			const result = threeToCannon(obj3D);
+			const {shapeLevel1, offsetLevel1, quaternionLevel1} = result;
+			//console.log(result.offset)
+
+			const level1CollisionBody=new CANNON.Body()
+			result.offset
+			level1CollisionBody.addShape(result.shape,result.offset, result.quaternion)
+			world.addBody(level1CollisionBody);
+			//console.log("added House")
+			//-------------------------------------------------------------------------------------------
+
+
+			//Ignore but do no delete -------------------------------------------------------------------
+			// //Add body (scene of the gltf file)
+			// scene.add(root.translateY(0));
+
+			//Treat the head (child of body) as a separate object to manipulate
+			// let headOfBody = root.getObjectByName('Head');
+			// //Add Head
+			// scene.add(headOfBody.translateY(2))
+		});
+	}
+}
+
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
