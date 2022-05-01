@@ -43,8 +43,6 @@ graphics.translate(width/2,height/2)
 this.draw=function(){
 graphics.clearRect(0,0,width/1900,height/935)
 graphics.save();
-//graphics.scale(10,10)
-//semiCircle(0.1)
 drawCrossHair()
 graphics.restore();
 bulletCount(this.currammo,this.totalammo)
@@ -57,7 +55,13 @@ drawBullet();
 graphics.translate(25,0)
 drawBullet();
 graphics.restore();
+graphics.save();
 targetCount(this.currtargets,this.totaltarget);
+graphics.restore();
+graphics.save();
+graphics.translate(X_LEFT+160,Y_TOP+110)
+drawTarget();
+graphics.restore();
 };
 
 function drawCrossHair(){
@@ -75,6 +79,24 @@ function drawLine(x1, y1, x2,y2){
     graphics.moveTo(x1,y1);
     graphics.lineTo(x2,y2);
     graphics.stroke();
+}
+
+function drawTarget(){
+graphics.save()
+graphics.fillStyle="rgb(25,25,25)"
+graphics.scale(25,25)
+filledCircle();
+graphics.scale(0.75,0.75);
+graphics.fillStyle="white"
+filledCircle();
+graphics.scale(0.75,0.75)
+graphics.fillStyle="rgb(25,25,25)"
+filledCircle();
+graphics.scale(0.25,0.25)
+graphics.fillStyle="white"
+filledCircle();
+graphics.restore();
+
 }
 
 function drawCustomPoly(points,size){
@@ -129,9 +151,13 @@ function targetCount(currHits,totaltarget){
 function drawBullet(){
     graphics.save();
     graphics.lineWidth=1;
-    graphics.fillStyle="rgb(25,25,25)"
+    
     fillCustomPoly([[-10,-10],[-10,10],[10,10],[10,-10]],0.1)
+    fillCustomPoly([[-10,-10],[-10,10],[10,10],[10,-10]],0.1)
+    graphics.fillStyle="white"
     graphics.translate(0,23);
+    fillCustomPoly([[-10,-10],[-10,-12],[10,-12],[10,-10]],0.1)
+    graphics.fillStyle="rgb(25,25,25)"
     fillCustomPoly([[-10,-10],[-10,-5],[10,-5],[10,-10]],0.1)
     graphics.restore();
     graphics.save();
@@ -140,6 +166,8 @@ function drawBullet(){
     graphics.translate(0,-13);
     graphics.scale(2,2)
     semiCircle(0.1)
+    graphics.fillStyle="white"
+    fillCustomPoly([[-5,1],[-5,0],[5,0],[5,1]],0.1)
     graphics.restore();
     
 }
@@ -170,7 +198,7 @@ this.getCanvas=function(){
 }
 this.increaseTarget=function(){
     this.currtargets++
-    updateTargetNumbers(this.totaltarget,this.currtargets)
+    this.updateTargetNumbers(this.totaltarget,this.currtargets)
 }
 
 function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
