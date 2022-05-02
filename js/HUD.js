@@ -16,8 +16,8 @@ class HUD{
         this.document=document
         this.canvas=document.createElement("canvas")
         this.canvas.id="HUD";
-        this.canvas.width=width-20;
-        this.canvas.height=height-20;
+        this.canvas.width=width
+        this.canvas.height=height
         this.totaltarget=totaltarget
         this.currtargets=currtargets
 
@@ -43,25 +43,25 @@ applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
 
 
 this.draw=function(){
-graphics.clearRect(0,0,width/1900,height/935)
+graphics.clearRect(0,0,width,height)
 graphics.save();
 drawCrossHair()
 graphics.restore();
 bulletCount(this.currammo,this.totalammo)
 graphics.save();
-graphics.translate(X_LEFT+200,Y_BOTTOM-130)
+graphics.translate(X_LEFT+200*conversionW,Y_BOTTOM-130*height)
 graphics.scale(0.6,0.6)
 drawBullet();
-graphics.translate(25,0)
+graphics.translate(25*conversionW,0)
 drawBullet();
-graphics.translate(25,0)
+graphics.translate(25*conversionW,0)
 drawBullet();
 graphics.restore();
 graphics.save();
 targetCount(this.currtargets,this.totaltarget);
 graphics.restore();
 graphics.save();
-graphics.translate(X_LEFT+160,Y_TOP+110)
+graphics.translate(X_LEFT+160*conversionW,Y_TOP+110*conversionH)
 drawTarget();
 graphics.restore();
 };
