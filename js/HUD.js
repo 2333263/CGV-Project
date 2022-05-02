@@ -50,6 +50,7 @@ this.updateTargetNumbers=function(totaltarget,currtargets){
 
 
 applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
+graphics.lineWidth=pixelSize
 //graphics.scale(width/1900,height/935)
 //graphics.translate(width/2,height/2)
 
