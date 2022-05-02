@@ -8,7 +8,7 @@ const scene = new THREE.Scene();
 const aspectRatio= window.innerWidth / window.innerHeight
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 var frustumSize = 10;	
-const pipcamera =  new THREE.OrthographicCamera(  2*frustumSize,  2*-frustumSize , frustumSize , -frustumSize , 0, 10 );
+const pipcamera =  new THREE.OrthographicCamera(  4*frustumSize, 4*-frustumSize , frustumSize*0.5 , -frustumSize*0.5 , 0, 10 );
 var Clock=new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
@@ -60,7 +60,7 @@ hud.updateTargetNumbers(TargetArr.length,0)
 
 const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
-floorGeo.rotateZ(Math.PI/6)
+
 const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
 
 const light = new THREE.HemisphereLight("white", "white", 0.8);
