@@ -35,9 +35,9 @@ this.updateTargetNumbers=function(totaltarget,currtargets){
 }
 
 
-//applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
-graphics.scale(width/1900,height/935)
-graphics.translate(width/2,height/2)
+applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
+//graphics.scale(width/1900,height/935)
+//graphics.translate(width/2,height/2)
 
 
 this.draw=function(){
@@ -202,8 +202,8 @@ this.increaseTarget=function(){
 }
 
 function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
-    var width = canvas.width;   // The width of this drawing area, in pixels.
-    var height = canvas.height; // The height of this drawing area, in pixels.
+    //var width = canvas.width;   // The width of this drawing area, in pixels.
+    //var height = canvas.height; // The height of this drawing area, in pixels.
     if (preserveAspect) {
         // Adjust the limits to match the aspect ratio of the drawing area.
         var displayAspect = Math.abs(height / width);
