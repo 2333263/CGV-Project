@@ -1,5 +1,7 @@
-const width=window.innerWidth-20
-const height=window.innerHeight-20
+const conversionW=window.innerWidth/1900
+const conversionH=window.innerHeight/935
+const width=window.innerWidth-20*conversionW
+const height=window.innerHeight-20*conversionH
 var X_LEFT = -width/2;    // The xy limits for the coordinate system.
 var X_RIGHT = width/2;
 var Y_BOTTOM = height/2;
