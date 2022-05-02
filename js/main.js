@@ -10,6 +10,8 @@ var scene = new THREE.Scene();
 var mapScene=new THREE.Scene();
 const aspectRatio= window.innerWidth / window.innerHeight
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+const HudCamera=new THREE.OrthographicCamera(-window.innerWidth/2,window.innerWidth/2,window.innerHeight/2,-window.innerHeight/2,0,30)
+var sceneHUD=new THREE.Scene();
 var frustumSize = 14;	
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(window.innerWidth-20)/(-2*frustumSize),(window.innerWidth-20)/(2*frustumSize),(window.innerHeight-20)/(2*frustumSize),(window.innerHeight-20)/(-2*frustumSize),1,1000 
@@ -40,19 +42,21 @@ const planeMaterial =new CANNON.Material({
 var hud=new HUD(20,30,5,0);
 
 var hudTexture=new THREE.Texture(hud.getCanvas())
+
+//hudTexture.repeat.set((window.innerWidth-20)/)
 hudTexture.needsUpdate=true;
 var hudMat=new THREE.MeshBasicMaterial({map:hudTexture});
 hudMat.transparent=true
-
-var HudGeom=new THREE.BoxGeometry(3.25,1.9,0)
+console.log(window.innerWidth/hudTexture.image.width, window.innerHeight/hudTexture.image.height)
+var HudGeom=new THREE.BoxGeometry(window.innerWidth,window.innerHeight,0)
 var HudPlane=new THREE.Mesh(HudGeom,hudMat)
 HudPlane.material.depthTest=false;
 HudPlane.material.depthWrite=false;
 HudPlane.onBeforeRender=function(renderer){
 	renderer.clearDepth();
 }
-
-camera.add(HudPlane.translateZ(-1));
+sceneHUD.add(HudPlane)
+//camera.add(HudPlane.translateZ(-0.1));
 
 
 for(var i=0;i<5;i++){
@@ -298,6 +302,7 @@ function animate() {
 	renderer.clear();
 	renderer.setViewport( 0, 0, window.innerWidth-20, window.innerHeight-20 );
 	renderer.render(scene, camera)
+	renderer.render(sceneHUD,HudCamera)
     mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport( window.innerWidth-250,  50, 200, 200 )
