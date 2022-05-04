@@ -121,7 +121,7 @@ const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")})
 const light = new THREE.HemisphereLight("white", "white", 0.8);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 
-const cube = new THREE.Mesh(geometry, material);
+
 
 const groundBody = new CANNON.Body({
 	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)), //have floor be really thin box since plane was having collision issues 
@@ -133,7 +133,7 @@ groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5);
 world.addBody(groundBody) //add floor to world
 
 
-scene.add(cube.translateZ(-6).translateY(2))
+
 scene.add(light)
 scene.add(floor.translateZ(-6).translateY(-2))
 camera.position.z = 9;
@@ -179,11 +179,7 @@ playerBody.addEventListener('collide', (event)=>{
 	}
 })
 
-const cubeBody=new CANNON.Body({
-	mass:0,
-	shape: new CANNON.Box(new CANNON.Vec3(1,1,1))
-})
-world.addBody(cubeBody)
+
 
 
 playerBody.linearDamping = 0.9;
@@ -289,12 +285,9 @@ function animate() {
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-	cube.rotation.z += 0.01;
+
 	move();
-	cubeBody.position.copy(cube.position)
-	cubeBody.quaternion.copy(cube.quaternion)
+
 	hud.updateAmmoCount(playerBody.noBullets,30)
 	hud.draw();
 	hudTexture.needsUpdate=true;
