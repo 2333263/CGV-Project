@@ -5,6 +5,7 @@ import {HUD} from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
+import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
 
 var scene = new THREE.Scene();
 var mapScene=new THREE.Scene();
@@ -85,20 +86,21 @@ const models = {
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
-			const obj3D = root.getObjectByName('Base')
 			scene.add(root);
-			//TODO FIX THIS BROKEN CODE BELOW -----------------------------------------------------------
-			//Convert root to cannon object
-			const result = threeToCannon(obj3D);
-			const {shapeLevel1, offsetLevel1, quaternionLevel1} = result;
-			//console.log(result.offset)
 
-			const level1CollisionBody=new CANNON.Body()
-			result.offset
-			level1CollisionBody.addShape(result.shape,result.offset, result.quaternion)
-			world.addBody(level1CollisionBody);
-			//console.log("added House")
-			//-------------------------------------------------------------------------------------------
+
+			const obj3D1 = root.getObjectByName('Base001')
+			world.addBody(threeToCannonObj.getCannonMesh(obj3D1));
+
+			const obj3D2 = root.getObjectByName('Base002')
+			world.addBody(threeToCannonObj.getCannonMesh(obj3D2));
+
+			// const obj3D2 = root.getObjectByName('Base0wds02')
+			// world.addBody(THREETOCANNON.getCannonMesh(obj3D2));
+
+			
+
+
 
 
 			//Ignore but do no delete -------------------------------------------------------------------
