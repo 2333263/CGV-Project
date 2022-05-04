@@ -59,7 +59,6 @@ HudPlane.onBeforeRender=function(renderer){
 	renderer.clearDepth();
 }
 sceneHUD.add(HudPlane)
-//camera.add(HudPlane.translateZ(-0.1));
 
 
 for(var i=0;i<5;i++){
@@ -296,8 +295,6 @@ function move() {
 
 floor.position.copy(groundBody.position);
 floor.quaternion.copy(groundBody.quaternion);
-console.log(scene)
-console.log(mapScene)
 function animate() {
 	world.step(timestep);
 	
