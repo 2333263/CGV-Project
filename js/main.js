@@ -35,7 +35,7 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -22, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -146,7 +146,7 @@ player.receiveShadow = true;
 scene.add(player)
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere 
-	mass: 1,
+	mass: 5,
 	shape: playerShape,
 	position: initposition,
 	quaternion: new THREE.Quaternion(),
