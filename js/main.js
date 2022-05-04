@@ -238,6 +238,11 @@ document.addEventListener("mousedown",(e)=>{
 		}
 		renderer.readRenderTargetPixels(scene,camera)
 	}
+	else if (hud.gamestate==-1) // game fail
+	{
+
+		
+	}
 })
 
 const pressedKeys = {};
