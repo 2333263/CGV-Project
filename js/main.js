@@ -43,13 +43,13 @@ const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
-addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
+addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]); //adds targets to the target array and to the scene
 
-const totalammo=parseInt(TargetArr.length*1.5)
+const totalammo=parseInt(TargetArr.length*1.5) //make total amo proportional to no targets 
 
-var hud = new HUD(totalammo, totalammo, TargetArr.length, 0);
-hud.updateTargetNumbers(TargetArr.length, 0)
-var hudTexture = new THREE.Texture(hud.getCanvas())
+var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the hud
+
+var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
 
 //hudTexture.repeat.set((window.innerWidth-20)/)
 hudTexture.needsUpdate = true;
@@ -136,20 +136,20 @@ groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5);
 world.addBody(groundBody) //add floor to world
 scene.add(light)
 scene.add(floor.translateZ(-6).translateY(-2))
-camera.position.z = 9;
+camera.position.z = 9; //initialise camera position
 camera.position.y = 9;
-pipcamera.position.set(0, 30, 0);
-pipcamera.rotateX(-Math.PI / 2)
+pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
+pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 
-const initcam=camera.quaternion
-console.log(initcam)
+const initcam=camera.quaternion // save camera rotation to be used in init function
+
 
 const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
 player.castShadow = true;
 player.receiveShadow = true;
 scene.add(player)
 const playerShape = new CANNON.Sphere(1.5);
-const playerBody = new CANNON.Body({ //player hitbox represented by sphere 
+const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
 	shape: playerShape,
 	position: initposition,
@@ -190,9 +190,9 @@ scene.add(direcLight)
 
 playerBody.linearDamping = 0.9;
 
-world.addBody(playerBody);
+world.addBody(playerBody); //adds player body to the world
 
-const controls = new PointerLockControls(camera, renderer.domElement);
+const controls = new PointerLockControls(camera, renderer.domElement); //links controls to the camera
 
 scene.add(controls.getObject());
 
@@ -208,14 +208,14 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown", (e) => {
-	if (playerBody.noBullets > 0) {
-		playerBody.noBullets--;
+	if (playerBody.noBullets > 0) { //if player has any bullets 
+		playerBody.noBullets--; //decrement bullet count
 
-		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // hit thing in line of sight of crosshair
 		const intersects = raycaster.intersectObjects(scene.children);
 		outer: for (let i = 0; i < intersects.length; i++) {
 			for (let j = 0; j < TargetArr.length; j++) {
-				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) {
+				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
 					HitTarget(intersects[i].object.name)
 					hud.increaseTarget();
 					break outer;
@@ -335,7 +335,7 @@ function animate() {
 animate();
 
 
-function mapTargets() {
+function mapTargets() { // rotates targets for appearence on the map camera
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
@@ -345,14 +345,14 @@ function mapTargets() {
 
 
 }
-function worldTargets() {
+function worldTargets() { //remove the map targets from the scene
 	while (mapTargetArr.length != 0) {
 		scene.remove(mapTargetArr.pop())
 	}
 }
 
 
-function addTargets(position) {
+function addTargets(position) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
 		var target = new Targets(i, position[i][0], position[i][1], position[i][2]);
@@ -363,7 +363,7 @@ function addTargets(position) {
 	}
 
 }
-function init() {
+function init() { //initialise for a reset of level
 
 	addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
 	hud.gamestate = 0;
@@ -378,7 +378,7 @@ function init() {
 	hud.setStartTime()
 	
 }
-function removeTargets() {
+function removeTargets() { //remove all targets 
 	while (TargetArr.length != 0) {
 		scene.remove(TargetArr.pop().getCylinder())
 	}
