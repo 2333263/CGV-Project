@@ -311,7 +311,7 @@ function animate() {
 	requestAnimationFrame(animate);
 	dt = Clock.getDelta() * 1000
 	move(); 
-	world.step(1/60,dt)
+	world.step(1/120,dt)
 	hud.updateAmmoCount(playerBody.noBullets, 30)
 	hud.draw();
 	hudTexture.needsUpdate = true;
