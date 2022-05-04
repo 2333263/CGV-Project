@@ -1,12 +1,11 @@
-const width=window.innerWidth-20
-const height=window.innerHeight-20
-var X_LEFT = -width/2;    // The xy limits for the coordinate system.
-var X_RIGHT = width/2;
-var Y_BOTTOM = height/2;
-var Y_TOP = -height/2;
-var pixelSize;
+var dpr=window.devicePixelRatio
+const conversionW=window.innerWidth/1900
+const conversionH=window.innerHeight/935
+const width=window.innerWidth
+const height=window.innerHeight
 
 
+console.log(dpr)
 class HUD{
     constructor(currammo,totalammo, totaltarget, currtargets){
         this.currammo=currammo
@@ -14,8 +13,8 @@ class HUD{
         this.document=document
         this.canvas=document.createElement("canvas")
         this.canvas.id="HUD";
-        this.canvas.width=width-20;
-        this.canvas.height=height-20;
+        this.canvas.width=width
+        this.canvas.height=height
         this.totaltarget=totaltarget
         this.currtargets=currtargets
 
@@ -23,7 +22,22 @@ class HUD{
 //document.body.appendChild(this.canvas)
 
 //body.appendChild(this.canvas)
+var scaleFillNative=Math.max(width/1900,height/935)
+var scaleFitNative=Math.min(width/1900,height/935)
+
+
+var X_LEFT = (-width/2)*scaleFitNative;    // The xy limits for the coordinate system.
+var X_RIGHT = (width/2)*scaleFitNative;
+var Y_BOTTOM = (height/2)*scaleFitNative;
+var Y_TOP = (-height/2)*scaleFitNative;
+var pixelSize;
+
+
+
 var graphics=this.canvas.getContext("2d")
+
+
+
 
 this.updateTargetNumbers=function(totaltarget,currtargets){
     graphics.save();
@@ -35,19 +49,23 @@ this.updateTargetNumbers=function(totaltarget,currtargets){
 }
 
 
-//applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
-graphics.scale(width/1900,height/935)
-graphics.translate(width/2,height/2)
+applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
+graphics.lineWidth=pixelSize
+//graphics.scale(width/1900,height/935)
+//graphics.translate(width/2,height/2)
 
+//graphics.scale(scaleFitNative,scaleFitNative)
 
 this.draw=function(){
-graphics.clearRect(0,0,width/1900,height/935)
+graphics.clearRect(0,0,width,height)
 graphics.save();
 drawCrossHair()
 graphics.restore();
+graphics.save()
 bulletCount(this.currammo,this.totalammo)
+graphics.restore();
 graphics.save();
-graphics.translate(X_LEFT+200,Y_BOTTOM-130)
+graphics.translate(X_LEFT+115,Y_BOTTOM-18)
 graphics.scale(0.6,0.6)
 drawBullet();
 graphics.translate(25,0)
@@ -59,7 +77,7 @@ graphics.save();
 targetCount(this.currtargets,this.totaltarget);
 graphics.restore();
 graphics.save();
-graphics.translate(X_LEFT+160,Y_TOP+110)
+graphics.translate(X_LEFT+90,Y_TOP+30)
 drawTarget();
 graphics.restore();
 };
@@ -84,7 +102,8 @@ function drawLine(x1, y1, x2,y2){
 function drawTarget(){
 graphics.save()
 graphics.fillStyle="rgb(25,25,25)"
-graphics.scale(25,25)
+graphics.scale(30,30)
+graphics.translate(0,-0.35);
 filledCircle();
 graphics.scale(0.75,0.75);
 graphics.fillStyle="white"
@@ -140,13 +159,13 @@ function bulletCount(currammo,totalammo){
     graphics.fillStyle="rgb(25,25,25)"
     graphics.font="30px Arial"
     var word=currammo+" / "+totalammo;
-    graphics.fillText(word,X_LEFT+70,Y_BOTTOM-120)
+    graphics.fillText(word,X_LEFT+10,Y_BOTTOM-10 )
 }
 function targetCount(currHits,totaltarget){
     graphics.fillStyle="rgb(25,25,25)"
     graphics.font="30px Arial"
     var word=currHits+" / "+totaltarget;
-    graphics.fillText(word,X_LEFT+70,Y_TOP+120)
+    graphics.fillText(word,X_LEFT+10,Y_TOP+30)
 }
 function drawBullet(){
     graphics.save();
@@ -202,8 +221,8 @@ this.increaseTarget=function(){
 }
 
 function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
-    var width = canvas.width;   // The width of this drawing area, in pixels.
-    var height = canvas.height; // The height of this drawing area, in pixels.
+    //var width = canvas.width;   // The width of this drawing area, in pixels.
+    //var height = canvas.height; // The height of this drawing area, in pixels.
     if (preserveAspect) {
         // Adjust the limits to match the aspect ratio of the drawing area.
         var displayAspect = Math.abs(height / width);
