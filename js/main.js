@@ -221,20 +221,23 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown",(e)=>{
-	playerBody.noBullets--;
+	if(playerBody.noBullets>0) 
+	{
+		playerBody.noBullets--;
 
-raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
-const intersects=raycaster.intersectObjects(scene.children);
-outer:for(let i=0;i<intersects.length;i++){
-	for (let j=0;j<TargetArr.length;j++){
-		if(intersects[i].object==TargetArr[j].getCylinder() && TargetArr[j].isHit==false){
-			HitTarget(intersects[i].object.name)
-			hud.increaseTarget();
-			break outer;
+		raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+		const intersects=raycaster.intersectObjects(scene.children);
+		outer:for(let i=0;i<intersects.length;i++){
+			for (let j=0;j<TargetArr.length;j++){
+				if(intersects[i].object==TargetArr[j].getCylinder() && TargetArr[j].isHit==false){
+					HitTarget(intersects[i].object.name)
+					hud.increaseTarget();
+					break outer;
+				}
+			}
 		}
+		renderer.readRenderTargetPixels(scene,camera)
 	}
-}
-renderer.readRenderTargetPixels(scene,camera)
 })
 
 const pressedKeys = {};
