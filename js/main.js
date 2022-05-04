@@ -179,7 +179,7 @@ playerBody.addEventListener('collide', (event) => {
 
 
 const direcLight = new THREE.DirectionalLight(0xffffff, 1);
-direcLight.position.set(0, 15, 0);
+direcLight.position.set(19, 15, 0);
 direcLight.target = player
 direcLight.castShadow = true;
 scene.add(direcLight)
