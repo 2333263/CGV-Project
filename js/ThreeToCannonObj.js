@@ -9,7 +9,7 @@ class threeToCannonObj{
     static getCannonMesh (threeOBJ){
         //WARNING JANKY CODE ------------------------------------------------------------------------
         //Convert root to cannon object
-        const result = threeToCannon(threeOBJ, {type: ShapeType.BOX});
+        const result = threeToCannon(threeOBJ, {type: ShapeType.HULL});
         
         const quaternionObj = threeOBJ.quaternion //Set offset and quaternion manually
         const offsetObj = threeOBJ.position
