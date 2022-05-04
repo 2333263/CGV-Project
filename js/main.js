@@ -124,7 +124,7 @@ const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")})
 const light = new THREE.HemisphereLight("white", "white", 0.5);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.receiveShadow=true;
-const cube = new THREE.Mesh(geometry, material);
+
 
 
 
@@ -139,10 +139,6 @@ const groundBody = new CANNON.Body({
 });
 groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
 world.addBody(groundBody) //add floor to world
-
-cube.castShadow=true
-cube.receiveShadow=true
-scene.add(cube.translateZ(-6).translateY(2))
 scene.add(light)
 scene.add(floor.translateZ(-6).translateY(-2))
 camera.position.z = 9;
@@ -190,14 +186,10 @@ playerBody.addEventListener('collide', (event)=>{
 	}
 })
 
-const cubeBody=new CANNON.Body({
-	mass:0,
-	shape: new CANNON.Box(new CANNON.Vec3(1,1,1))
-})
-world.addBody(cubeBody)
+
 const direcLight=new THREE.DirectionalLight(0xffffff, 1);
 direcLight.position.set(0,15,0);
-direcLight.target=cube
+direcLight.target=player
 direcLight.castShadow=true;
 scene.add(direcLight)
 
