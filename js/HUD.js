@@ -57,6 +57,17 @@ graphics.lineWidth=pixelSize
 //graphics.scale(scaleFitNative,scaleFitNative)
 
 this.draw=function(){
+    if(this.currammo==0 || this.currtargets==this.totaltarget){
+
+        graphics.font="60px Arial"
+        var word="";
+        if  (this.currammo==0) {word="level failed"
+        graphics.fillStyle="rgb(255,0,0)"}
+        else {word="level complete"
+        graphics.fillStyle="rgb(0,255,0)"
+        }
+        graphics.fillText(word,-200,0 ) }
+        else{
 graphics.clearRect(0,0,width,height)
 graphics.save();
 drawCrossHair()
@@ -79,7 +90,8 @@ graphics.restore();
 graphics.save();
 graphics.translate(X_LEFT+90,Y_TOP+30)
 drawTarget();
-graphics.restore();
+graphics.restore();}
+
 };
 
 function drawCrossHair(){
