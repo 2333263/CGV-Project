@@ -31,7 +31,7 @@ var X_RIGHT = (width/2)*scaleFitNative;
 var Y_BOTTOM = (height/2)*scaleFitNative;
 var Y_TOP = (-height/2)*scaleFitNative;
 var pixelSize;
-
+var gamestate=0 //0 is playing, -1 fail, 1 win, 2 paused
 
 
 var graphics=this.canvas.getContext("2d")
@@ -62,8 +62,10 @@ this.draw=function(){
         graphics.font="60px Arial"
         var word="";
         if  (this.currammo==0) {word="level failed"
+        gamestate=-1 //failed
         graphics.fillStyle="rgb(255,0,0)"}
         else {word="level complete"
+        gamestate=1 //win
         graphics.fillStyle="rgb(0,255,0)"
         }
         graphics.fillText(word,-200,0 ) }
