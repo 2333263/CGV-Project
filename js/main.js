@@ -14,6 +14,7 @@ const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const HudCamera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
+var dt=0;
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(window.innerWidth-20)/(-2*frustumSize),(window.innerWidth-20)/(2*frustumSize),(window.innerHeight-20)/(2*frustumSize),(window.innerHeight-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
@@ -35,7 +36,7 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -1, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -251,14 +252,15 @@ function HitTarget(name) {
 }
 
 function move() {
-
+	playerBody.linearDamping=0.9
+	playerBody.angularDamping=0.9
 	playerBody.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x))
 
 	playerBody.yawObject.rotation.y = camera.rotation.y;
 
 	var tempVec = new THREE.Vector3(0, 0, 0);
-	var delta = Clock.getDelta() * 1000
-	delta*=0.1
+	
+	var delta=dt*0.1
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
@@ -275,7 +277,9 @@ function move() {
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
-				playerBody.velocity.y = 20
+				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,20*dt,0),new CANNON.Vec3(0,0,0))
+				playerBody.velocity.y =10
+			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
 		}
@@ -302,9 +306,9 @@ function animate() {
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
-
-	move();
-
+	dt = Clock.getDelta() * 1000
+	move(); 
+	world.step(1/60,dt)
 	hud.updateAmmoCount(playerBody.noBullets, 30)
 	hud.draw();
 	hudTexture.needsUpdate = true;
