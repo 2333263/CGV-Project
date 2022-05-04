@@ -305,7 +305,7 @@ floor.quaternion.copy(groundBody.quaternion);
 function animate() {
 	world.step(timestep);
 
-
+	if(player.position.y<-25)init(); // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
@@ -364,7 +364,7 @@ function addTargets(position) { // places targets
 
 }
 function init() { //initialise for a reset of level
-
+removeTargets();
 	addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
 	hud.gamestate = 0;
 	hud.currtargets = 0;
