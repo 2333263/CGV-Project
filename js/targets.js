@@ -17,6 +17,8 @@ class Targets{
         this.cylinder.translateX(tX)
         this.cylinder.translateY(tY)
         this.cylinder.translateZ(tZ)
+        //this.cylinder.castShadow=true;
+        //this.cylinder.receiveShadow=true;
         this.cylinder.rotation.x=Math.PI/2
         this.cylinder.rotation.y=Math.PI/2
         this.isHit=false;
