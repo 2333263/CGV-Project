@@ -43,9 +43,12 @@ const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
+addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
 
-var hud = new HUD(20, 30, 5, 0);
+const totalammo=parseInt(TargetArr.length*1.5)
 
+var hud = new HUD(totalammo, totalammo, TargetArr.length, 0);
+hud.updateTargetNumbers(TargetArr.length, 0)
 var hudTexture = new THREE.Texture(hud.getCanvas())
 
 //hudTexture.repeat.set((window.innerWidth-20)/)
@@ -62,9 +65,6 @@ HudPlane.onBeforeRender = function (renderer) {
 }
 sceneHUD.add(HudPlane)
 
-addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
-console.log(TargetArr.length)
-hud.updateTargetNumbers(TargetArr.length, 0)
 
 
 //Import the level from Blender and apply physics bounding
@@ -159,7 +159,7 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere
 
 //playerBody.pitchObject = new THREE.Object3D()
 //playerBody.pitchObject.add(camera)
-playerBody.noBullets = 20;
+playerBody.noBullets = hud.currammo
 //playerBody.yawObject = new THREE.Object3D()
 //playerBody.yawObject.position.z = 5;
 //playerBody.yawObject.position.y = 2;
@@ -312,7 +312,7 @@ function animate() {
 	dt = Clock.getDelta() * 1000
 	move(); 
 	world.step(1/60,dt)
-	hud.updateAmmoCount(playerBody.noBullets, 30)
+	hud.updateAmmoCount(playerBody.noBullets)
 	hud.draw();
 	hudTexture.needsUpdate = true;
 	renderer.autoClear = false;
@@ -368,8 +368,8 @@ function init() {
 	addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
 	hud.gamestate = 0;
 	hud.currtargets = 0;
-	playerBody.noBullets=20;
-	hud.updateAmmoCount(playerBody.noBullets, 30);
+	playerBody.noBullets=totalammo;
+	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity=new CANNON.Vec3(0,0,0)
 	playerBody.position.copy(initposition)
 	camera.position.copy(playerBody.position)

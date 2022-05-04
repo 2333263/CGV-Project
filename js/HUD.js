@@ -105,13 +105,7 @@ class HUD {
                 graphics.fillRect(-width/2, -height/2, width, height)
                 graphics.font = "60px Arial"
                 var word = "";
-                if (this.currammo == 0) {
-                    
-                    word = "level failed"
-                    this.gamestate = -1 //failed
-                    graphics.fillStyle = "rgb(255,0,0)"
-                }
-                else {
+                if ( this.currtargets == this.totaltarget) {
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsed(this.startTime)
                     }
@@ -119,6 +113,12 @@ class HUD {
                     this.gamestate = 1 //win
                     graphics.fillStyle = "rgb(0,255,0)"
                     graphics.fillText(this.timetaken, -200, -80)
+                  
+                }
+                else {
+                    word = "level failed"
+                    this.gamestate = -1 //failed
+                    graphics.fillStyle = "rgb(255,0,0)"
                 }
                 var instruct="click to restart"
                 graphics.fillText(word, -200, -20)
@@ -262,13 +262,13 @@ class HUD {
             graphics.lineWidth = currwidth
 
         }
-        this.updateAmmoCount = function (currammo, totalammo) {
+        this.updateAmmoCount = function (currammo) {
             graphics.save();
             graphics.setTransform(1, 0, 0, 1, 0, 0)
             graphics.clearRect(0, 0, this.canvas.width, this.canvas.height)
             graphics.restore();
             this.currammo = currammo;
-            this.totalammo = totalammo;
+          //removed updating total ammo 
 
         }
 
