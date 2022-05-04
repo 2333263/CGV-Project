@@ -36,7 +36,7 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -18, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -291,10 +291,11 @@ function move() {
 	}
 
 	playerBody.quaternion.copy(camera.quaternion)
-	tempVec.applyQuaternion(playerBody.quaternion);
+	tempVec.applyQuaternion(camera.quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
 	camera.position.copy(playerBody.position);
+//	camera.quaternion.copy(playerBody.quaternion)
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 
@@ -303,21 +304,18 @@ function move() {
 floor.position.copy(groundBody.position);
 floor.quaternion.copy(groundBody.quaternion);
 function animate() {
-	world.step(timestep);
-
 	if(player.position.y<-25){init();} // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
-	player.quaternion.copy(playerBody.quaternion);
+	player.quaternion.copy(camera.quaternion);
 	requestAnimationFrame(animate);
 	dt = Clock.getDelta()
 	move(); 
-	world.step(1/60,dt)
 	hud.updateAmmoCount(playerBody.noBullets)
 	hud.draw();
 	hudTexture.needsUpdate = true;
+	world.step(timestep,dt);
 	renderer.autoClear = false;
 	renderer.clear();
-
 	renderer.render(scene, camera)
 	renderer.render(sceneHUD, HudCamera)
 	mapTargets();
@@ -329,7 +327,7 @@ function animate() {
 	direcLight.castShadow=true;
 	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
 	
-
+	
 };
 
 animate();
