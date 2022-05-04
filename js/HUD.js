@@ -18,6 +18,9 @@ class HUD {
         this.totaltarget = totaltarget
         this.currtargets = currtargets
         this.gamestate = 0  //0 is playing, -1 fail, 1 win, 2 paused
+        this.startTime=0
+        
+        
 
         //var body=document.getElementsByTagName("body")[0];
         //document.body.appendChild(this.canvas)
@@ -48,8 +51,14 @@ class HUD {
             this.totaltarget = totaltarget;
             this.currtargets = currtargets;
         }
+        this.setStartTime=function(){
+            let d = new Date();
+            let sec=d.getSeconds()+d.getMilliseconds()/1000;
+            let min =d.getMinutes()+sec/60;
+            this.startTime =d.getHours()+min/60;
+        }
 
-
+        this.setStartTime();
         applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         graphics.lineWidth = pixelSize
         //graphics.scale(width/1900,height/935)
@@ -67,6 +76,9 @@ class HUD {
                 bulletCount(this.currammo, this.totalammo)
                 graphics.restore();
                 graphics.save();
+                drawTime(this.startTime);
+                graphics.restore();
+                graphics.save();
                 graphics.translate(X_LEFT + 115, Y_BOTTOM - 18)
                 graphics.scale(0.6, 0.6)
                 drawBullet();
@@ -82,6 +94,7 @@ class HUD {
                 graphics.translate(X_LEFT + 90, Y_TOP + 30)
                 drawTarget();
                 graphics.restore();
+              
             }
 
         };
@@ -118,7 +131,16 @@ class HUD {
             graphics.fillStyle="black"
             filledCircle();
         }
-
+        function drawTime(startTime){
+            let d = new Date();
+            let sec=d.getSeconds()+d.getMilliseconds()/1000;
+            let min =d.getMinutes()+sec/60;
+            let hour =d.getHours()+min/60;
+            graphics.fillStyle = "rgb(25,25,25)"
+            graphics.font = "30px Arial"
+            var word = ""+((hour-startTime)*60*60).toFixed(2)
+            graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
+        }
         function drawLine(x1, y1, x2, y2) {
             graphics.beginPath();
             graphics.moveTo(x1, y1);
