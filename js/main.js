@@ -257,6 +257,7 @@ function move() {
 
 	var tempVec = new THREE.Vector3(0, 0, 0);
 	var delta = Clock.getDelta() * 1000
+	delta*=0.1
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
