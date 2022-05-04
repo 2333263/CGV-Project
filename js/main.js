@@ -305,12 +305,9 @@ function animate() {
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-	cube.rotation.z += 0.01;
+
 	move();
-	cubeBody.position.copy(cube.position)
-	cubeBody.quaternion.copy(cube.quaternion)
+
 	hud.updateAmmoCount(playerBody.noBullets,30)
 	hud.draw();
 	hudTexture.needsUpdate=true;
