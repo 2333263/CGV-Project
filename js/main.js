@@ -208,6 +208,7 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown", (e) => {
+	if(controls.isLocked==true){
 	if (playerBody.noBullets > 0) { //if player has any bullets 
 		playerBody.noBullets--; //decrement bullet count
 
@@ -238,6 +239,7 @@ document.addEventListener("mousedown", (e) => {
 		
 		init();
 	}
+}
 })
 
 const pressedKeys = {};
