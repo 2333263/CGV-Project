@@ -317,7 +317,7 @@ function animate() {
 	hudTexture.needsUpdate = true;
 	renderer.autoClear = false;
 	renderer.clear();
-	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
+
 	renderer.render(scene, camera)
 	renderer.render(sceneHUD, HudCamera)
 	mapTargets();
@@ -327,7 +327,8 @@ function animate() {
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow=true;
-
+	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
+	renderer.render(sceneHUD, HudCamera)
 
 };
 
