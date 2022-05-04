@@ -78,10 +78,13 @@ const models = {
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
+		
 			scene.add(root);
 
 
 			const obj3D1 = root.getObjectByName('Base001')
+			obj3D1.castShadow = true;
+			obj3D1.receiveShadow = true;
 			world.addBody(threeToCannonObj.getCannonMesh(obj3D1));
 
 			const obj3D2 = root.getObjectByName('Base002')
