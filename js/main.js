@@ -18,6 +18,9 @@ var frustumSize = 14;
 const pipcamera =  new THREE.OrthographicCamera(-frustumSize, frustumSize , frustumSize , -frustumSize , 1, 1000  );
 var Clock=new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
+renderer.antialias=true
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.setClearColor(0xADD8E6,1)
 document.body.appendChild(renderer.domElement);
@@ -66,7 +69,7 @@ for(var i=0;i<5;i++){
 	
 	
 }
-var target=new Targets(5,5,2,0);
+var target=new Targets(5,0,15,0);
 TargetArr.push(target)
 scene.add(target.getCylinder())
 
@@ -85,6 +88,7 @@ const models = {
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
 			const root = gltf.scene;
+			root.name="house";
 			const obj3D = root.getObjectByName('Base')
 			scene.add(root);
 			//TODO FIX THIS BROKEN CODE BELOW -----------------------------------------------------------
@@ -118,10 +122,15 @@ const geometry = new THREE.BoxGeometry(1,1,1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
 const floorMat = new THREE.MeshLambertMaterial({map: loader.load("goomba.png")}); //testure on floor to show depth of movement
 
-const light = new THREE.HemisphereLight("white", "white", 0.8);
+const light = new THREE.HemisphereLight("white", "white", 0.5);
 const floor = new THREE.Mesh(floorGeo, floorMat);
-
+floor.receiveShadow=true;
 const cube = new THREE.Mesh(geometry, material);
+
+
+
+
+
 
 const groundBody = new CANNON.Body({
 	shape: new CANNON.Box(new CANNON.Vec3(100,0.1,100)), //have floor be really thin box since plane was having collision issues 
@@ -132,7 +141,8 @@ const groundBody = new CANNON.Body({
 groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
 world.addBody(groundBody) //add floor to world
 
-
+cube.castShadow=true
+cube.receiveShadow=true
 scene.add(cube.translateZ(-6).translateY(2))
 scene.add(light)
 scene.add(floor.translateZ(-6).translateY(-2))
@@ -145,6 +155,8 @@ pipcamera.rotateX(-Math.PI/2)
 
 
 const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
+player.castShadow=true;
+player.receiveShadow=true;
 scene.add(player)
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere 
@@ -184,7 +196,11 @@ const cubeBody=new CANNON.Body({
 	shape: new CANNON.Box(new CANNON.Vec3(1,1,1))
 })
 world.addBody(cubeBody)
-
+const direcLight=new THREE.DirectionalLight(0xffffff, 1);
+direcLight.position.set(0,15,0);
+direcLight.target=cube
+direcLight.castShadow=true;
+scene.add(direcLight)
 
 playerBody.linearDamping = 0.9;
 
