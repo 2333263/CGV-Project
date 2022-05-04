@@ -36,7 +36,7 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -1, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -18, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -222,7 +222,7 @@ document.addEventListener("mousedown", (e) => {
 				}
 			}
 		}
-		renderer.readRenderTargetPixels(scene, camera)
+		//renderer.readRenderTargetPixels(scene, camera)
 		if(playerBody.noBullets==0){
 			removeTargets();
 		}
@@ -262,27 +262,27 @@ function move() {
 	//playerBody.yawObject.rotation.y = camera.rotation.y;
 
 	var tempVec = new THREE.Vector3(0, 0, 0);
-	
-	var delta=dt*0.1
+	var delta=dt*1000
+	delta*=0.1
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
-			tempVec.z = -0.5 * delta
+			tempVec.z = -0.3 * delta
 		}
 		if (pressedKeys['a']) {
-			tempVec.x = -0.5 * delta
+			tempVec.x = -0.3 * delta
 		}
 		if (pressedKeys["d"]) {
-			tempVec.x = 0.5 * delta
+			tempVec.x = 0.3 * delta
 		}
 		if (pressedKeys['s']) {
-			tempVec.z = 0.5 * delta
+			tempVec.z = 0.3 * delta
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
-				playerBody.inertia=new CANNON.Vec3(0,-2,0)
-				playerBody.applyLocalImpulse(new CANNON.Vec3(0,20,0),new CANNON.Vec3(0,0,0))
-				//playerBody.velocity.y +=10
+				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
+				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
+				playerBody.velocity.y =20
 			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
@@ -305,11 +305,11 @@ floor.quaternion.copy(groundBody.quaternion);
 function animate() {
 	world.step(timestep);
 
-	if(player.position.y<-25)init(); // if player out of bounds, reset level
+	if(player.position.y<-25){init();} // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
-	dt = Clock.getDelta() * 1000
+	dt = Clock.getDelta()
 	move(); 
 	world.step(1/60,dt)
 	hud.updateAmmoCount(playerBody.noBullets)
@@ -328,7 +328,7 @@ function animate() {
 	worldTargets();
 	direcLight.castShadow=true;
 	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
-	renderer.render(sceneHUD, HudCamera)
+	
 
 };
 
