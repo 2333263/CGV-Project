@@ -261,16 +261,16 @@ function move() {
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
-			tempVec.z = -0.05 * delta
+			tempVec.z = -0.5 * delta
 		}
 		if (pressedKeys['a']) {
-			tempVec.x = -0.05 * delta
+			tempVec.x = -0.5 * delta
 		}
 		if (pressedKeys["d"]) {
-			tempVec.x = 0.05 * delta
+			tempVec.x = 0.5 * delta
 		}
 		if (pressedKeys['s']) {
-			tempVec.z = 0.05 * delta
+			tempVec.z = 0.5 * delta
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
