@@ -6,24 +6,28 @@ import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
-
-
+var style=window.getComputedStyle(document.body,null)
+//const width=style.getPropertyValue("width").match(/\d+/)[0]
+//const height=style.getPropertyValue("height").match(/\d+/)[0]
+const width=window.innerWidth+20
+const height=window.innerHeight+20
+console.log(width-window.innerWidth)
 var scene = new THREE.Scene();
-const aspectRatio = window.innerWidth / window.innerHeight
+const aspectRatio = width / height
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-const HudCamera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, 0, 30)
+const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt=0;
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
-//(window.innerWidth-20)/(-2*frustumSize),(window.innerWidth-20)/(2*frustumSize),(window.innerHeight-20)/(2*frustumSize),(window.innerHeight-20)/(-2*frustumSize),1,1000 
+//(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.antialias = true
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
+renderer.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
 renderer.setClearColor(0xADD8E6, 1)
 document.body.appendChild(renderer.domElement);
 const initposition=new CANNON.Vec3(0, 5, 4)
@@ -51,12 +55,12 @@ var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the 
 
 var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
 
-//hudTexture.repeat.set((window.innerWidth-20)/)
+//hudTexture.repeat.set((width-20)/)
 hudTexture.needsUpdate = true;
 var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
 hudMat.transparent = true
-console.log(window.innerWidth / hudTexture.image.width, window.innerHeight / hudTexture.image.height)
-var HudGeom = new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0)
+console.log(width / hudTexture.image.width, height / hudTexture.image.height)
+var HudGeom = new THREE.BoxGeometry(width, height, 0)
 var HudPlane = new THREE.Mesh(HudGeom, hudMat)
 HudPlane.material.depthTest = false;
 HudPlane.material.depthWrite = false;
@@ -164,7 +168,7 @@ playerBody.noBullets = hud.currammo
 //playerBody.yawObject.position.z = 5;
 //playerBody.yawObject.position.y = 2;
 //playerBody.yawObject.add(playerBody.pitchObject)
-playerBody.euler = new THREE.Euler()
+//playerBody.euler = new THREE.Euler()
 playerBody.canJump = false;
 
 const contNorm = new CANNON.Vec3()
@@ -192,7 +196,7 @@ playerBody.linearDamping = 0.9;
 
 world.addBody(playerBody); //adds player body to the world
 
-const controls = new PointerLockControls(camera, renderer.domElement); //links controls to the camera
+const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 
 scene.add(controls.getObject());
 
@@ -292,7 +296,7 @@ function move() {
 
 	}
 
-	playerBody.quaternion.copy(camera.quaternion)
+	//playerBody.quaternion.copy(camera.quaternion)
 	tempVec.applyQuaternion(camera.quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
@@ -306,12 +310,15 @@ function move() {
 floor.position.copy(groundBody.position);
 floor.quaternion.copy(groundBody.quaternion);
 function animate() {
+	requestAnimationFrame(animate);
+	//console.log(Math.abs(camera.quaternion.x+camera.quaternion.y+camera.quaternion.z))
+	//console.log(controls.getDirection())
 	if(player.position.y<-25){init();} // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(camera.quaternion);
-	requestAnimationFrame(animate);
 	dt = Clock.getDelta()
 	move(); 
+	camera.position.copy(playerBody.position);
 	hud.updateAmmoCount(playerBody.noBullets)
 	hud.draw();
 	hudTexture.needsUpdate = true;
@@ -322,12 +329,12 @@ function animate() {
 	renderer.render(sceneHUD, HudCamera)
 	mapTargets();
 	renderer.clearDepth();
-	renderer.setViewport(window.innerWidth - 250, 50, 200, 200)
+	renderer.setViewport(width - 250, 50, 200, 200)
 	direcLight.castShadow=false;
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow=true;
-	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
+	renderer.setViewport(0, 0, width - 20, height - 20);
 	
 	
 };

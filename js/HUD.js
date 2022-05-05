@@ -1,8 +1,9 @@
 var dpr = window.devicePixelRatio
 const conversionW = window.innerWidth / 1900
 const conversionH = window.innerHeight / 935
-const width = window.innerWidth
-const height = window.innerHeight
+const width=window.innerWidth+20
+const height=window.innerHeight+20
+
 
 
 console.log(dpr)
@@ -102,7 +103,7 @@ class HUD {
         this.checkgameState=function() {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
                 graphics.fillStyle="rgba(0,0,0,0.5)"
-                graphics.fillRect(-width/2, -height/2, width, height)
+                fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.font = "60px Arial"
                 var word = "";
                 if ( this.currtargets == this.totaltarget) {
