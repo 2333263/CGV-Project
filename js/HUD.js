@@ -159,7 +159,7 @@ class HUD {
             }else{  if(this.Paused==true){ this.startTime+=getTimeElappsed(this.startTime) -this.pausedtime
                // console.log(this.startTime+" newstart")
             }
-                this.Pau sed=false;
+                this.Paused=false;
              
             }
 
