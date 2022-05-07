@@ -6,9 +6,6 @@ import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
-var style=window.getComputedStyle(document.body,null)
-//const width=style.getPropertyValue("width").match(/\d+/)[0]
-//const height=style.getPropertyValue("height").match(/\d+/)[0]
 const width=window.innerWidth+20
 const height=window.innerHeight+20
 console.log(width-window.innerWidth)
@@ -152,6 +149,32 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
 const floorMat = new THREE.MeshLambertMaterial({ map: loader.load("goomba.png") }); //testure on floor to show depth of movement
 
+/*
+const ft = new THREE.TextureLoader().load("daylightbox_Front.bmp");
+const bk = new THREE.TextureLoader().load("daylightbox_Back.bmp");
+const up = new THREE.TextureLoader().load("daylightbox_Top.bmp");
+const dn = new THREE.TextureLoader().load("daylightbox_Bottom.bmp");
+const rt = new THREE.TextureLoader().load("daylightbox_Right.bmp");
+const lf = new THREE.TextureLoader().load("daylightbox_Left.bmp");*/
+
+//let pathStrings = ["miramar_ft.tga","miramar_bk.tga","miramar_up.tga","miramar_dn.tga","miramar_rt.tga","miramar_lf.tga"]
+let pathStrings = ["bluecloud_ft.jpg","bluecloud_bk.jpg","bluecloud_up.jpg","bluecloud_dn.jpg","bluecloud_rt.jpg","bluecloud_lf.jpg",]
+function createMaterialArray(){
+	const skyboxImagepaths = pathStrings;
+	const materialArray = skyboxImagepaths.map(image =>{
+		let texture = new THREE.TextureLoader().load(image);
+		return new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide});
+	});
+	return materialArray;
+} // this function maps over the array of images 
+//returns a Three.js material
+
+const materialArray = createMaterialArray()
+
+const skybxGeo = new THREE.BoxGeometry(1000,1000,1000);
+const skybox   = new THREE.Mesh(skybxGeo,materialArray);
+scene.add(skybox);
+
 const light = new THREE.HemisphereLight("white", "white", 0.5);
 const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.receiveShadow = true;
@@ -285,7 +308,13 @@ const pressedKeys = {};
 
 
 document.addEventListener("keydown", (e) => {
+	if(controls.isLocked){
 	pressedKeys[e.key] = true;
+	}else{
+		if(e.key=="r"){
+			init();
+		}
+	}
 });
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
