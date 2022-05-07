@@ -38,7 +38,7 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -352,7 +352,7 @@ function move() {
 			if (playerBody.canJump == true) {
 				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
 				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
-				playerBody.velocity.y =21
+				playerBody.velocity.y =15
 			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
