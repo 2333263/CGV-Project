@@ -6,7 +6,7 @@ const height=window.innerHeight+20
 
 
 
-console.log(dpr)
+//console.log(dpr)
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
         this.currammo = currammo
@@ -70,7 +70,7 @@ class HUD {
 
         //graphics.scale(scaleFitNative,scaleFitNative)
 
-        this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, width, height)
+        this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             if (!this.checkgameState() && !this.Paused) {
                 
                 graphics.save();
@@ -80,7 +80,7 @@ class HUD {
                 bulletCount(this.currammo, this.totalammo)
                 graphics.restore();
                 graphics.save();
-                drawTime(this.startTime, this.timepaused);
+                drawTime(this.startTime);
                 graphics.restore();
                 graphics.save();
                 graphics.translate(X_LEFT + 115, Y_BOTTOM - 18)
@@ -106,8 +106,12 @@ class HUD {
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.fillStyle = "black"
                 graphics.font = "30px Arial"
-                var word = "paused"
+                var word = "Paused"
+                graphics.fillText(word, 0, -40)
+                word="Press R to restart"
                 graphics.fillText(word, 0, 0)
+                word="Click anywhere to resume"
+                graphics.fillText(word, 0, 40)
             }
 
 
@@ -120,7 +124,7 @@ class HUD {
                 var word = "";
                 if ( this.currtargets == this.totaltarget) {
                     if(this.gamestate==0){
-                        this.timetaken=getTimeElappsed(this.startTime) -(this.timepaused)
+                        this.timetaken=getTimeElappsedSec(this.startTime)
                     }
                     word = "Level complete!"
                     this.gamestate = 1 //win
@@ -143,16 +147,24 @@ class HUD {
         
         this.isPaused = function (paused) {
             if(paused){
-                if(this.paused=false) this.pausedtime=getTimeElappsed(this.startTime)
-                
+            
+                if(this.Paused==false) {
+                    
+                    this.pausedtime =getTimeElappsed(this.startTime)
+                    //console.log(this.pausedtime+" Paused")
+                }
+               
                 this.Paused=true;
-                
-            }else{  if(this.paused=true) this.timepaused+= getTimeElappsed(this.startTime)- this.pausedtime
-                this.Paused=false;
+            
+            }else{  if(this.Paused==true){ this.startTime+=getTimeElappsed(this.startTime) -this.pausedtime
+               // console.log(this.startTime+" newstart")
+            }
+                this.Pau sed=false;
+             
             }
 
 
-        }
+        };
         function drawCrossHair() {
             graphics.save();
             graphics.fillStyle="black"
@@ -164,11 +176,11 @@ class HUD {
             graphics.fillStyle="black"
             filledCircle();
         }
-        function drawTime(startTime, timepaused){
+        function drawTime(startTime){
           
             graphics.fillStyle = "rgb(25,25,25)"
             graphics.font = "30px Arial"
-            var word = ""+ (getTimeElappsed(startTime)-(timepaused))
+            var word = ""+ getTimeElappsedSec(startTime)
         
 
             graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
@@ -178,7 +190,10 @@ class HUD {
             let sec=d.getSeconds()+d.getMilliseconds()/1000;
             let min =d.getMinutes()+sec/60;
             let hour =d.getHours()+min/60;
-            return ((hour-startTime)*60*60).toFixed(2)
+            return (hour-startTime)
+        }
+        function getTimeElappsedSec(startTime){
+            return (getTimeElappsed(startTime)*60*60).toFixed(2)
         }
         function drawLine(x1, y1, x2, y2) {
             graphics.beginPath();

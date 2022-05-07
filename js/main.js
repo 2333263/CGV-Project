@@ -6,9 +6,6 @@ import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
-var style=window.getComputedStyle(document.body,null)
-//const width=style.getPropertyValue("width").match(/\d+/)[0]
-//const height=style.getPropertyValue("height").match(/\d+/)[0]
 const width=window.innerWidth+20
 const height=window.innerHeight+20
 console.log(width-window.innerWidth)
@@ -298,7 +295,13 @@ const pressedKeys = {};
 
 
 document.addEventListener("keydown", (e) => {
+	if(controls.isLocked){
 	pressedKeys[e.key] = true;
+	}else{
+		if(e.key=="r"){
+			init();
+		}
+	}
 });
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
