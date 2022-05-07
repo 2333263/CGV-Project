@@ -298,22 +298,22 @@ function move() {
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
-			tempVec.z = -0.3 * delta
+			tempVec.z = -0.4 * delta
 		}
 		if (pressedKeys['a']) {
-			tempVec.x = -0.3 * delta
+			tempVec.x = -0.4 * delta
 		}
 		if (pressedKeys["d"]) {
-			tempVec.x = 0.3 * delta
+			tempVec.x = 0.4 * delta
 		}
 		if (pressedKeys['s']) {
-			tempVec.z = 0.3 * delta
+			tempVec.z = 0.4 * delta
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
 				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
 				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
-				playerBody.velocity.y =20
+				playerBody.velocity.y =21
 			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
