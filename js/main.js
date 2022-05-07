@@ -95,8 +95,21 @@ const models = {
 					//Add houses to collision detection
 					housesCollision.push(child)
 				}
+				if (name.substring(0, 11) === 'WindowGlass'){
+					//Add subsurface scattering
+					// const newMaterial = new THREE.MeshPhongMaterial( { map: child.material.map } );
+					// child.material = newMaterial;
+					//console.log(child.material)
+				}
 				
-			  });
+			});
+
+			// gltf.parser.getDependencies( 'material' ).then( ( materials ) => {
+
+			// 	console.log( materials );
+			
+			// } );
+
 
 			const root = gltf.scene;
 			
