@@ -6,10 +6,22 @@ class threeToCannonObj{
     constructor(){
         
     }
-    static getCannonMesh (threeOBJ){
-        //WARNING JANKY CODE ------------------------------------------------------------------------
-        //Convert root to cannon object
-        const result = threeToCannon(threeOBJ, {type: ShapeType.HULL});
+    static getCannonMesh (threeOBJ, meshType = 'HULL'){
+        //Optional param of item type
+        var result = null;
+
+        switch(meshType){
+            case 'CYLINDER':
+                result = threeToCannon(threeOBJ, {type: ShapeType.CYLINDER});
+                break;
+            case 'HULL':
+                result = threeToCannon(threeOBJ, {type: ShapeType.HULL});
+                break;
+            default:
+                //If meshtype invalid, make a convext hull
+                result = threeToCannon(threeOBJ, {type: ShapeType.HULL});
+                break;
+        }
         
         const quaternionObj = threeOBJ.quaternion //Set offset and quaternion manually
         const offsetObj = threeOBJ.position
@@ -17,7 +29,6 @@ class threeToCannonObj{
         const objCollisionBody=new CANNON.Body()
         objCollisionBody.addShape(result.shape, offsetObj, quaternionObj)
         return objCollisionBody
-        //-------------------------------------------------------------------------------------------
     }
 }
 

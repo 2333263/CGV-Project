@@ -52,7 +52,7 @@ var hudTexture = new THREE.Texture(hud.getCanvas())
 hudTexture.needsUpdate = true;
 var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
 hudMat.transparent = true
-console.log(window.innerWidth / hudTexture.image.width, window.innerHeight / hudTexture.image.height)
+//console.log(window.innerWidth / hudTexture.image.width, window.innerHeight / hudTexture.image.height)
 var HudGeom = new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0)
 var HudPlane = new THREE.Mesh(HudGeom, hudMat)
 HudPlane.material.depthTest = false;
@@ -63,7 +63,7 @@ HudPlane.onBeforeRender = function (renderer) {
 sceneHUD.add(HudPlane)
 
 addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
-console.log(TargetArr.length)
+//console.log(TargetArr.length)
 hud.updateTargetNumbers(TargetArr.length, 0)
 
 
@@ -78,18 +78,36 @@ const models = {
 	const gltfLoader = new GLTFLoader(manager);
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
+			var housesCollision = []
+			gltf.scene.traverse(function (child) {
+				//Traverse through all objects to get the houses
+				
+				var name = child.name
+				//Enable shadows for all objects
+				child.castShadow = true;
+				child.receiveShadow = true;
+				if (name.substring(0, 4) === 'Base'){
+					//Add houses to collision detection
+					housesCollision.push(child)
+				}
+				
+			  });
+
 			const root = gltf.scene;
-		
+			
+			//Visually render scene
 			scene.add(root);
 
+			for(const obj of housesCollision){
+				//obj.castShadow = true;
+				//obj.receiveShadow = true;
+				scene.add(obj)
+				world.addBody(threeToCannonObj.getCannonMesh(obj));
+			}
+			
+			
 
-			const obj3D1 = root.getObjectByName('Base001')
-			obj3D1.castShadow = true;
-			obj3D1.receiveShadow = true;
-			world.addBody(threeToCannonObj.getCannonMesh(obj3D1));
-
-			const obj3D2 = root.getObjectByName('Base002')
-			world.addBody(threeToCannonObj.getCannonMesh(obj3D2));
+			
 
 			// const obj3D2 = root.getObjectByName('Base0wds02')
 			// world.addBody(THREETOCANNON.getCannonMesh(obj3D2));
@@ -142,7 +160,7 @@ pipcamera.position.set(0, 30, 0);
 pipcamera.rotateX(-Math.PI / 2)
 
 const initcam=camera.quaternion
-console.log(initcam)
+//console.log(initcam)
 
 const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
 player.castShadow = true;
@@ -183,9 +201,16 @@ playerBody.addEventListener('collide', (event) => {
 
 
 const direcLight = new THREE.DirectionalLight(0xffffff, 1);
-direcLight.position.set(19, 15, 0);
+direcLight.position.set(19, 30, 0);
 direcLight.target = player
 direcLight.castShadow = true;
+// direcLight.shadow.camera.top = 170;
+// direcLight.shadow.camera.bottom = -170;
+// direcLight.shadow.camera.left = -150;
+// direcLight.shadow.camera.right = 150;
+// direcLight.shadow.camera.near = 0;
+// direcLight.shadow.camera.far = 150;
+// direcLight.shadow.bias = 0.005;
 scene.add(direcLight)
 
 playerBody.linearDamping = 0.9;
