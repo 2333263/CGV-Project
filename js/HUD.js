@@ -21,7 +21,10 @@ class HUD {
         this.gamestate = 0  //0 is playing, -1 fail, 1 win, 2 paused
         this.startTime=0
         this.timetaken=99999
-        
+        this.pausedtime=0;
+        this.timepaused=0;
+ 
+        this.Paused=false;
 
         //var body=document.getElementsByTagName("body")[0];
         //document.body.appendChild(this.canvas)
@@ -67,8 +70,8 @@ class HUD {
 
         //graphics.scale(scaleFitNative,scaleFitNative)
 
-        this.draw = function () {graphics.clearRect(0, 0, width, height)
-            if (!this.checkgameState()) {
+        this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, width, height)
+            if (!this.checkgameState() && !this.Paused) {
                 
                 graphics.save();
                 drawCrossHair()
@@ -77,7 +80,7 @@ class HUD {
                 bulletCount(this.currammo, this.totalammo)
                 graphics.restore();
                 graphics.save();
-                drawTime(this.startTime);
+                drawTime(this.startTime, this.timepaused);
                 graphics.restore();
                 graphics.save();
                 graphics.translate(X_LEFT + 115, Y_BOTTOM - 18)
@@ -98,6 +101,15 @@ class HUD {
 
               
             }
+            else if(this.Paused ){
+                graphics.fillStyle="rgba(0,0,0,0.5)"
+                fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
+                graphics.fillStyle = "black"
+                graphics.font = "30px Arial"
+                var word = "paused"
+                graphics.fillText(word, 0, 0)
+            }
+
 
         };
         this.checkgameState=function() {
@@ -108,26 +120,40 @@ class HUD {
                 var word = "";
                 if ( this.currtargets == this.totaltarget) {
                     if(this.gamestate==0){
-                        this.timetaken=getTimeElappsed(this.startTime)
+                        this.timetaken=getTimeElappsed(this.startTime) -(this.timepaused)
                     }
-                    word = "level complete"
+                    word = "Level complete!"
                     this.gamestate = 1 //win
                     graphics.fillStyle = "rgb(0,255,0)"
                     graphics.fillText(this.timetaken, -200, -80)
                   
                 }
                 else {
-                    word = "level failed"
+                    word = "Level failed. You ran out of ammunition."
                     this.gamestate = -1 //failed
                     graphics.fillStyle = "rgb(255,0,0)"
                 }
-                var instruct="click to restart"
-                graphics.fillText(word, -200, -20)
+                var instruct="Click anywhere to restart."
+                graphics.fillText(word, -300, -20)
                 graphics.fillText(instruct, -200, 100)
                 return true
             }
             else { return false }
         };
+        
+        this.isPaused = function (paused) {
+            if(paused){
+                if(this.paused=false) this.pausedtime=getTimeElappsed(this.startTime)
+                
+                this.Paused=true;
+                
+            }else{  if(this.paused=true) this.timepaused+= getTimeElappsed(this.startTime)- this.pausedtime
+                this.Paused=false;
+                console.log(this.timepaused)
+            }
+
+
+        }
         function drawCrossHair() {
             graphics.save();
             graphics.fillStyle="black"
@@ -139,11 +165,13 @@ class HUD {
             graphics.fillStyle="black"
             filledCircle();
         }
-        function drawTime(startTime){
-           
+        function drawTime(startTime, timepaused){
+          
             graphics.fillStyle = "rgb(25,25,25)"
             graphics.font = "30px Arial"
-            var word = ""+ getTimeElappsed(startTime)
+            var word = ""+ (getTimeElappsed(startTime)-(timepaused))
+        
+
             graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
         }
         function getTimeElappsed(startTime){

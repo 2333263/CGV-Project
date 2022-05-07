@@ -18,6 +18,7 @@ const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
+
 var dt=0;
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
@@ -225,9 +226,6 @@ const controls = new PointerLockControls(camera, document.body); //links control
 
 scene.add(controls.getObject());
 
-document.addEventListener('click', () => {
-	controls.lock();
-})
 
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
@@ -243,15 +241,12 @@ document.addEventListener("mousedown", (e) => {
 
 		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // hit thing in line of sight of crosshair
 		const intersects = raycaster.intersectObjects(scene.children);
-		outer: for (let i = 0; i < intersects.length; i++) {
 			for (let j = 0; j < TargetArr.length; j++) {
-				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
-					HitTarget(intersects[i].object.name)
+				if (intersects[0].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
+					HitTarget(intersects[0].object.name)
 					hud.increaseTarget();
-					break outer;
 				}
 			}
-		}
 		//renderer.readRenderTargetPixels(scene, camera)
 		if(playerBody.noBullets==0){
 			removeTargets();
@@ -268,6 +263,8 @@ document.addEventListener("mousedown", (e) => {
 		
 		init();
 	}
+}else{
+	controls.lock();
 }
 })
 
@@ -334,10 +331,15 @@ function move() {
 
 floor.position.copy(groundBody.position);
 floor.quaternion.copy(groundBody.quaternion);
+
+
+
+
+
+
 function animate() {
 	requestAnimationFrame(animate);
-	//console.log(Math.abs(camera.quaternion.x+camera.quaternion.y+camera.quaternion.z))
-	//console.log(controls.getDirection())
+	if (controls.isLocked){ 	hud.isPaused(false);
 	if(player.position.y<-25){init();} // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
 	player.quaternion.copy(camera.quaternion);
@@ -348,10 +350,24 @@ function animate() {
 	hud.draw();
 	hudTexture.needsUpdate = true;
 	world.step(timestep,dt);
+	
+	}
+	else{
+	hud.isPaused(true);
+	hud.draw();
+	hudTexture.needsUpdate = true;
+	}
+	renderWorld()
+};
+
+animate();
+
+
+function renderWorld(){
 	renderer.autoClear = false;
 	renderer.clear();
 	renderer.render(scene, camera)
-	renderer.render(sceneHUD, HudCamera)
+	
 	mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
@@ -360,11 +376,9 @@ function animate() {
 	worldTargets();
 	direcLight.castShadow=true;
 	renderer.setViewport(0, 0, width - 20, height - 20);
-	
-	
-};
+	renderer.render(sceneHUD, HudCamera)
+}
 
-animate();
 
 
 function mapTargets() { // rotates targets for appearence on the map camera
