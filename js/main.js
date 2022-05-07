@@ -39,7 +39,7 @@ const TargetArr = [];
 const mapTargetArr = [];
 const TargetPos=[[20, 3, 20], [10, 6, 15], [20, 10, 3]]
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
@@ -83,7 +83,8 @@ const models = {
 	const gltfLoader = new GLTFLoader(manager);
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
-			var housesCollision = []
+			var housesCollision = [];
+			var barrelCollision = [];
 			gltf.scene.traverse(function (child) {
 				//Traverse through all objects to get the houses
 				//
@@ -95,12 +96,17 @@ const models = {
 					//Add houses to collision detection
 					housesCollision.push(child)
 				}
+				if (name.substring(0, 10) === 'BarrelBody'){
+					//Add barrels to collision detection
+					barrelCollision.push(child)
+				}
 				if (name.substring(0, 11) === 'WindowGlass'){
 					//Add subsurface scattering
 					// const newMaterial = new THREE.MeshPhongMaterial( { map: child.material.map } );
 					// child.material = newMaterial;
 					//console.log(child.material)
 				}
+				
 				
 			});
 
@@ -119,8 +125,11 @@ const models = {
 			for(const obj of housesCollision){
 				//obj.castShadow = true;
 				//obj.receiveShadow = true;
-				scene.add(obj)
+				//scene.add(obj)
 				world.addBody(threeToCannonObj.getCannonMesh(obj));
+			}
+			for(const obj of barrelCollision){
+				world.addBody(threeToCannonObj.getCannonMesh(obj, 'CYLINDER'));
 			}
 			
 			
@@ -356,7 +365,7 @@ function move() {
 			if (playerBody.canJump == true) {
 				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
 				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
-				playerBody.velocity.y =21
+				playerBody.velocity.y =15
 			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
