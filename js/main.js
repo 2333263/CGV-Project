@@ -83,7 +83,7 @@ const models = {
 			var housesCollision = []
 			gltf.scene.traverse(function (child) {
 				//Traverse through all objects to get the houses
-				
+				//
 				var name = child.name
 				//Enable shadows for all objects
 				child.castShadow = true;
