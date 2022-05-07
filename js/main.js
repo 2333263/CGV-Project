@@ -6,6 +6,7 @@ import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
+import { leaderBoard } from './LeaderBoard.js';
 const width=window.innerWidth+20
 const height=window.innerHeight+20
 console.log(width-window.innerWidth)
@@ -15,7 +16,6 @@ const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
-
 var dt=0;
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
@@ -37,6 +37,7 @@ const material = new THREE.MeshStandardMaterial({
 });
 const TargetArr = [];
 const mapTargetArr = [];
+const TargetPos=[[20, 3, 20], [10, 6, 15], [20, 10, 3]]
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
 });
@@ -45,7 +46,7 @@ const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
-addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]); //adds targets to the target array and to the scene
+addTargets(TargetPos); //adds targets to the target array and to the scene
 
 const totalammo=parseInt(TargetArr.length*1.5) //make total amo proportional to no targets 
 
@@ -57,18 +58,20 @@ var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object 
 hudTexture.needsUpdate = true;
 var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
 hudMat.transparent = true
-console.log(width / hudTexture.image.width, height / hudTexture.image.height)
 var HudGeom = new THREE.BoxGeometry(width, height, 0)
 var HudPlane = new THREE.Mesh(HudGeom, hudMat)
 HudPlane.material.depthTest = false;
 HudPlane.material.depthWrite = false;
+HudPlane.castShadow=false
 HudPlane.onBeforeRender = function (renderer) {
 	renderer.clearDepth();
 }
 sceneHUD.add(HudPlane)
 
-
-
+var board=new leaderBoard();
+console.log(board.getBoard())
+board.addItem("f",-99)
+console.log(board.getBoard())
 //Import the level from Blender and apply physics bounding
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
@@ -290,13 +293,14 @@ document.addEventListener("mousedown", (e) => {
 	}
 	if (hud.gamestate == -1 ) // game fail
 	{
+		
 	init();
 		
 
 	}
 	else if (hud.gamestate==1){ //game win (only one level so just resets)
 		removeTargets();
-		
+
 		init();
 	}
 }else{
@@ -453,7 +457,7 @@ function addTargets(position) { // places targets
 }
 function init() { //initialise for a reset of level
 removeTargets();
-	addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
+	addTargets(TargetPos);
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets=totalammo;

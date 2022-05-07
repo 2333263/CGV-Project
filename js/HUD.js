@@ -69,6 +69,31 @@ class HUD {
         //graphics.translate(width/2,height/2)
 
         //graphics.scale(scaleFitNative,scaleFitNative)
+        this.addInput=function(){
+             var input=document.createElement("input")
+            input.type = 'text';
+            input.style.position = 'fixed';
+            input.style.left = (0) + 'px';
+            input.style.top = (0) + 'px';
+            input.onkeydown = handleEnter;
+            input.className="input"
+            document.body.appendChild(input).focus;
+
+            input.focus();
+
+            //hasInput = true;        
+        }
+
+        function handleEnter(e) {
+            var keyCode = e.keyCode;
+            if (keyCode === 13) {
+                console.log(document.body.getElementsByClassName("input"))
+                //drawText(this.value, parseInt(this.style.left, 10), parseInt(this.style.top, 10));
+                document.body.removeChild(document.body.lastElementChild)
+                console.log("removed")
+               // hasInput = false;
+            }
+        }
 
         this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             if (!this.checkgameState() && !this.Paused) {
@@ -122,12 +147,16 @@ class HUD {
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.font = "60px Arial"
                 var word = "";
-                if ( this.currtargets == this.totaltarget) {
+                if ( this.currtargets == this.totaltarget) { 
+                    
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime)
+                      
+                        this.addInput()
                     }
-                    word = "Level complete!"
+                    word = "Level complete! Click on the text to enter name"
                     this.gamestate = 1 //win
+                    
                     graphics.fillStyle = "rgb(0,255,0)"
                     graphics.fillText(this.timetaken, -200, -80)
                   
