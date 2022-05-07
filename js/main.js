@@ -6,24 +6,28 @@ import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 import {threeToCannonObj} from '/js/ThreeToCannonObj.js'
-
-
+var style=window.getComputedStyle(document.body,null)
+//const width=style.getPropertyValue("width").match(/\d+/)[0]
+//const height=style.getPropertyValue("height").match(/\d+/)[0]
+const width=window.innerWidth+20
+const height=window.innerHeight+20
+console.log(width-window.innerWidth)
 var scene = new THREE.Scene();
-const aspectRatio = window.innerWidth / window.innerHeight
+const aspectRatio = width / height
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-const HudCamera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, 0, 30)
+const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt=0;
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
-//(window.innerWidth-20)/(-2*frustumSize),(window.innerWidth-20)/(2*frustumSize),(window.innerHeight-20)/(2*frustumSize),(window.innerHeight-20)/(-2*frustumSize),1,1000 
+//(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.antialias = true
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
+renderer.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
 renderer.setClearColor(0xADD8E6, 1)
 document.body.appendChild(renderer.domElement);
 const initposition=new CANNON.Vec3(0, 5, 4)
@@ -36,24 +40,27 @@ const material = new THREE.MeshStandardMaterial({
 const TargetArr = [];
 const mapTargetArr = [];
 const world = new CANNON.World({
-	gravity: new CANNON.Vec3(0, -1, 0) //Middle value is gravity in the y direction 
+	gravity: new CANNON.Vec3(0, -20, 0) //Middle value is gravity in the y direction 
 });
 
 const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
+addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]); //adds targets to the target array and to the scene
 
-var hud = new HUD(20, 30, 5, 0);
+const totalammo=parseInt(TargetArr.length*1.5) //make total amo proportional to no targets 
 
-var hudTexture = new THREE.Texture(hud.getCanvas())
+var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the hud
 
-//hudTexture.repeat.set((window.innerWidth-20)/)
+var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
+
+//hudTexture.repeat.set((width-20)/)
 hudTexture.needsUpdate = true;
 var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
 hudMat.transparent = true
-//console.log(window.innerWidth / hudTexture.image.width, window.innerHeight / hudTexture.image.height)
-var HudGeom = new THREE.BoxGeometry(window.innerWidth, window.innerHeight, 0)
+console.log(width / hudTexture.image.width, height / hudTexture.image.height)
+var HudGeom = new THREE.BoxGeometry(width, height, 0)
 var HudPlane = new THREE.Mesh(HudGeom, hudMat)
 HudPlane.material.depthTest = false;
 HudPlane.material.depthWrite = false;
@@ -62,9 +69,6 @@ HudPlane.onBeforeRender = function (renderer) {
 }
 sceneHUD.add(HudPlane)
 
-addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
-//console.log(TargetArr.length)
-hud.updateTargetNumbers(TargetArr.length, 0)
 
 
 //Import the level from Blender and apply physics bounding
@@ -154,20 +158,20 @@ groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5);
 world.addBody(groundBody) //add floor to world
 scene.add(light)
 scene.add(floor.translateZ(-6).translateY(-2))
-camera.position.z = 9;
+camera.position.z = 9; //initialise camera position
 camera.position.y = 9;
-pipcamera.position.set(0, 30, 0);
-pipcamera.rotateX(-Math.PI / 2)
+pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
+pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 
-const initcam=camera.quaternion
-//console.log(initcam)
+const initcam=camera.quaternion // save camera rotation to be used in init function
+
 
 const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
 player.castShadow = true;
 player.receiveShadow = true;
 scene.add(player)
 const playerShape = new CANNON.Sphere(1.5);
-const playerBody = new CANNON.Body({ //player hitbox represented by sphere 
+const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
 	shape: playerShape,
 	position: initposition,
@@ -177,12 +181,12 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere
 
 //playerBody.pitchObject = new THREE.Object3D()
 //playerBody.pitchObject.add(camera)
-playerBody.noBullets = 20;
+playerBody.noBullets = hud.currammo
 //playerBody.yawObject = new THREE.Object3D()
 //playerBody.yawObject.position.z = 5;
 //playerBody.yawObject.position.y = 2;
 //playerBody.yawObject.add(playerBody.pitchObject)
-playerBody.euler = new THREE.Euler()
+//playerBody.euler = new THREE.Euler()
 playerBody.canJump = false;
 
 const contNorm = new CANNON.Vec3()
@@ -215,9 +219,9 @@ scene.add(direcLight)
 
 playerBody.linearDamping = 0.9;
 
-world.addBody(playerBody);
+world.addBody(playerBody); //adds player body to the world
 
-const controls = new PointerLockControls(camera, renderer.domElement);
+const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 
 scene.add(controls.getObject());
 
@@ -233,21 +237,22 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown", (e) => {
-	if (playerBody.noBullets > 0) {
-		playerBody.noBullets--;
+	if(controls.isLocked==true){
+	if (playerBody.noBullets > 0) { //if player has any bullets 
+		playerBody.noBullets--; //decrement bullet count
 
-		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // hit thing in line of sight of crosshair
 		const intersects = raycaster.intersectObjects(scene.children);
 		outer: for (let i = 0; i < intersects.length; i++) {
 			for (let j = 0; j < TargetArr.length; j++) {
-				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) {
+				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
 					HitTarget(intersects[i].object.name)
 					hud.increaseTarget();
 					break outer;
 				}
 			}
 		}
-		renderer.readRenderTargetPixels(scene, camera)
+		//renderer.readRenderTargetPixels(scene, camera)
 		if(playerBody.noBullets==0){
 			removeTargets();
 		}
@@ -263,6 +268,7 @@ document.addEventListener("mousedown", (e) => {
 		
 		init();
 	}
+}
 })
 
 const pressedKeys = {};
@@ -287,27 +293,27 @@ function move() {
 	//playerBody.yawObject.rotation.y = camera.rotation.y;
 
 	var tempVec = new THREE.Vector3(0, 0, 0);
-	
-	var delta=dt*0.1
+	var delta=dt*1000
+	delta*=0.1
 	if (controls.isLocked) {
 
 		if (pressedKeys['w']) {
-			tempVec.z = -0.5 * delta
+			tempVec.z = -0.3 * delta
 		}
 		if (pressedKeys['a']) {
-			tempVec.x = -0.5 * delta
+			tempVec.x = -0.3 * delta
 		}
 		if (pressedKeys["d"]) {
-			tempVec.x = 0.5 * delta
+			tempVec.x = 0.3 * delta
 		}
 		if (pressedKeys['s']) {
-			tempVec.z = 0.5 * delta
+			tempVec.z = 0.3 * delta
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
-				playerBody.inertia=new CANNON.Vec3(0,-2,0)
-				playerBody.applyLocalImpulse(new CANNON.Vec3(0,20,0),new CANNON.Vec3(0,0,0))
-				//playerBody.velocity.y +=10
+				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
+				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
+				playerBody.velocity.y =20
 			//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
@@ -315,11 +321,12 @@ function move() {
 
 	}
 
-	playerBody.quaternion.copy(camera.quaternion)
-	tempVec.applyQuaternion(playerBody.quaternion);
+	//playerBody.quaternion.copy(camera.quaternion)
+	tempVec.applyQuaternion(camera.quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
 	camera.position.copy(playerBody.position);
+//	camera.quaternion.copy(playerBody.quaternion)
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 
@@ -328,38 +335,39 @@ function move() {
 floor.position.copy(groundBody.position);
 floor.quaternion.copy(groundBody.quaternion);
 function animate() {
-	world.step(timestep);
-
-
-	player.position.copy(playerBody.position);
-	player.quaternion.copy(playerBody.quaternion);
 	requestAnimationFrame(animate);
-	dt = Clock.getDelta() * 1000
+	//console.log(Math.abs(camera.quaternion.x+camera.quaternion.y+camera.quaternion.z))
+	//console.log(controls.getDirection())
+	if(player.position.y<-25){init();} // if player out of bounds, reset level
+	player.position.copy(playerBody.position);
+	player.quaternion.copy(camera.quaternion);
+	dt = Clock.getDelta()
 	move(); 
-	world.step(1/60,dt)
-	hud.updateAmmoCount(playerBody.noBullets, 30)
+	camera.position.copy(playerBody.position);
+	hud.updateAmmoCount(playerBody.noBullets)
 	hud.draw();
 	hudTexture.needsUpdate = true;
+	world.step(timestep,dt);
 	renderer.autoClear = false;
 	renderer.clear();
-	renderer.setViewport(0, 0, window.innerWidth - 20, window.innerHeight - 20);
 	renderer.render(scene, camera)
 	renderer.render(sceneHUD, HudCamera)
 	mapTargets();
 	renderer.clearDepth();
-	renderer.setViewport(window.innerWidth - 250, 50, 200, 200)
+	renderer.setViewport(width - 250, 50, 200, 200)
 	direcLight.castShadow=false;
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow=true;
-
-
+	renderer.setViewport(0, 0, width - 20, height - 20);
+	
+	
 };
 
 animate();
 
 
-function mapTargets() {
+function mapTargets() { // rotates targets for appearence on the map camera
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
@@ -369,14 +377,14 @@ function mapTargets() {
 
 
 }
-function worldTargets() {
+function worldTargets() { //remove the map targets from the scene
 	while (mapTargetArr.length != 0) {
 		scene.remove(mapTargetArr.pop())
 	}
 }
 
 
-function addTargets(position) {
+function addTargets(position) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
 		var target = new Targets(i, position[i][0], position[i][1], position[i][2]);
@@ -387,13 +395,13 @@ function addTargets(position) {
 	}
 
 }
-function init() {
-
+function init() { //initialise for a reset of level
+removeTargets();
 	addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]);
 	hud.gamestate = 0;
 	hud.currtargets = 0;
-	playerBody.noBullets=20;
-	hud.updateAmmoCount(playerBody.noBullets, 30);
+	playerBody.noBullets=totalammo;
+	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity=new CANNON.Vec3(0,0,0)
 	playerBody.position.copy(initposition)
 	camera.position.copy(playerBody.position)
@@ -402,7 +410,7 @@ function init() {
 	hud.setStartTime()
 	
 }
-function removeTargets() {
+function removeTargets() { //remove all targets 
 	while (TargetArr.length != 0) {
 		scene.remove(TargetArr.pop().getCylinder())
 	}

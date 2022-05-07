@@ -1,8 +1,9 @@
 var dpr = window.devicePixelRatio
 const conversionW = window.innerWidth / 1900
 const conversionH = window.innerHeight / 935
-const width = window.innerWidth
-const height = window.innerHeight
+const width=window.innerWidth+20
+const height=window.innerHeight+20
+
 
 
 console.log(dpr)
@@ -19,7 +20,7 @@ class HUD {
         this.currtargets = currtargets
         this.gamestate = 0  //0 is playing, -1 fail, 1 win, 2 paused
         this.startTime=0
-        
+        this.timetaken=99999
         
 
         //var body=document.getElementsByTagName("body")[0];
@@ -66,9 +67,9 @@ class HUD {
 
         //graphics.scale(scaleFitNative,scaleFitNative)
 
-        this.draw = function () {
+        this.draw = function () {graphics.clearRect(0, 0, width, height)
             if (!this.checkgameState()) {
-                graphics.clearRect(0, 0, width, height)
+                
                 graphics.save();
                 drawCrossHair()
                 graphics.restore();
@@ -94,24 +95,31 @@ class HUD {
                 graphics.translate(X_LEFT + 90, Y_TOP + 30)
                 drawTarget();
                 graphics.restore();
+
               
             }
 
         };
         this.checkgameState=function() {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
-
+                graphics.fillStyle="rgba(0,0,0,0.5)"
+                fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.font = "60px Arial"
                 var word = "";
-                if (this.currammo == 0) {
-                    word = "level failed"
-                    this.gamestate = -1 //failed
-                    graphics.fillStyle = "rgb(255,0,0)"
-                }
-                else {
+                if ( this.currtargets == this.totaltarget) {
+                    if(this.gamestate==0){
+                        this.timetaken=getTimeElappsed(this.startTime)
+                    }
                     word = "level complete"
                     this.gamestate = 1 //win
                     graphics.fillStyle = "rgb(0,255,0)"
+                    graphics.fillText(this.timetaken, -200, -80)
+                  
+                }
+                else {
+                    word = "level failed"
+                    this.gamestate = -1 //failed
+                    graphics.fillStyle = "rgb(255,0,0)"
                 }
                 var instruct="click to restart"
                 graphics.fillText(word, -200, -20)
@@ -132,14 +140,18 @@ class HUD {
             filledCircle();
         }
         function drawTime(startTime){
+           
+            graphics.fillStyle = "rgb(25,25,25)"
+            graphics.font = "30px Arial"
+            var word = ""+ getTimeElappsed(startTime)
+            graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
+        }
+        function getTimeElappsed(startTime){
             let d = new Date();
             let sec=d.getSeconds()+d.getMilliseconds()/1000;
             let min =d.getMinutes()+sec/60;
             let hour =d.getHours()+min/60;
-            graphics.fillStyle = "rgb(25,25,25)"
-            graphics.font = "30px Arial"
-            var word = ""+((hour-startTime)*60*60).toFixed(2)
-            graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
+            return ((hour-startTime)*60*60).toFixed(2)
         }
         function drawLine(x1, y1, x2, y2) {
             graphics.beginPath();
@@ -251,13 +263,13 @@ class HUD {
             graphics.lineWidth = currwidth
 
         }
-        this.updateAmmoCount = function (currammo, totalammo) {
+        this.updateAmmoCount = function (currammo) {
             graphics.save();
             graphics.setTransform(1, 0, 0, 1, 0, 0)
             graphics.clearRect(0, 0, this.canvas.width, this.canvas.height)
             graphics.restore();
             this.currammo = currammo;
-            this.totalammo = totalammo;
+          //removed updating total ammo 
 
         }
 

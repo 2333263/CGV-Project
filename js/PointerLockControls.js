@@ -39,12 +39,12 @@ class PointerLockControls extends EventDispatcher {
 		const scope = this;
 
 		function onMouseMove( event ) {
-
+			//console.log(event)
 			if ( scope.isLocked === false ) return;
-
+			
 			const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-
+			
 			_euler.setFromQuaternion( camera.quaternion );
 
 			_euler.y -= movementX * 0.002 * scope.pointerSpeed;
