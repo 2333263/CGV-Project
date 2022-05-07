@@ -80,7 +80,8 @@ const models = {
 	const gltfLoader = new GLTFLoader(manager);
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
-			var housesCollision = []
+			var housesCollision = [];
+			var barrelCollision = [];
 			gltf.scene.traverse(function (child) {
 				//Traverse through all objects to get the houses
 				//
@@ -92,12 +93,17 @@ const models = {
 					//Add houses to collision detection
 					housesCollision.push(child)
 				}
+				if (name.substring(0, 10) === 'BarrelBody'){
+					//Add barrels to collision detection
+					barrelCollision.push(child)
+				}
 				if (name.substring(0, 11) === 'WindowGlass'){
 					//Add subsurface scattering
 					// const newMaterial = new THREE.MeshPhongMaterial( { map: child.material.map } );
 					// child.material = newMaterial;
 					//console.log(child.material)
 				}
+				
 				
 			});
 
@@ -116,8 +122,11 @@ const models = {
 			for(const obj of housesCollision){
 				//obj.castShadow = true;
 				//obj.receiveShadow = true;
-				scene.add(obj)
+				//scene.add(obj)
 				world.addBody(threeToCannonObj.getCannonMesh(obj));
+			}
+			for(const obj of barrelCollision){
+				world.addBody(threeToCannonObj.getCannonMesh(obj, 'CYLINDER'));
 			}
 			
 			
