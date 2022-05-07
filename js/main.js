@@ -45,7 +45,7 @@ const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
-addTargets([[8, 3, 5], [10, 6, 2], [3, 3, 3]]); //adds targets to the target array and to the scene
+addTargets([[8, 3, 5], [10, 6, 22], [3, 3, 3]]); //adds targets to the target array and to the scene
 
 const totalammo=parseInt(TargetArr.length*1.5) //make total amo proportional to no targets 
 
