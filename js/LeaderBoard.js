@@ -1,4 +1,4 @@
-import { writeFile } from 'fs';
+import { writeFile } from '/fs';
   
 // Data which will write in a file.
 let data = "Learning how to write in a file."

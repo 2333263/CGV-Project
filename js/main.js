@@ -269,7 +269,13 @@ const pressedKeys = {};
 
 
 document.addEventListener("keydown", (e) => {
+	if(controls.isLocked){
 	pressedKeys[e.key] = true;
+	}else{
+		if(e.key=="r"){
+			init();
+		}
+	}
 });
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;

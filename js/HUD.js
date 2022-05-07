@@ -106,8 +106,12 @@ class HUD {
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.fillStyle = "black"
                 graphics.font = "30px Arial"
-                var word = "paused"
+                var word = "Paused"
+                graphics.fillText(word, 0, -40)
+                word="Press R to restart"
                 graphics.fillText(word, 0, 0)
+                word="Click anywhere to resume"
+                graphics.fillText(word, 0, 40)
             }
 
 
