@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 //{ BloomEffect, EffectComposer, EffectPass, RenderPass }
 import * as POSTPROCESSING from "postprocessing";
+import Stats  from "stats";
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import { HUD } from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
@@ -396,10 +397,15 @@ floor.quaternion.copy(groundBody.quaternion);
 
 
 
-
+//----------------------------------------------------------------
+//Stats for fps
+var stats = new Stats();
+stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom)
+//----------------------------------------------------------------
 
 function animate() {
-	requestAnimationFrame(animate);
+	stats.begin() //For monitoring
 	if (controls.isLocked) {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
@@ -421,6 +427,8 @@ function animate() {
 	}
 	renderWorld()
 
+	stats.end() //For monitoring
+	requestAnimationFrame(animate);
 
 };
 
@@ -429,14 +437,22 @@ const composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 
 //New Bloom Effect
-const effectPass = new POSTPROCESSING.EffectPass(
+const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	new POSTPROCESSING.BloomEffect()
 );
-effectPass.renderToScreen = true;
+bloomPass.renderToScreen = true;
+
+//New God Rays Effect
+const godPass = new POSTPROCESSING.EffectPass(
+	controls.getObject(), 
+	new POSTPROCESSING.GodRaysEffect()
+);
+godPass.renderToScreen = true;
 
 //Add to composer
-composer.addPass(effectPass);
+composer.addPass(bloomPass);
+composer.addPass(godPass);
 
 animate();
 
