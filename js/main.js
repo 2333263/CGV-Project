@@ -2,12 +2,29 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 //{ BloomEffect, EffectComposer, EffectPass, RenderPass }
 import * as POSTPROCESSING from "postprocessing";
-import Stats  from "stats";
+
+//Pass imports
+import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
+import { BloomPass } from "../node_modules/three/examples/jsm/postprocessing/BloomPass.js"
+import { ShaderPass } from "../node_modules/three/examples/jsm/postprocessing/ShaderPass.js"
+
+//Shader imports
+import { ToonShader1, ToonShader2 } from "../node_modules/three/examples/jsm/shaders/ToonShader.js"
+import { DigitalGlitch } from "../node_modules/three/examples/jsm/shaders/DigitalGlitch.js"
+import { BokehShader } from "../node_modules/three/examples/jsm/shaders/BokehShader.js"
+import { FilmShader } from "../node_modules/three/examples/jsm/shaders/FilmShader.js"
+import { FreiChenShader } from "../node_modules/three/examples/jsm/shaders/FreiChenShader.js"
+import { ColorCorrectionShader } from "../node_modules/three/examples/jsm/shaders/ColorCorrectionShader.js"
+import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js" 
+
+
+import Stats from "stats";
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import { HUD } from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { threeToCannon, ShapeType } from 'three-to-cannon';
 import { threeToCannonObj } from '/js/ThreeToCannonObj.js'
 import { leaderBoard } from './LeaderBoard.js';
 const width = window.innerWidth + 20
@@ -84,6 +101,26 @@ const controls = new PointerLockControls(camera, document.body); //links control
 
 scene.add(controls.getObject());
 
+//CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
+/*
+const alphaIndex = 5
+const colors = new Uint8Array(alphaIndex + 2);
+
+for (let c = 0; c <= colors.length; c++) {
+
+	colors[c] = (c / colors.length) * 256;
+}
+const format = ( renderer.capabilities.isWebGL2 ) ? THREE.RedFormat : THREE.LuminanceFormat;
+const gradientMap = new THREE.DataTexture(colors, colors.length, 1, format);
+gradientMap.needsUpdate = true;
+
+const toonMaterial = new THREE.MeshToonMaterial({
+	color: new THREE.Color('#31A5E7'),
+	gradientMap: gradientMap
+})
+
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
+*/
 
 const models = {
 	body: { url: '/Objects/Level_1/Level_1.gltf' },
@@ -95,8 +132,19 @@ const models = {
 			var housesCollision = [];
 			var barrelCollision = [];
 			gltf.scene.traverse(function (child) {
-				//Traverse through all objects to get the houses
-				//
+				
+				//Traverse through all objects to get the collision
+
+				//Change Material for lighting purposes
+				if(child instanceof THREE.Mesh && child.name.substring(0, 4) != 'Sign'){
+					const colourTemp = new THREE.Color(child.material.color)
+					const newMat = new THREE.MeshPhongMaterial({
+						color: colourTemp,
+						//specular: new THREE.Color('#31A5E7'),
+						shininess: 10
+					})
+					child.material = newMat
+				}
 				var name = child.name
 				//Enable shadows for all objects
 				child.castShadow = true;
@@ -110,10 +158,18 @@ const models = {
 					barrelCollision.push(child)
 				}
 				if (name.substring(0, 11) === 'WindowGlass') {
-					//Add subsurface scattering
-					// const newMaterial = new THREE.MeshPhongMaterial( { map: child.material.map } );
-					// child.material = newMaterial;
-					//console.log(child.material)
+					child.material.specular = new THREE.Color('#31A5E7')
+				}
+
+
+				if (name.substring(0, 5) === 'Sign0') {
+					//Replace textures
+					const textureTemp = child.material.map
+					const newMat = new THREE.MeshPhongMaterial({
+						map: textureTemp,
+						
+					})
+					child.material = newMat
 				}
 
 
@@ -263,17 +319,24 @@ playerBody.addEventListener('collide', (event) => {
 
 
 const direcLight = new THREE.DirectionalLight(0xffffff, 1);
-direcLight.position.set(19, 30, 0);
+direcLight.position.set( 1.5, 2.75, 1.5 );
+direcLight.position.multiplyScalar(50)
 direcLight.target = player
 direcLight.castShadow = true;
-// direcLight.shadow.camera.top = 170;
-// direcLight.shadow.camera.bottom = -170;
-// direcLight.shadow.camera.left = -150;
-// direcLight.shadow.camera.right = 150;
-// direcLight.shadow.camera.near = 0;
-// direcLight.shadow.camera.far = 150;
-// direcLight.shadow.bias = 0.005;
-scene.add(direcLight)
+//scene.add(direcLight)
+
+var temp = 50
+direcLight.shadow.camera.top = temp;
+direcLight.shadow.camera.bottom = -temp;
+direcLight.shadow.camera.left = -temp;
+direcLight.shadow.camera.right = temp;
+direcLight.shadow.camera.near = 0;
+direcLight.shadow.camera.far = 3500;
+direcLight.shadow.bias = 0.0000; //EVIL ATTRIBUTE THAT BREAKS THIGNS (SET TO 0)
+direcLight.shadow.mapSize.width = direcLight.shadow.mapSize.height = 1024*8;
+direcLight.shadow.camera.fov = 70;
+
+//scene.add( new THREE.CameraHelper( direcLight.shadow.camera ) );
 
 playerBody.linearDamping = 0.9;
 
@@ -406,6 +469,7 @@ document.body.appendChild(stats.dom)
 
 function animate() {
 	stats.begin() //For monitoring
+	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
@@ -433,27 +497,94 @@ function animate() {
 };
 
 //Post Proccessing
+//USING CUSTOM POSTPROCESSING PACKAGE
+
 const composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 
 //New Bloom Effect
 const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
-	new POSTPROCESSING.BloomEffect()
+	new POSTPROCESSING.BloomEffect({
+		intensity:1
+	})
 );
-bloomPass.renderToScreen = true;
+//bloomPass.renderToScreen = true;
 
-//New God Rays Effect
-const godPass = new POSTPROCESSING.EffectPass(
+
+const sunMaterial = new THREE.MeshBasicMaterial({
+	color: 0xffddaa,
+	transparent: true,
+	fog: false
+});
+
+const sunGeometry = new THREE.SphereBufferGeometry(10, 32, 32);
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+sun.frustumCulled = false;
+sun.matrixAutoUpdate = false;
+
+
+
+const mainLight = new THREE.PointLight(0xffe3b1);
+		mainLight.position.copy(direcLight.position);
+		mainLight.castShadow = true;
+		mainLight.shadow.bias = 0.0000125;
+		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*8;
+
+scene.add(mainLight)
+
+const group = new THREE.Group();
+group.position.copy(mainLight.position);
+group.add(sun);
+
+const godRayPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
-	new POSTPROCESSING.GodRaysEffect()
-);
-godPass.renderToScreen = true;
-
+	new POSTPROCESSING.GodRaysEffect(
+		controls.getObject(), 
+		sun, 
+		{
+			height: 480,
+			//kernelSize: KernelSize.SMALL,
+			density: 0.96,
+			decay: 0.92,
+			weight: 0.5,
+			exposure: 0.54,
+			samples: 30,
+			clampMax: 1.0
+	})
+)
 //Add to composer
 composer.addPass(bloomPass);
-composer.addPass(godPass);
+//bloomPass.renderToScreen = true;
 
+composer.addPass(godRayPass);
+//godRayPass.renderToScreen = true
+
+/*
+//USING BUILT IN THREE.JS POST PROCESSING
+const composer = new EffectComposer(renderer);
+
+const renderPass = new RenderPass(scene, controls.getObject());
+composer.addPass(renderPass);
+
+
+//new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
+const unrealBloomPass = new UnrealBloomPass({x: 512, y: 512}, 0.2, 0.0, 0.25);
+composer.addPass(unrealBloomPass);
+
+
+//new BloomPass( strength = 1, kernelSize = 25, sigma = 4, resolution = 256 );
+//const bloomPass = new BloomPass(1, 25, 4, 512);
+//composer.addPass(bloomPass);
+
+//Film Grain
+//composer.addPass(new ShaderPass(FilmShader))
+
+//Colour correction
+//composer.addPass(new ShaderPass(ColorCorrectionShader))
+
+//composer.addPass(new ShaderPass(ColorCorrectionShader))
+*/
 animate();
 
 
@@ -469,9 +600,11 @@ function renderWorld() {
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
 	direcLight.castShadow = false;
+	mainLight.castShadow = false;
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow = true;
+	mainLight.castShadow = true;
 	renderer.setViewport(port);
 	renderer.render(sceneHUD, HudCamera)
 }
