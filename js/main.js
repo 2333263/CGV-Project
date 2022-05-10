@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
+//{ BloomEffect, EffectComposer, EffectPass, RenderPass }
+import * as POSTPROCESSING from "postprocessing";
 import { PointerLockControls } from '/js/PointerLockControls.js';
 import { HUD } from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
@@ -61,7 +63,7 @@ var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
 hudMat.transparent = true
 var HudGeom = new THREE.BoxGeometry(width, height, 0)
 var HudPlane = new THREE.Mesh(HudGeom, hudMat)
-HudPlane.material.depthTest = false;
+//HudPlane.material.depthTest = false;
 HudPlane.material.depthWrite = false;
 HudPlane.castShadow = false
 HudPlane.onBeforeRender = function (renderer) {
@@ -422,6 +424,20 @@ function animate() {
 
 };
 
+//Post Proccessing
+const composer = new POSTPROCESSING.EffectComposer(renderer);
+composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
+
+//New Bloom Effect
+const effectPass = new POSTPROCESSING.EffectPass(
+	controls.getObject(), 
+	new POSTPROCESSING.BloomEffect()
+);
+effectPass.renderToScreen = true;
+
+//Add to composer
+composer.addPass(effectPass);
+
 animate();
 
 
@@ -430,7 +446,9 @@ function renderWorld() {
 	renderer.getViewport(port)
 	renderer.autoClear = false;
 	renderer.clear();
-	renderer.render(scene, controls.getObject())
+	//Render with composer for post processing
+	composer.render()
+	//renderer.render(scene, controls.getObject())
 	mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
