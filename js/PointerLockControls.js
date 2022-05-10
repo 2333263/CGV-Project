@@ -2,7 +2,7 @@ import {
 	Euler,
 	EventDispatcher,
 	Vector3
-} from '../node_modules/three/build/three.module.js';
+} from 'three';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const _vector = new Vector3();
@@ -39,12 +39,12 @@ class PointerLockControls extends EventDispatcher {
 		const scope = this;
 
 		function onMouseMove( event ) {
-			//console.log(event)
+
 			if ( scope.isLocked === false ) return;
-			
+
 			const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-			
+
 			_euler.setFromQuaternion( camera.quaternion );
 
 			_euler.y -= movementX * 0.002 * scope.pointerSpeed;

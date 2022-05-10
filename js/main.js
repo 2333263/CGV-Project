@@ -23,6 +23,7 @@ const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustu
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
 renderer.antialias = true
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
@@ -76,6 +77,11 @@ console.log(board.getBoard())
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
 //init function ?????????
+const controls = new PointerLockControls(camera, document.body); //links controls to the camera
+
+scene.add(controls.getObject());
+
+
 const models = {
 	body: { url: '/Objects/Level_1/Level_1.gltf' },
 };
@@ -212,7 +218,7 @@ camera.position.y = 9;
 pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
 pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 
-const initcam=camera.quaternion // save camera rotation to be used in init function
+const initcam=controls.getObject().quaternion // save camera rotation to be used in init function
 
 
 const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
@@ -270,9 +276,7 @@ playerBody.linearDamping = 0.9;
 
 world.addBody(playerBody); //adds player body to the world
 
-const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 
-scene.add(controls.getObject());
 
 
 controls.addEventListener('lock', () => {
@@ -287,7 +291,7 @@ document.addEventListener("mousedown", (e) => {
 	if (playerBody.noBullets > 0) { //if player has any bullets 
 		playerBody.noBullets--; //decrement bullet count
 
-		raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // hit thing in line of sight of crosshair
+		raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 		const intersects = raycaster.intersectObjects(scene.children);
 			for (let j = 0; j < TargetArr.length; j++) {
 				if (intersects[0].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
@@ -374,10 +378,10 @@ function move() {
 	}
 
 	//playerBody.quaternion.copy(camera.quaternion)
-	tempVec.applyQuaternion(camera.quaternion);
+	tempVec.applyQuaternion(controls.getObject().quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
-	camera.position.copy(playerBody.position);
+	controls.getObject().position.copy(playerBody.position);
 //	camera.quaternion.copy(playerBody.quaternion)
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
@@ -397,10 +401,10 @@ function animate() {
 	if (controls.isLocked){ 	hud.isPaused(false);
 	if(player.position.y<-25){init();} // if player out of bounds, reset level
 	player.position.copy(playerBody.position);
-	player.quaternion.copy(camera.quaternion);
+	player.quaternion.copy(controls.getObject().quaternion);
 	dt = Clock.getDelta()
 	move(); 
-	camera.position.copy(playerBody.position);
+	controls.getObject().position.copy(playerBody.position);
 	hud.updateAmmoCount(playerBody.noBullets)
 	hud.draw();
 	hudTexture.needsUpdate = true;
@@ -413,16 +417,19 @@ function animate() {
 	hudTexture.needsUpdate = true;
 	}
 	renderWorld()
+	
+
 };
 
 animate();
 
 
 function renderWorld(){
+	var port=new THREE.Vector4(0,0,0,0)
+	renderer.getViewport(port)
 	renderer.autoClear = false;
 	renderer.clear();
-	renderer.render(scene, camera)
-	
+	renderer.render(scene, controls.getObject())
 	mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
@@ -430,7 +437,7 @@ function renderWorld(){
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow=true;
-	renderer.setViewport(0, 0, width - 20, height - 20);
+	renderer.setViewport(port);
 	renderer.render(sceneHUD, HudCamera)
 }
 
@@ -473,9 +480,9 @@ removeTargets();
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity=new CANNON.Vec3(0,0,0)
 	playerBody.position.copy(initposition)
-	camera.position.copy(playerBody.position)
-	camera.lookAt(0,5,0)
-	playerBody.quaternion.copy(camera.quaternion)
+	controls.getObject().position.copy(playerBody.position)
+	controls.getObject().lookAt(0,5,0)
+	playerBody.quaternion.copy(controls.getObject().quaternion)
 	hud.setStartTime()
 	
 }
