@@ -18,6 +18,10 @@ import { FilmShader } from "../node_modules/three/examples/jsm/shaders/FilmShade
 import { FreiChenShader } from "../node_modules/three/examples/jsm/shaders/FreiChenShader.js"
 import { ColorCorrectionShader } from "../node_modules/three/examples/jsm/shaders/ColorCorrectionShader.js"
 import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js" 
+import { MirrorShader } from "../node_modules/three/examples/jsm/shaders/MirrorShader.js"
+import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, GodRaysFakeSunShader } from "../node_modules/three/examples/jsm/shaders/GodRaysShader.js"
+import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
 
 
 import Stats from "stats";
@@ -100,7 +104,7 @@ scene.add(controls.getObject());
 
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
 /*
-const alphaIndex = 5
+const alphaIndex = 10
 const colors = new Uint8Array(alphaIndex + 2);
 
 for (let c = 0; c <= colors.length; c++) {
@@ -119,6 +123,13 @@ const toonMaterial = new THREE.MeshToonMaterial({
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 */
 
+const mirrorGeo = new THREE.PlaneGeometry(3,3);
+
+scene.add(new Reflector(mirrorGeo,{
+	clipBias: 0.003,
+	textureWidth: 1920,
+	textureHeight: 1080
+}).translateY(1).translateX(1).translateZ(3))
 
 const models = {
 	body: { url: '/Objects/Level_1/Level_1.gltf' },
@@ -130,6 +141,7 @@ const models = {
 			var hullCollision = [];
 			var barrelCollision = [];
 			var boxCollision = [];
+			
 			gltf.scene.traverse(function (child) {
 				
 				//Traverse through all objects to get the collision
@@ -191,22 +203,32 @@ const models = {
 					})
 					child.material = newMat
 				}
-				if (name.substring(0, 9) === 'PathType1') {
+
+				if (name.substring(0, 8) === 'PathLong') {
 					//Replace textures
 					child.castShadow=false;
+					
+					const sizeWidth = (child.geometry.boundingBox.max.x-child.geometry.boundingBox.min.x)*child.scale.x/2
+					const sizeHeight = (child.geometry.boundingBox.max.z-child.geometry.boundingBox.min.z)*child.scale.z
+					
+					//Wrap texture depending on path size
 					const textureTemp =loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
 					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-					textureTemp.repeat.set(9,90)
+					textureTemp.repeat.set(sizeWidth,sizeHeight)
 					const normal = loader.load('Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
 					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-					normal.repeat.set(9,90)
+					normal.repeat.set(sizeWidth,sizeHeight)
 					
 					const newMat = new THREE.MeshPhongMaterial({
 						map: textureTemp,
 						normalMap: normal,
-						shininess:0
+						shininess:5
 					})
 					child.material = newMat
+				}
+				if (name.substring(0, 11) === 'Pathoutline') {
+					//Turn off shadows
+					child.castShadow=false;
 				}
 
 
@@ -294,17 +316,32 @@ const initcam = controls.getObject().quaternion // save camera rotation to be us
 const playerLoader=new GLTFLoader()
 var player=new THREE.Object3D();
 var Torso=new THREE.Object3D()
-playerLoader.load(
-	"../Objects/Character/player-model.gltf",
-	function(gltf){
-		gltf.scene.scale.set(0.1,0.1,0.1)
-		player=gltf.scene
-		player.name="model"
-		Torso=gltf.scene.getObjectByName("Torso")
-	//	scene.add(player)
 
+
+const modelsPlayer = {
+	body: { url: '/Objects/Character/player-model.gltf' },
+};
+{
+	const gltfPlayerLoader = new GLTFLoader(manager);
+	for (const model of Object.values(modelsPlayer)) {
+		gltfPlayerLoader.load(model.url, (gltf) => {
+			player=gltf.scene
+			player.name="model"
+			Torso=gltf.scene.getObjectByName("Torso")
+			player.traverse(function (child) {
+				if (child.isMesh){
+					console.log(child.material.color)
+					child.material = new THREE.MeshPhongMaterial( {
+						color: new THREE.Color(child.material.color), 
+						side: THREE.FrontSide,
+						shininess: 0
+						})
+				}
+			});
+		});
 	}
-)
+}
+
 //var player = new THREE.Mesh(playerModel, material);
  //visibile representation of player hitbox
 //player.scale.set(0.01,0.01)
@@ -499,7 +536,7 @@ var stats = new Stats();
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
-
+player.rotation.z = controls.getObject().rotation.z
 function animate() {
 	stats.begin() //For monitoring
 	//direcLight.translateX(-0.01)
@@ -507,8 +544,9 @@ function animate() {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
 		player.position.copy(playerBody.position);
-	 	player.quaternion.y=controls.getObject().quaternion.y;
-		// player.quaternion.y=controls.getObject().quaternion.y;
+		player.rotation.set(controls.getObject().rotation.x, controls.getObject().rotation.y, 0)
+	 	//player.quaternion.set(controls.getObject().quaternion);
+		
 		dt = Clock.getDelta()
 		if(hud.gamestate==0)
 		move();
@@ -544,7 +582,9 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	new POSTPROCESSING.BloomEffect({
+		luminanceThreshold: 0.45,
 		intensity:0.5
+
 	})
 );
 
@@ -638,7 +678,7 @@ animate();
 
 function renderWorld() {
 	//player=scene.getObjectByName("player")
-	scene.remove(player)
+	//scene.remove(player)
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
 	renderer.autoClear = false;
