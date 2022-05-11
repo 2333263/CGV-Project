@@ -14,8 +14,8 @@ class threeToCannonObj{
             case 'CYLINDER':
                 result = threeToCannon(threeOBJ, {type: ShapeType.CYLINDER});
                 break;
-            case 'HULL':
-                result = threeToCannon(threeOBJ, {type: ShapeType.HULL});
+            case 'BOX':
+                result = threeToCannon(threeOBJ, {type: ShapeType.BOX});
                 break;
             default:
                 //If meshtype invalid, make a convext hull

@@ -122,6 +122,7 @@ const toonMaterial = new THREE.MeshToonMaterial({
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 */
 
+
 const models = {
 	body: { url: '/Objects/Level_1/Level_1.gltf' },
 };
@@ -129,8 +130,9 @@ const models = {
 	const gltfLoader = new GLTFLoader(manager);
 	for (const model of Object.values(models)) {
 		gltfLoader.load(model.url, (gltf) => {
-			var housesCollision = [];
+			var hullCollision = [];
 			var barrelCollision = [];
+			var boxCollision = [];
 			gltf.scene.traverse(function (child) {
 				
 				//Traverse through all objects to get the collision
@@ -151,7 +153,7 @@ const models = {
 				child.receiveShadow = true;
 				if (name.substring(0, 4) === 'Base') {
 					//Add houses to collision detection
-					housesCollision.push(child)
+					hullCollision.push(child)
 				}
 				if (name.substring(0, 10) === 'BarrelBody') {
 					//Add barrels to collision detection
@@ -175,6 +177,25 @@ const models = {
 					child.material = newMat
 				}
 
+				if (name.substring(0, 5) === 'Floor') {
+					//Replace textures and add to floor collision
+					boxCollision.push(child)
+					const textureTemp =loader.load('Objects/Textures/Floor/Ground049B_1K_Color.jpg')
+					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
+					textureTemp.repeat.set(10,10)
+					const normal = loader.load('Objects/Textures/Floor/Ground049B_1K_NormalDX.jpg')
+					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
+					normal.repeat.set(10,10)
+					const disp = loader.load("Objects/Textures/Floor/Ground049B_1K_Displacement.jpg")
+					const newMat = new THREE.MeshPhongMaterial({
+						map: textureTemp,
+						normalMap: normal,
+						//displacementMap: disp
+						shininess:0
+					})
+					child.material = newMat
+				}
+
 
 			});
 
@@ -190,7 +211,7 @@ const models = {
 			//Visually render scene
 			scene.add(root);
 
-			for (const obj of housesCollision) {
+			for (const obj of hullCollision) {
 				//obj.castShadow = true;
 				//obj.receiveShadow = true;
 				//scene.add(obj)
@@ -198,6 +219,10 @@ const models = {
 			}
 			for (const obj of barrelCollision) {
 				world.addBody(threeToCannonObj.getCannonMesh(obj, 'CYLINDER'));
+			}
+
+			for (const obj of boxCollision) {
+				world.addBody(threeToCannonObj.getCannonMesh(obj, 'BOX'));
 			}
 
 
@@ -226,8 +251,7 @@ const models = {
 
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
-const floorMat = new THREE.MeshLambertMaterial({ map: loader.load("goomba.png") }); //testure on floor to show depth of movement
+
 
 /*
 const ft = new THREE.TextureLoader().load("daylightbox_Front.bmp");
@@ -256,14 +280,12 @@ const skybox = new THREE.Mesh(skybxGeo, materialArray);
 scene.add(skybox);
 
 const light = new THREE.HemisphereLight("white", "white", 0.5);
+
+/*
+const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
+const floorMat = new THREE.MeshLambertMaterial({ map: loader.load("goomba.png") }); //testure on floor to show depth of movement
 const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.receiveShadow = true;
-
-
-
-
-
-
 
 const groundBody = new CANNON.Body({
 	shape: new CANNON.Box(new CANNON.Vec3(100, 0.1, 100)), //have floor be really thin box since plane was having collision issues 
@@ -273,8 +295,12 @@ const groundBody = new CANNON.Body({
 });
 groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
 world.addBody(groundBody) //add floor to world
-scene.add(light)
+floor.position.copy(groundBody.position);
+floor.quaternion.copy(groundBody.quaternion);
+
 scene.add(floor.translateZ(-6).translateY(-2))
+*/
+scene.add(light)
 camera.position.z = 9; //initialise camera position
 camera.position.y = 9;
 pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
@@ -457,8 +483,7 @@ function move() {
 
 }
 
-floor.position.copy(groundBody.position);
-floor.quaternion.copy(groundBody.quaternion);
+
 
 
 
