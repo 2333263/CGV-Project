@@ -194,8 +194,9 @@ const models = {
 					})
 					child.material = newMat
 				}
-				if (name.substring(0, 4) === 'Path') {
+				if (name.substring(0, 9) === 'PathType1') {
 					//Replace textures
+					child.castShadow=false;
 					const textureTemp =loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
 					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
 					textureTemp.repeat.set(9,90)
