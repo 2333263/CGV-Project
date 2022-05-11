@@ -175,7 +175,7 @@ class HUD {
         };
         
         this.isPaused = function (paused) {
-            if(paused){
+            if(paused && this.gamestate==0){
             
                 if(this.Paused==false) {
                     

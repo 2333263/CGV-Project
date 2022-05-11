@@ -479,6 +479,7 @@ function animate() {
 		player.position.copy(playerBody.position);
 		player.quaternion.copy(controls.getObject().quaternion);
 		dt = Clock.getDelta()
+		if(hud.gamestate==0)
 		move();
 		controls.getObject().position.copy(playerBody.position);
 		hud.updateAmmoCount(playerBody.noBullets)
@@ -658,6 +659,7 @@ function init() { //initialise for a reset of level
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
+	playerBody.canJump=false
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
