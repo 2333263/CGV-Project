@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-//{ BloomEffect, EffectComposer, EffectPass, RenderPass }
 import * as POSTPROCESSING from "postprocessing";
 
 //Pass imports
@@ -30,7 +29,9 @@ import { HUD } from "/js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannonObj } from '/js/ThreeToCannonObj.js'
+import { loadLevelWithCollision } from '/js/LoadLevel.js'
 import { leaderBoard } from './LeaderBoard.js';
+
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
 var scene = new THREE.Scene();
@@ -55,6 +56,7 @@ document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4)
 const raycaster = new THREE.Raycaster();
 const loader = new THREE.TextureLoader();
+const manager = new THREE.LoadingManager();
 const timestep = 1 / 60
 const material = new THREE.MeshStandardMaterial({
 	map: loader.load('textureOne.jpg') //test texture
@@ -94,10 +96,7 @@ sceneHUD.add(HudPlane)
 
 var board = new leaderBoard();
 board.addItem("f", -99)
-//Import the level from Blender and apply physics bounding
-const manager = new THREE.LoadingManager();
-//manager.onLoad = init;
-//init function ?????????
+
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 
 scene.add(controls.getObject());
@@ -131,132 +130,14 @@ scene.add(new Reflector(mirrorGeo,{
 	textureHeight: 1080
 }).translateY(1).translateX(1).translateZ(3))
 
-const models = {
-	body: { url: '/Objects/Level_1/Level_1.gltf' },
-};
-{
-	const gltfLoader = new GLTFLoader(manager);
-	for (const model of Object.values(models)) {
-		gltfLoader.load(model.url, (gltf) => {
-			var hullCollision = [];
-			var barrelCollision = [];
-			var boxCollision = [];
-			
-			gltf.scene.traverse(function (child) {
-				
-				//Traverse through all objects to get the collision
 
-				//Change Material for lighting purposes
-				if(child instanceof THREE.Mesh && child.name.substring(0, 4) != 'Sign'){
-					const colourTemp = new THREE.Color(child.material.color)
-					const newMat = new THREE.MeshPhongMaterial({
-						color: colourTemp,
-						//specular: new THREE.Color('#31A5E7'),
-						shininess: 10
-					})
-					child.material = newMat
-				}
-				var name = child.name
-				//Enable shadows for all objects
-				child.castShadow = true;
-				child.receiveShadow = true;
-				if (name.substring(0, 4) === 'Base') {
-					//Add houses to collision detection
-					hullCollision.push(child)
-				}
-				if (name.substring(0, 10) === 'BarrelBody') {
-					//Add barrels to collision detection
-					barrelCollision.push(child)
-				}
-				if (name.substring(0, 11) === 'WindowGlass') {
-					child.material.specular = new THREE.Color('#31A5E7')
-				}
-				if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign') {
-					child.castShadow=false;
-				}
+//Add blender objects to scene and collisions to world
+loadLevelWithCollision.loadLevel(scene, world, 1)
+
+//To unload current world
+//loadLevelWithCollision.unloadCurrentLevel(scene, world)
 
 
-				if (name.substring(0, 5) === 'Sign0') {
-					//Replace textures
-					const textureTemp = child.material.map
-					const newMat = new THREE.MeshPhongMaterial({
-						map: textureTemp,
-						
-					})
-					child.material = newMat
-				}
-
-				if (name.substring(0, 5) === 'Floor') {
-					//Replace textures and add to floor collision
-					boxCollision.push(child)
-					const textureTemp =loader.load('Objects/Textures/Floor/Ground049B_1K_Color.jpg')
-					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-					textureTemp.repeat.set(9,9)
-					const normal = loader.load('Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
-					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-					normal.repeat.set(9,9)
-					
-					const newMat = new THREE.MeshPhongMaterial({
-						map: textureTemp,
-						normalMap: normal,
-						shininess:0
-					})
-					child.material = newMat
-				}
-
-				if (name.substring(0, 8) === 'PathLong') {
-					//Replace textures
-					child.castShadow=false;
-					
-					const sizeWidth = (child.geometry.boundingBox.max.x-child.geometry.boundingBox.min.x)*child.scale.x/2
-					const sizeHeight = (child.geometry.boundingBox.max.z-child.geometry.boundingBox.min.z)*child.scale.z
-					
-					//Wrap texture depending on path size
-					const textureTemp =loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
-					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-					textureTemp.repeat.set(sizeWidth,sizeHeight)
-					const normal = loader.load('Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
-					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-					normal.repeat.set(sizeWidth,sizeHeight)
-					
-					const newMat = new THREE.MeshPhongMaterial({
-						map: textureTemp,
-						normalMap: normal,
-						shininess:5
-					})
-					child.material = newMat
-				}
-				if (name.substring(0, 11) === 'Pathoutline') {
-					//Turn off shadows
-					child.castShadow=false;
-				}
-
-
-			});
-
-			const root = gltf.scene;
-
-			//Visually render scene
-			scene.add(root);
-
-			//Add collisions
-			for (const obj of hullCollision) {
-				world.addBody(threeToCannonObj.getCannonMesh(obj));
-			}
-			for (const obj of barrelCollision) {
-				world.addBody(threeToCannonObj.getCannonMesh(obj, 'CYLINDER'));
-			}
-
-			for (const obj of boxCollision) {
-				world.addBody(threeToCannonObj.getCannonMesh(obj, 'BOX'));
-			}
-
-		});
-	}
-}
-
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 
 /*
@@ -319,7 +200,7 @@ var Torso=new THREE.Object3D()
 
 
 const modelsPlayer = {
-	body: { url: '/Objects/Character/player-model.gltf' },
+	body: { url: '/Objects/Character/player-model-noInnderFaces.gltf' },
 };
 {
 	const gltfPlayerLoader = new GLTFLoader(manager);
@@ -330,13 +211,16 @@ const modelsPlayer = {
 			Torso=gltf.scene.getObjectByName("Torso")
 			player.traverse(function (child) {
 				if (child.isMesh){
-					console.log(child.material.color)
 					child.material = new THREE.MeshPhongMaterial( {
 						color: new THREE.Color(child.material.color), 
 						side: THREE.FrontSide,
 						shininess: 0
 						})
 				}
+				if (child.name.substring(0,5) === 'Left-' || child.name.substring(0,6) === 'Right-'){
+						child.translateY(1.3)
+						child.scale.set(child.scale.x, child.scale.y/3, child.scale.z);
+					}
 			});
 		});
 	}
@@ -537,14 +421,22 @@ stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
 player.rotation.z = controls.getObject().rotation.z
+
 function animate() {
 	stats.begin() //For monitoring
+	
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
 		player.position.copy(playerBody.position);
-		player.rotation.set(0,controls.getObject().rotation.y,0)
+		var tempVec = new THREE.Vector3();
+		controls.getObject().getWorldDirection(tempVec)
+		var theta = Math.atan2(tempVec.x,tempVec.z);
+
+		//console.log(controls.getObject().rotation)
+		player.rotation.set(0, theta- Math.PI/2,0)
+		//player.rotation.setRotationFromMatrix(controls.getObject().matrix)
 	 	//player.quaternion.set(controls.getObject().quaternion);
 		
 		dt = Clock.getDelta()
@@ -558,13 +450,15 @@ function animate() {
 		hud.draw();
 		hudTexture.needsUpdate = true;
 		world.step(timestep, dt);
-
+		
 	}
 	else {
 		hud.isPaused(true);
 		hud.draw();
 		hudTexture.needsUpdate = true;
+		
 	}
+	
 	renderWorld()
 
 	stats.end() //For monitoring
