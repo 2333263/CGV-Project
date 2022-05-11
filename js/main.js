@@ -529,7 +529,7 @@ const mainLight = new THREE.PointLight(0xffe3b1);
 		mainLight.position.copy(direcLight.position);
 		mainLight.castShadow = true;
 		mainLight.shadow.bias = 0.0000125;
-		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*8;
+		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*5;
 
 scene.add(mainLight)
 
