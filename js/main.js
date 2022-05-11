@@ -39,6 +39,8 @@ const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
+var mirrorCam=new THREE.PerspectiveCamera(75,2/3,0.1,1000)
+
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
@@ -540,6 +542,7 @@ function animate() {
 		hud.updateAmmoCount(playerBody.noBullets)
 		hud.draw();
 		hudTexture.needsUpdate = true;
+		moveTargets()
 		world.step(timestep, dt);
 
 	}
@@ -702,11 +705,47 @@ function worldTargets() { //remove the map targets from the scene
 	}
 }
 
+function moveTargets(){
+	for(var i=0;i<TargetArr.length;i++){
+		if(TargetArr[i].moves==true){
+			var tempPos=new THREE.Vector3()
+				tempPos.copy(TargetArr[i].getCylinder().position)
+				tempPos.x=tempPos.x.toFixed(2)
+				tempPos.y=tempPos.y.toFixed(2)
+				tempPos.z=tempPos.z.toFixed(2)
+				var tempEnd=new THREE.Vector3()
+				tempEnd.copy(TargetArr[i].endPoint)
+				tempEnd.x=tempEnd.x.toFixed(2)
+				tempEnd.y=tempEnd.y.toFixed(2)
+				tempEnd.z=tempEnd.z.toFixed(2)
+				var tempStart=new THREE.Vector3()
+				tempStart.copy(TargetArr[i].startPoint)
+				tempStart.x=tempStart.x.toFixed(2)
+				tempStart.y=tempStart.y.toFixed(2)
+				tempStart.z=tempStart.z.toFixed(2)
+			if(!tempPos.equals(tempEnd) && TargetArr[i].moveZ==true){
+				TargetArr[i].getCylinder().translateZ(0.01)
+			}else if(tempPos.equals(tempEnd) && TargetArr[i].moveZ==true){
+				TargetArr[i].moveZ=false
+				TargetArr[i].getCylinder().translateZ(-0.01)
+			}else if(TargetArr[i].moveZ==false &&!tempPos.equals(tempStart)){
+				TargetArr[i].getCylinder().translateZ(-0.01)
+
+			}else{
+				TargetArr[i].getCylinder().translateZ(0.01)
+				TargetArr[i].moveZ=true
+			}
+		}
+	}
+}
+
+
 
 function addTargets(position) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i][0], position[i][1], position[i][2]);
+		var target = new Targets(i, position[i][0], position[i][1], position[i][2],new THREE.Vector3(position[i][0]+5, position[i][1], position[i][2]));
+		target.moves=true
 		TargetArr.push(target)
 		scene.add(target.getCylinder())
 

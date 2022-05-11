@@ -3,7 +3,7 @@ import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 
 const loader = new THREE.TextureLoader();
 class Targets{
-    constructor(name, tX,tY,tZ){
+    constructor(name, tX,tY,tZ,endPoint){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
         this.CrossMat=new THREE.MeshBasicMaterial({
             map: loader.load("crosstarget.png")
@@ -17,13 +17,16 @@ class Targets{
         this.cylinder.translateX(tX)
         this.cylinder.translateY(tY)
         this.cylinder.translateZ(tZ)
-        //this.cylinder.castShadow=true;
-        //this.cylinder.receiveShadow=true;
         this.cylinder.rotation.x=Math.PI/2
         this.cylinder.rotation.y=Math.PI/2
         this.isHit=false;
         this.cylinder.name=name
-    
+        this.endPoint=endPoint
+        this.startPoint=new THREE.Vector3(tX,tY,tZ)
+        this.moves=false
+        this.moveX=false
+        this.moveY=false
+        this.moveZ=false
         this.getCylinder=function (){
             return this.cylinder
         };
