@@ -544,7 +544,7 @@ function animate() {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
 		player.position.copy(playerBody.position);
-		player.rotation.set(controls.getObject().rotation.x, controls.getObject().rotation.y, 0)
+		player.rotation.set(0,controls.getObject().rotation.y,0)
 	 	//player.quaternion.set(controls.getObject().quaternion);
 		
 		dt = Clock.getDelta()
