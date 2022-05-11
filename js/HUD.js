@@ -76,7 +76,7 @@ class HUD {
             var input=document.createElement("input")
             input.type = 'text';
             input.style.position = 'fixed';
-            input.style.left = (width/2) + 'px';
+            input.style.left = (width/2)-150 + 'px';
             input.style.top = (height/2) + 'px';
             input.id="input"
             input.addEventListener("keypress",function(e){
@@ -162,7 +162,7 @@ class HUD {
                 var size=60*scaleFitNative
                 graphics.font = String(size)+"px Arial"
                 var word = "";
-                var bottom=0
+                var bottom=Y_TOP+50
                 if ( this.currtargets == this.totaltarget) { 
                     
                     if(this.gamestate==0){
@@ -178,15 +178,15 @@ class HUD {
                         var top=this.leaderBoard.getTop10()
 
                         graphics.fillStyle = "rgb(0,0,0)"
-                        graphics.fillText("Top "+top.length, -300, -300)
+                        graphics.fillText("Top "+top.length, X_LEFT+200, Y_TOP+50*scaleFitNative)
                         
                         for (var i=0 ;i<top.length; i++){
                             
-                            graphics.fillText(top[i], -300, -250+i*70)
-                            bottom=-250+i*70
+                            graphics.fillText(top[i],  X_LEFT+200, (Y_TOP+100*scaleFitNative)+i*70*scaleFitNative)
+                            bottom=(Y_TOP+90*scaleFitNative)+i*50*scaleFitNative
                         }
-                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+300,bottom+70)
-                        bottom+=70
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200,bottom+150*scaleFitNative)
+                        bottom+=70*scaleFitNative
                     }   
                      else{
                           if (!document.getElementById("input") &&this.entered==false) { 
@@ -202,7 +202,7 @@ class HUD {
                     
                 
                     graphics.fillStyle = "rgb(0,255,0)"
-                    graphics.fillText(this.timetaken, -200, -80)}
+                    graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200, Y_TOP+250)}
                   
                 }
                 else {
@@ -211,8 +211,10 @@ class HUD {
                     graphics.fillStyle = "rgb(255,0,0)"
                 }
                 var instruct="Click anywhere to restart."
-                graphics.fillText(word, -300, -20)
-                graphics.fillText(instruct, X_LEFT+300,bottom+70)
+                graphics.fillText(word, X_LEFT+200, Y_TOP+450)
+                if(this.gamestate!=1){
+                graphics.fillText(instruct, X_LEFT+200,Y_TOP+350)
+                }
                 return true
             }
             else { return false }
