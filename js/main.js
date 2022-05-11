@@ -182,15 +182,30 @@ const models = {
 					boxCollision.push(child)
 					const textureTemp =loader.load('Objects/Textures/Floor/Ground049B_1K_Color.jpg')
 					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-					textureTemp.repeat.set(10,10)
-					const normal = loader.load('Objects/Textures/Floor/Ground049B_1K_NormalDX.jpg')
+					textureTemp.repeat.set(9,9)
+					const normal = loader.load('Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
 					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-					normal.repeat.set(10,10)
-					const disp = loader.load("Objects/Textures/Floor/Ground049B_1K_Displacement.jpg")
+					normal.repeat.set(9,9)
+					
 					const newMat = new THREE.MeshPhongMaterial({
 						map: textureTemp,
 						normalMap: normal,
-						//displacementMap: disp
+						shininess:0
+					})
+					child.material = newMat
+				}
+				if (name.substring(0, 4) === 'Path') {
+					//Replace textures
+					const textureTemp =loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
+					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
+					textureTemp.repeat.set(9,90)
+					const normal = loader.load('Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
+					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
+					normal.repeat.set(9,90)
+					
+					const newMat = new THREE.MeshPhongMaterial({
+						map: textureTemp,
+						normalMap: normal,
 						shininess:0
 					})
 					child.material = newMat
@@ -199,22 +214,13 @@ const models = {
 
 			});
 
-			// gltf.parser.getDependencies( 'material' ).then( ( materials ) => {
-
-			// 	console.log( materials );
-
-			// } );
-
-
 			const root = gltf.scene;
 
 			//Visually render scene
 			scene.add(root);
 
+			//Add collisions
 			for (const obj of hullCollision) {
-				//obj.castShadow = true;
-				//obj.receiveShadow = true;
-				//scene.add(obj)
 				world.addBody(threeToCannonObj.getCannonMesh(obj));
 			}
 			for (const obj of barrelCollision) {
@@ -225,26 +231,6 @@ const models = {
 				world.addBody(threeToCannonObj.getCannonMesh(obj, 'BOX'));
 			}
 
-
-
-
-
-			// const obj3D2 = root.getObjectByName('Base0wds02')
-			// world.addBody(THREETOCANNON.getCannonMesh(obj3D2));
-
-
-
-
-
-
-			//Ignore but do no delete -------------------------------------------------------------------
-			// //Add body (scene of the gltf file)
-			// scene.add(root.translateY(0));
-
-			//Treat the head (child of body) as a separate object to manipulate
-			// let headOfBody = root.getObjectByName('Head');
-			// //Add Head
-			// scene.add(headOfBody.translateY(2))
 		});
 	}
 }

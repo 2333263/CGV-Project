@@ -25,8 +25,13 @@ class threeToCannonObj{
         
         const quaternionObj = threeOBJ.quaternion //Set offset and quaternion manually
         const offsetObj = threeOBJ.position
-    
-        const objCollisionBody=new CANNON.Body()
+        const planeMaterial = new CANNON.Material({
+            friction: 10,
+            restitution: 0
+        })
+        const objCollisionBody=new CANNON.Body({
+            material: planeMaterial
+        })
         objCollisionBody.addShape(result.shape, offsetObj, quaternionObj)
         return objCollisionBody
     }
