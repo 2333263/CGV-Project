@@ -506,7 +506,7 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	new POSTPROCESSING.BloomEffect({
-		intensity:1
+		intensity:0.5
 	})
 );
 //bloomPass.renderToScreen = true;
@@ -529,7 +529,7 @@ const mainLight = new THREE.PointLight(0xffe3b1);
 		mainLight.position.copy(direcLight.position);
 		mainLight.castShadow = true;
 		mainLight.shadow.bias = 0.0000125;
-		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*8;
+		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*5;
 
 scene.add(mainLight)
 
@@ -645,6 +645,7 @@ function init() { //initialise for a reset of level
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
+	playerBody.canJump=false
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
