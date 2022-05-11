@@ -182,11 +182,11 @@ class HUD {
                         
                         for (var i=0 ;i<top.length; i++){
                             
-                            graphics.fillText(top[i],  X_LEFT+200, (Y_TOP+100*scaleFitNative)+i*70*scaleFitNative)
-                            bottom=(Y_TOP+90*scaleFitNative)+i*50*scaleFitNative
+                            graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative)
+                            bottom=bottom+60*scaleFitNative
                         }
-                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200,bottom+150*scaleFitNative)
-                        bottom+=70*scaleFitNative
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200,bottom+60*scaleFitNative)
+                        bottom+=60*scaleFitNative
                     }   
                      else{
                           if (!document.getElementById("input") &&this.entered==false) { 

@@ -29,7 +29,6 @@ import { threeToCannonObj } from '/js/ThreeToCannonObj.js'
 import { leaderBoard } from './LeaderBoard.js';
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
-console.log(width - window.innerWidth)
 var scene = new THREE.Scene();
 const aspectRatio = width / height
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
@@ -90,9 +89,7 @@ HudPlane.onBeforeRender = function (renderer) {
 sceneHUD.add(HudPlane)
 
 var board = new leaderBoard();
-console.log(board.getBoard())
 board.addItem("f", -99)
-console.log(board.getBoard())
 //Import the level from Blender and apply physics bounding
 const manager = new THREE.LoadingManager();
 //manager.onLoad = init;
@@ -294,12 +291,28 @@ pipcamera.position.set(0, 30, 0); // place top down camera at a height above the
 pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 
 const initcam = controls.getObject().quaternion // save camera rotation to be used in init function
+const playerLoader=new GLTFLoader()
+var player=new THREE.Object3D();
+var Torso=new THREE.Object3D()
+playerLoader.load(
+	"../Objects/Character/player-model.gltf",
+	function(gltf){
+		gltf.scene.scale.set(0.1,0.1,0.1)
+		player=gltf.scene
+		player.name="model"
+		Torso=gltf.scene.getObjectByName("Torso")
+	//	scene.add(player)
 
+	}
+)
+//var player = new THREE.Mesh(playerModel, material);
+ //visibile representation of player hitbox
+//player.scale.set(0.01,0.01)
+//player=scene.getObjectByName(player.name)
 
-const player = new THREE.Mesh(new THREE.SphereGeometry(1.5), material);  //visibile representation of player hitbox
-player.castShadow = true;
-player.receiveShadow = true;
-scene.add(player)
+//player.castShadow = true;
+//player.receiveShadow = true;
+
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
@@ -361,6 +374,7 @@ world.addBody(playerBody); //adds player body to the world
 
 
 
+
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
 })
@@ -370,15 +384,18 @@ controls.addEventListener('unlocked', () => {
 
 document.addEventListener("mousedown", (e) => {
 	if (controls.isLocked == true) {
-	//	console.log(hud.entered)
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
 
 			raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 			const intersects = raycaster.intersectObjects(scene.children);
 			for (let j = 0; j < TargetArr.length; j++) {
-				if (intersects[0].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
-					HitTarget(intersects[0].object.name)
+				var i=0
+				while(Torso.children.includes(intersects[i].object)){
+					i++;
+				}
+				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
+					HitTarget(intersects[i].object.name)
 					hud.increaseTarget();
 				}
 			}
@@ -490,11 +507,15 @@ function animate() {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
 		player.position.copy(playerBody.position);
-		player.quaternion.copy(controls.getObject().quaternion);
+	 	player.quaternion.y=controls.getObject().quaternion.y;
+		// player.quaternion.y=controls.getObject().quaternion.y;
 		dt = Clock.getDelta()
 		if(hud.gamestate==0)
 		move();
-		controls.getObject().position.copy(playerBody.position);
+		var pos=new THREE.Vector3()
+		pos.copy(playerBody.position)
+	//	pos.y+=1
+		controls.getObject().position.copy(pos);
 		hud.updateAmmoCount(playerBody.noBullets)
 		hud.draw();
 		hudTexture.needsUpdate = true;
@@ -616,6 +637,8 @@ animate();
 
 
 function renderWorld() {
+	//player=scene.getObjectByName("player")
+	scene.remove(player)
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
 	renderer.autoClear = false;
@@ -628,6 +651,7 @@ function renderWorld() {
 	renderer.setViewport(width - 250, 50, 200, 200)
 	direcLight.castShadow = false;
 	mainLight.castShadow = false;
+	scene.add(player)
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	direcLight.castShadow = true;
@@ -639,6 +663,7 @@ function renderWorld() {
 
 
 function mapTargets() { // rotates targets for appearence on the map camera
+	
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
