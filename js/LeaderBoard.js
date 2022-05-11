@@ -14,10 +14,10 @@ class leaderBoard{
     constructor(){
         this.document=document
         this.LeaderBoard={
-            "afs":99,
-            "bvf":45,
-            "cdm":1,
-            "d":8
+            "J":99,
+            "L":45,
+            "B":1,
+            "D":8
         }
         this.Sort=function(){
             var items=Object.keys(this.LeaderBoard).map(
@@ -98,3 +98,9 @@ class leaderBoard{
         }
 }
 export{leaderBoard}
+
+
+
+
+
+
