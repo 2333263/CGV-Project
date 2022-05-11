@@ -160,6 +160,12 @@ const models = {
 				if (name.substring(0, 11) === 'WindowGlass') {
 					child.material.specular = new THREE.Color('#31A5E7')
 				}
+				if (name.substring(0, 6) === 'Window') {
+					child.castShadow=false;
+				}
+				if (name.substring(0, 4) === 'Door') {
+					child.castShadow=false;
+				}
 
 
 				if (name.substring(0, 5) === 'Sign0') {
@@ -529,8 +535,9 @@ sun.matrixAutoUpdate = false;
 const mainLight = new THREE.PointLight(0xffe3b1);
 		mainLight.position.copy(direcLight.position);
 		mainLight.castShadow = true;
+		mainLight.shadow.radius = 3;
 		mainLight.shadow.bias = 0.0000125;
-		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*5;
+		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*4;
 
 scene.add(mainLight)
 
@@ -646,6 +653,7 @@ function init() { //initialise for a reset of level
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
+	playerBody.canJump=false
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
