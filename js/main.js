@@ -360,6 +360,7 @@ controls.addEventListener('unlocked', () => {
 
 document.addEventListener("mousedown", (e) => {
 	if (controls.isLocked == true) {
+	//	console.log(hud.entered)
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
 
@@ -383,7 +384,7 @@ document.addEventListener("mousedown", (e) => {
 
 
 		}
-		else if (hud.gamestate == 1) { //game win (only one level so just resets)
+		else if (hud.gamestate == 1 && hud.entered==true) { //game win (only one level so just resets)
 			removeTargets();
 
 			init();
