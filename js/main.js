@@ -18,6 +18,9 @@ import { FilmShader } from "../node_modules/three/examples/jsm/shaders/FilmShade
 import { FreiChenShader } from "../node_modules/three/examples/jsm/shaders/FreiChenShader.js"
 import { ColorCorrectionShader } from "../node_modules/three/examples/jsm/shaders/ColorCorrectionShader.js"
 import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js" 
+import { MirrorShader } from "../node_modules/three/examples/jsm/shaders/MirrorShader.js"
+import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, GodRaysFakeSunShader } from "../node_modules/three/examples/jsm/shaders/GodRaysShader.js"
+import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
 
 
 import Stats from "stats";
@@ -100,7 +103,7 @@ scene.add(controls.getObject());
 
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
 /*
-const alphaIndex = 5
+const alphaIndex = 10
 const colors = new Uint8Array(alphaIndex + 2);
 
 for (let c = 0; c <= colors.length; c++) {
@@ -119,6 +122,13 @@ const toonMaterial = new THREE.MeshToonMaterial({
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 */
 
+const mirrorGeo = new THREE.PlaneGeometry(3,3);
+
+scene.add(new Reflector(mirrorGeo,{
+	clipBias: 0.003,
+	textureWidth: 1920,
+	textureHeight: 1080
+}).translateY(1).translateX(1).translateZ(3))
 
 const models = {
 	body: { url: '/Objects/Level_1/Level_1.gltf' },
@@ -130,6 +140,7 @@ const models = {
 			var hullCollision = [];
 			var barrelCollision = [];
 			var boxCollision = [];
+			
 			gltf.scene.traverse(function (child) {
 				
 				//Traverse through all objects to get the collision
@@ -191,22 +202,32 @@ const models = {
 					})
 					child.material = newMat
 				}
-				if (name.substring(0, 9) === 'PathType1') {
+
+				if (name.substring(0, 8) === 'PathLong') {
 					//Replace textures
 					child.castShadow=false;
+					
+					const sizeWidth = (child.geometry.boundingBox.max.x-child.geometry.boundingBox.min.x)*child.scale.x/2
+					const sizeHeight = (child.geometry.boundingBox.max.z-child.geometry.boundingBox.min.z)*child.scale.z
+					
+					//Wrap texture depending on path size
 					const textureTemp =loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
 					textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-					textureTemp.repeat.set(9,90)
+					textureTemp.repeat.set(sizeWidth,sizeHeight)
 					const normal = loader.load('Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
 					normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-					normal.repeat.set(9,90)
+					normal.repeat.set(sizeWidth,sizeHeight)
 					
 					const newMat = new THREE.MeshPhongMaterial({
 						map: textureTemp,
 						normalMap: normal,
-						shininess:0
+						shininess:5
 					})
 					child.material = newMat
+				}
+				if (name.substring(0, 11) === 'Pathoutline') {
+					//Turn off shadows
+					child.castShadow=false;
 				}
 
 
@@ -544,7 +565,9 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	new POSTPROCESSING.BloomEffect({
+		luminanceThreshold: 0.45,
 		intensity:0.5
+
 	})
 );
 
