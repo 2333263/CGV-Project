@@ -21,6 +21,7 @@ import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/s
 import { MirrorShader } from "../node_modules/three/examples/jsm/shaders/MirrorShader.js"
 import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, GodRaysFakeSunShader } from "../node_modules/three/examples/jsm/shaders/GodRaysShader.js"
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
 
 
 import Stats from "stats";
@@ -315,17 +316,32 @@ const initcam = controls.getObject().quaternion // save camera rotation to be us
 const playerLoader=new GLTFLoader()
 var player=new THREE.Object3D();
 var Torso=new THREE.Object3D()
-playerLoader.load(
-	"../Objects/Character/player-model.gltf",
-	function(gltf){
-		gltf.scene.scale.set(0.1,0.1,0.1)
-		player=gltf.scene
-		player.name="model"
-		Torso=gltf.scene.getObjectByName("Torso")
-	//	scene.add(player)
 
+
+const modelsPlayer = {
+	body: { url: '/Objects/Character/player-model.gltf' },
+};
+{
+	const gltfPlayerLoader = new GLTFLoader(manager);
+	for (const model of Object.values(modelsPlayer)) {
+		gltfPlayerLoader.load(model.url, (gltf) => {
+			player=gltf.scene
+			player.name="model"
+			Torso=gltf.scene.getObjectByName("Torso")
+			player.traverse(function (child) {
+				if (child.isMesh){
+					console.log(child.material.color)
+					child.material = new THREE.MeshPhongMaterial( {
+						color: new THREE.Color(child.material.color), 
+						side: THREE.FrontSide,
+						shininess: 0
+						})
+				}
+			});
+		});
 	}
-)
+}
+
 //var player = new THREE.Mesh(playerModel, material);
  //visibile representation of player hitbox
 //player.scale.set(0.01,0.01)
@@ -520,7 +536,7 @@ var stats = new Stats();
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
-
+player.rotation.z = controls.getObject().rotation.z
 function animate() {
 	stats.begin() //For monitoring
 	//direcLight.translateX(-0.01)
@@ -528,8 +544,9 @@ function animate() {
 		hud.isPaused(false);
 		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
 		player.position.copy(playerBody.position);
-	 	player.quaternion.y=controls.getObject().quaternion.y;
-		// player.quaternion.y=controls.getObject().quaternion.y;
+		player.rotation.set(controls.getObject().rotation.x, controls.getObject().rotation.y, 0)
+	 	//player.quaternion.set(controls.getObject().quaternion);
+		
 		dt = Clock.getDelta()
 		if(hud.gamestate==0)
 		move();
@@ -661,7 +678,7 @@ animate();
 
 function renderWorld() {
 	//player=scene.getObjectByName("player")
-	scene.remove(player)
+	//scene.remove(player)
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
 	renderer.autoClear = false;
