@@ -506,7 +506,7 @@ composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 const bloomPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	new POSTPROCESSING.BloomEffect({
-		intensity:1
+		intensity:0.5
 	})
 );
 //bloomPass.renderToScreen = true;
