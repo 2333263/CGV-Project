@@ -476,6 +476,7 @@ function animate() {
 		player.position.copy(playerBody.position);
 		player.quaternion.copy(controls.getObject().quaternion);
 		dt = Clock.getDelta()
+		if(hud.gamestate==0)
 		move();
 		controls.getObject().position.copy(playerBody.position);
 		hud.updateAmmoCount(playerBody.noBullets)
