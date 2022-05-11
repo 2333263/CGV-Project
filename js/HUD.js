@@ -1,8 +1,9 @@
 var dpr = window.devicePixelRatio
-const conversionW = window.innerWidth / 1900
-const conversionH = window.innerHeight / 935
+const conversionW = (window.innerWidth+20) / 1900
+const conversionH = (window.innerHeight+20) / 935
 const width=window.innerWidth+20
 const height=window.innerHeight+20
+import {leaderBoard} from "../js/LeaderBoard.js"
 
 
 
@@ -23,8 +24,10 @@ class HUD {
         this.timetaken=99999
         this.pausedtime=0;
         this.timepaused=0;
- 
+        this.entered=true
         this.Paused=false;
+        this.name="";
+        this.leaderBoard=new leaderBoard(this.document)
 
         //var body=document.getElementsByTagName("body")[0];
         //document.body.appendChild(this.canvas)
@@ -70,12 +73,28 @@ class HUD {
 
         //graphics.scale(scaleFitNative,scaleFitNative)
         this.addInput=function(){
-             var input=document.createElement("input")
+            var input=document.createElement("input")
             input.type = 'text';
             input.style.position = 'fixed';
-            input.style.left = (0) + 'px';
-            input.style.top = (0) + 'px';
-            input.onkeydown = handleEnter;
+            input.style.left = (width/2)-150 + 'px';
+            input.style.top = (height/2) + 'px';
+            input.id="input"
+            input.addEventListener("keypress",function(e){
+                var keyCode = e.keyCode;
+                if (keyCode == 13) {
+                    ///console.log(this.entered)
+                    ///console.log(document.body.getElementsByClassName("input"))
+                    //drawText(this.value, parseInt(this.style.left, 10), parseInt(this.style.top, 10));
+
+                    console.log(input.id)
+                    document.body.removeChild(document.body.lastElementChild)
+                    
+                    //console.log("removed")
+                   // hasInput = false;
+                   
+                }
+            })
+            
             input.className="input"
             document.body.appendChild(input).focus;
 
@@ -84,15 +103,9 @@ class HUD {
             //hasInput = true;        
         }
 
-        function handleEnter(e) {
-            var keyCode = e.keyCode;
-            if (keyCode === 13) {
-                console.log(document.body.getElementsByClassName("input"))
-                //drawText(this.value, parseInt(this.style.left, 10), parseInt(this.style.top, 10));
-                document.body.removeChild(document.body.lastElementChild)
-                console.log("removed")
-               // hasInput = false;
-            }
+
+         this.setEntered=function(){
+            this.entered=true
         }
 
         this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
@@ -120,7 +133,7 @@ class HUD {
                 targetCount(this.currtargets, this.totaltarget);
                 graphics.restore();
                 graphics.save();
-                graphics.translate(X_LEFT + 90, Y_TOP + 30)
+                graphics.translate(X_RIGHT - 20, Y_TOP + 30)
                 drawTarget();
                 graphics.restore();
 
@@ -130,7 +143,8 @@ class HUD {
                 graphics.fillStyle="rgba(0,0,0,0.5)"
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.fillStyle = "black"
-                graphics.font = "30px Arial"
+                var size=30*scaleFitNative
+                graphics.font = String(size)+"px Arial"
                 var word = "Paused"
                 graphics.fillText(word, 0, -40)
                 word="Press R to restart"
@@ -145,20 +159,50 @@ class HUD {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
                 graphics.fillStyle="rgba(0,0,0,0.5)"
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
-                graphics.font = "60px Arial"
+                var size=60*scaleFitNative
+                graphics.font = String(size)+"px Arial"
                 var word = "";
+                var bottom=Y_TOP+50
                 if ( this.currtargets == this.totaltarget) { 
                     
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime)
-                      
+                        this.entered=false;
                         this.addInput()
+                        
                     }
-                    word = "Level complete! Click on the text to enter name"
+                    if(this.entered==true){
+                        var size=60*scaleFitNative
+                        graphics.font = String(size)+"px monospace"
+                      //  graphics.fillText(, -300, -300)
+                        var top=this.leaderBoard.getTop10()
+
+                        graphics.fillStyle = "rgb(0,0,0)"
+                        graphics.fillText("Top "+top.length, X_LEFT+200, Y_TOP+50*scaleFitNative)
+                        
+                        for (var i=0 ;i<top.length; i++){
+                            
+                            graphics.fillText(top[i],  X_LEFT+200, (Y_TOP+100*scaleFitNative)+i*70*scaleFitNative)
+                            bottom=(Y_TOP+90*scaleFitNative)+i*50*scaleFitNative
+                        }
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200,bottom+150*scaleFitNative)
+                        bottom+=70*scaleFitNative
+                    }   
+                     else{
+                          if (!document.getElementById("input") &&this.entered==false) { 
+                              this.entered=true;
+                              this.leaderBoard.addItem(this.name, this.timetaken)
+                              
+                              }
+
+                         if(this.entered==false){ this.name=(document.getElementById("input").value.toUpperCase())}
+                    
+                    word = "Level complete! Please enter your name and press enter"
                     this.gamestate = 1 //win
                     
+                
                     graphics.fillStyle = "rgb(0,255,0)"
-                    graphics.fillText(this.timetaken, -200, -80)
+                    graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200, Y_TOP+250)}
                   
                 }
                 else {
@@ -167,8 +211,10 @@ class HUD {
                     graphics.fillStyle = "rgb(255,0,0)"
                 }
                 var instruct="Click anywhere to restart."
-                graphics.fillText(word, -300, -20)
-                graphics.fillText(instruct, -200, 100)
+                graphics.fillText(word, X_LEFT+200, Y_TOP+450)
+                if(this.gamestate!=1){
+                graphics.fillText(instruct, X_LEFT+200,Y_TOP+350)
+                }
                 return true
             }
             else { return false }
@@ -208,11 +254,12 @@ class HUD {
         function drawTime(startTime){
           
             graphics.fillStyle = "rgb(25,25,25)"
-            graphics.font = "30px Arial"
+            var size=30*scaleFitNative
+            graphics.font = String(size)+"px Arial"
             var word = ""+ getTimeElappsedSec(startTime)
         
 
-            graphics.fillText(word, (X_RIGHT - 120), Y_TOP + 30)
+            graphics.fillText(word, -40-word.length*5, Y_TOP + 30)
         }
         function getTimeElappsed(startTime){
             let d = new Date();
@@ -289,15 +336,17 @@ class HUD {
 
         function bulletCount(currammo, totalammo) {
             graphics.fillStyle = "rgb(25,25,25)"
-            graphics.font = "30px Arial"
+            var size=30*scaleFitNative
+            graphics.font = String(size)+"px Arial"
             var word = currammo + " / " + totalammo;
             graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10)
         }
         function targetCount(currHits, totaltarget) {
             graphics.fillStyle = "rgb(25,25,25)"
-            graphics.font = "30px Arial"
+            var size=30*scaleFitNative
+            graphics.font = String(size)+"px Arial"
             var word = currHits + " / " + totaltarget;
-            graphics.fillText(word, X_LEFT + 10, Y_TOP + 30)
+            graphics.fillText(word, X_RIGHT-110, Y_TOP + 30)
         }
         function drawBullet() {
             graphics.save();
