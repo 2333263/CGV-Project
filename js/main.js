@@ -160,10 +160,7 @@ const models = {
 				if (name.substring(0, 11) === 'WindowGlass') {
 					child.material.specular = new THREE.Color('#31A5E7')
 				}
-				if (name.substring(0, 6) === 'Window') {
-					child.castShadow=false;
-				}
-				if (name.substring(0, 4) === 'Door') {
+				if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign') {
 					child.castShadow=false;
 				}
 
@@ -515,7 +512,13 @@ const bloomPass = new POSTPROCESSING.EffectPass(
 		intensity:0.5
 	})
 );
-//bloomPass.renderToScreen = true;
+
+const chromaticAberationPass = new POSTPROCESSING.EffectPass(
+	controls.getObject(), 
+	new POSTPROCESSING.ChromaticAberrationEffect(13, new THREE.Vector2(1e-3, 5e-4),{
+		//chromaticAberrationOffset: new THREE.Vector2(1,1)
+	})
+);
 
 
 const sunMaterial = new THREE.MeshBasicMaterial({
@@ -552,7 +555,7 @@ const godRayPass = new POSTPROCESSING.EffectPass(
 		{
 			height: 480,
 			//kernelSize: KernelSize.SMALL,
-			density: 0.96,
+			density: 1,
 			decay: 0.92,
 			weight: 0.5,
 			exposure: 0.54,
@@ -561,12 +564,15 @@ const godRayPass = new POSTPROCESSING.EffectPass(
 	})
 )
 //Add to composer
-composer.addPass(bloomPass);
-//bloomPass.renderToScreen = true;
+
 
 composer.addPass(godRayPass);
 //godRayPass.renderToScreen = true
 
+composer.addPass(bloomPass);
+//bloomPass.renderToScreen = true;
+
+composer.addPass(chromaticAberationPass)
 /*
 //USING BUILT IN THREE.JS POST PROCESSING
 const composer = new EffectComposer(renderer);
