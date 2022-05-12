@@ -208,39 +208,16 @@ pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 const initcam = controls.getObject().quaternion // save camera rotation to be used in init function
 
 
-// const playerLoader = new GLTFLoader()
-// var player = new THREE.Object3D();
-// 
-// {
-// 	const gltfPlayerLoader = new GLTFLoader(manager);
-
-// 	gltfPlayerLoader.load('/Objects/Character/player-model-noInnderFaces.gltf', (gltf) => {
-// 		player = gltf.scene
-// 		player.name = "model"
-
-// 		Torso = gltf.scene.getObjectByName("Torso")
-// 		playerModel.traverse(function (child) {
-// 			if (child.isMesh) {
-// 				child.castShadow = true;
-// 				child.material = new THREE.MeshPhongMaterial({
-// 					color: new THREE.Color(child.material.color),
-// 					side: THREE.FrontSide,
-// 					shininess: 0
-// 				})
-// 			}
-// 			//Adjust Legs
-// 			if (child.name.substring(0, 5) === 'Left-' || child.name.substring(0, 6) === 'Right-') {
-// 				child.translateY(1.3)
-// 				child.scale.set(child.scale.x, child.scale.y / 3, child.scale.z);
-// 			}
-// 		});
-// 	});
 
 // }
 
 var Torso = new THREE.Object3D()
 var playerModel = BuildWorld.buildPlayer();
 Torso = playerModel.getObjectByName("torso")
+playerModel.traverse(function(child){
+	child.castShadow = true;
+})
+
 
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
@@ -472,14 +449,15 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 	mainLight.castShadow = true;
 	//mainLight.shadow.radius = 3;
 	mainLight.shadow.bias = 0.0000125 * 2;
+	//TODO Add variable shadowMap size
 	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
 	mainLight.position.set(1.5, 2.75, 1.5);
 	mainLight.position.multiplyScalar(50);
-	var temp = 25
-	mainLight.shadow.camera.top = temp;
-	mainLight.shadow.camera.bottom = -temp;
+	var temp = 40
+	mainLight.shadow.camera.top = 50;
+	mainLight.shadow.camera.bottom = -30;
 	mainLight.shadow.camera.left = -20;
-	mainLight.shadow.camera.right = 70;
+	mainLight.shadow.camera.right = 100;
 	mainLight.shadow.camera.near = 0;
 	mainLight.shadow.camera.far = 1000;
 	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
