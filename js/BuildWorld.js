@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { threeToCannonObj } from '/js/ThreeToCannonObj.js'
+import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
@@ -25,7 +25,7 @@ const models = {
     level3body: { url: '/Objects/Level_1/Level_3.gltf' }
 };
 
-class loadLevelWithCollision {
+class BuildWorld {
     constructor() {
     }
 
@@ -245,7 +245,91 @@ class loadLevelWithCollision {
         }
     }
 
+    /**
+     * Method to build the player
+     * @returns {THREE.Mesh} Player mesh
+     */
+    static buildPlayer(){
+        //Player colours
+        const colorRed = new THREE.Color('#BC4937');
+        const colorPeach = new THREE.Color('#F7C0A3');
+        const colorBlack = new THREE.Color('#000000');
+
+        //Define geometries
+        const torseGeometry = new THREE.BoxGeometry(1.2,1.5,0.5);
+        const armGeometry = new THREE.BoxGeometry(0.4,1.3,0.4);
+        const handGeometry = new THREE.BoxGeometry(0.36,0.2,0.36);
+        const headGeometry = new THREE.BoxGeometry(0.7,0.7,0.4);
+        const eyeGeometry = new THREE.PlaneGeometry(0.1,0.2);
+        const legGeometry = new THREE.BoxGeometry(0.45,0.8,0.45);
+
+        //Define materials
+        const redMat = new THREE.MeshPhongMaterial({
+            color: colorRed,
+            side: THREE.FrontSide
+        });
+        const skinMat = new THREE.MeshPhongMaterial({
+            color: colorPeach,
+            side: THREE.FrontSide
+        });
+        const blackMat = new THREE.MeshPhongMaterial({
+            color: colorBlack,
+            side: THREE.FrontSide
+        });
+        
+        //Make main player mesh
+        const torsoMesh = new THREE.Mesh(torseGeometry, redMat);
+        torsoMesh.name = 'torso';
+
+        //Make arms
+        const armRight = new THREE.Mesh(armGeometry, redMat);
+        armRight.name = 'armRight';
+        const armLeft = new THREE.Mesh(armGeometry, redMat);
+        armLeft.name = 'armLeft';
+
+        //Make hands
+        const handRight = new THREE.Mesh(handGeometry, skinMat);
+        handRight.name = 'handRight';
+        const handLeft = new THREE.Mesh(handGeometry, skinMat);
+        handLeft.name = 'handLeft';
+
+        //Make head
+        const head = new THREE.Mesh(headGeometry, skinMat);
+        head.name = 'head';
+
+        //Make eyes
+        const eyeRight = new THREE.Mesh(eyeGeometry, blackMat);
+        eyeRight.name = 'eyeRight';
+        const eyeLeft = new THREE.Mesh(eyeGeometry, blackMat);
+        eyeLeft.name = 'eyeLeft';
+
+        //Make Legs
+        const legLeft = new THREE.Mesh(legGeometry,blackMat);
+        legLeft.name = 'legLeft';
+        const legRight = new THREE.Mesh(legGeometry, blackMat);
+        legRight.name = 'legRight';
+
+        //Add limbs + head to torse
+        torsoMesh.add(armRight.translateX(0.8));
+        torsoMesh.add(armLeft.translateX(-0.8).rotateY(Math.PI / 2));
+        torsoMesh.add(head.translateY(0.7))
+        torsoMesh.add(legRight.translateX(0.25).translateY(-0.8))
+        torsoMesh.add(legLeft.translateX(-0.25).translateY(-0.8))
+
+        //Add eyes to head slight in front of head to avoid clipping
+        head.add(eyeLeft.translateX(-0.15).translateZ(0.201).translateY(0.15));
+        head.add(eyeRight.translateX(0.15).translateZ(0.201).translateY(0.15));
+
+        //Add hands to arms
+        armRight.add(handRight.translateY(-0.7));
+        armLeft.add(handLeft.translateY(-0.7));
+        
+        //torsoMesh.rotateY(Math.PI)
+        
+        return torsoMesh;
+    }
+
 }
 
 
-export { loadLevelWithCollision };
+export { BuildWorld };

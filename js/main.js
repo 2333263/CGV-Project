@@ -15,7 +15,7 @@ import { BokehShader } from "../node_modules/three/examples/jsm/shaders/BokehSha
 import { FilmShader } from "../node_modules/three/examples/jsm/shaders/FilmShader.js"
 import { FreiChenShader } from "../node_modules/three/examples/jsm/shaders/FreiChenShader.js"
 import { ColorCorrectionShader } from "../node_modules/three/examples/jsm/shaders/ColorCorrectionShader.js"
-import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js" 
+import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js"
 import { MirrorShader } from "../node_modules/three/examples/jsm/shaders/MirrorShader.js"
 import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, GodRaysFakeSunShader } from "../node_modules/three/examples/jsm/shaders/GodRaysShader.js"
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
@@ -25,9 +25,9 @@ import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.
 import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
-import { Targets } from '/js/targets.js';
+import { Targets } from '../js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { loadLevelWithCollision } from '../js/LoadLevel.js'
+import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
 
@@ -40,7 +40,7 @@ const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
-var mirrorCam=new THREE.PerspectiveCamera(75,2/3,0.1,1000)
+var mirrorCam = new THREE.PerspectiveCamera(75, 2 / 3, 0.1, 1000)
 
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
@@ -121,17 +121,19 @@ const toonMaterial = new THREE.MeshToonMaterial({
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 */
 
-const mirrorGeo = new THREE.PlaneGeometry(3,3);
+const mirrorGeo = new THREE.PlaneGeometry(3, 3);
 
-scene.add(new Reflector(mirrorGeo,{
+scene.add(new Reflector(mirrorGeo, {
 	clipBias: 0.003,
 	textureWidth: 1920,
 	textureHeight: 1080
 }).translateY(1).translateX(1).translateZ(3))
 
 
+
+
 //Add blender objects to scene and collisions to world
-loadLevelWithCollision.loadLevel(scene, world, 1)
+BuildWorld.loadLevel(scene, world, 1)
 
 //To unload current world
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)
@@ -163,40 +165,39 @@ pipcamera.position.set(0, 30, 0); // place top down camera at a height above the
 pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 
 const initcam = controls.getObject().quaternion // save camera rotation to be used in init function
-const playerLoader=new GLTFLoader()
-var player=new THREE.Object3D();
-var Torso=new THREE.Object3D()
 
 
-const modelsPlayer = {
-	body: { url: '/Objects/Character/player-model-noInnderFaces.gltf' },
-};
-{
-	const gltfPlayerLoader = new GLTFLoader(manager);
-	for (const model of Object.values(modelsPlayer)) {
-		gltfPlayerLoader.load(model.url, (gltf) => {
-			player=gltf.scene
-			player.name="model"
-			
-			Torso=gltf.scene.getObjectByName("Torso")
-			player.traverse(function (child) {
-				if (child.isMesh){
-					child.castShadow = true;
-					child.material = new THREE.MeshPhongMaterial( {
-						color: new THREE.Color(child.material.color), 
-						side: THREE.FrontSide,
-						shininess: 0
-						})
-				}
-				if (child.name.substring(0,5) === 'Left-' || child.name.substring(0,6) === 'Right-'){
-						child.translateY(1.3)
-						child.scale.set(child.scale.x, child.scale.y/3, child.scale.z);
-					}
-			});
-		});
-	}
-}
+// const playerLoader = new GLTFLoader()
+// var player = new THREE.Object3D();
+// var Torso = new THREE.Object3D()
+// {
+// 	const gltfPlayerLoader = new GLTFLoader(manager);
 
+// 	gltfPlayerLoader.load('/Objects/Character/player-model-noInnderFaces.gltf', (gltf) => {
+// 		player = gltf.scene
+// 		player.name = "model"
+
+// 		Torso = gltf.scene.getObjectByName("Torso")
+// 		playerModel.traverse(function (child) {
+// 			if (child.isMesh) {
+// 				child.castShadow = true;
+// 				child.material = new THREE.MeshPhongMaterial({
+// 					color: new THREE.Color(child.material.color),
+// 					side: THREE.FrontSide,
+// 					shininess: 0
+// 				})
+// 			}
+// 			//Adjust Legs
+// 			if (child.name.substring(0, 5) === 'Left-' || child.name.substring(0, 6) === 'Right-') {
+// 				child.translateY(1.3)
+// 				child.scale.set(child.scale.x, child.scale.y / 3, child.scale.z);
+// 			}
+// 		});
+// 	});
+
+// }
+
+var playerModel = BuildWorld.buildPlayer();
 
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
@@ -259,8 +260,8 @@ document.addEventListener("mousedown", (e) => {
 			raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 			const intersects = raycaster.intersectObjects(scene.children);
 			for (let j = 0; j < TargetArr.length; j++) {
-				var i=0
-				while(Torso.children.includes(intersects[i].object)){
+				var i = 0
+				while (Torso.children.includes(intersects[i].object)) {
 					i++;
 				}
 				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
@@ -280,7 +281,7 @@ document.addEventListener("mousedown", (e) => {
 
 
 		}
-		else if (hud.gamestate == 1 && hud.entered==true) { //game win (only one level so just resets)
+		else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
 			removeTargets();
 
 			init();
@@ -372,42 +373,42 @@ document.body.appendChild(stats.dom)
 
 function animate() {
 	stats.begin() //For monitoring
-	
+
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
 		hud.isPaused(false);
-		if (player.position.y < -25) { init(); } // if player out of bounds, reset level
-		player.position.copy(playerBody.position);
+		if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
+		playerModel.position.copy(playerBody.position);
+		
 		var tempVec = new THREE.Vector3();
 		controls.getObject().getWorldDirection(tempVec)
-		var theta = Math.atan2(tempVec.x,tempVec.z);
+		var theta = Math.atan2(tempVec.x, tempVec.z);
 
-		//console.log(controls.getObject().rotation)
-		player.rotation.set(0, theta- Math.PI/2,0)
-		//player.rotation.setRotationFromMatrix(controls.getObject().matrix)
-	 	//player.quaternion.set(controls.getObject().quaternion);
-		
+		playerModel.translateY(-0.2)
+		playerModel.rotation.set(0, theta , 0)
+		playerModel.translateZ(-0.30)
+
 		dt = Clock.getDelta()
-		if(hud.gamestate==0)
-		move();
-		var pos=new THREE.Vector3()
+		if (hud.gamestate == 0)
+			move();
+		var pos = new THREE.Vector3()
 		pos.copy(playerBody.position)
-	//	pos.y+=1
+		pos.y+=0.7
 		controls.getObject().position.copy(pos);
 		hud.updateAmmoCount(playerBody.noBullets)
 		hud.draw();
 		hudTexture.needsUpdate = true;
 		moveTargets()
 		world.step(timestep, dt);
-		
+
 	}
 	else {
 		hud.isPaused(true);
 		hud.draw();
 		hudTexture.needsUpdate = true;
-		
+
 	}
-	
+
 	renderWorld()
 
 	stats.end() //For monitoring
@@ -418,23 +419,23 @@ function animate() {
 
 //Generate main directional lighting for the world
 const mainLight = new THREE.DirectionalLight(0xffe3b1);
-        {
-            mainLight.castShadow = true;
-            //mainLight.shadow.radius = 3;
-            mainLight.shadow.bias = 0.0000125 * 2;
-            mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
-            mainLight.position.set(1.5, 2.75, 1.5);
-            mainLight.position.multiplyScalar(50);
-            var temp = 25
-            mainLight.shadow.camera.top = temp;
-            mainLight.shadow.camera.bottom = -temp;
-            mainLight.shadow.camera.left = -20;
-            mainLight.shadow.camera.right = 70;
-            mainLight.shadow.camera.near = 0;
-            mainLight.shadow.camera.far = 1000;
-            //scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
-        }
-        scene.add(mainLight)
+{
+	mainLight.castShadow = true;
+	//mainLight.shadow.radius = 3;
+	mainLight.shadow.bias = 0.0000125 * 2;
+	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
+	mainLight.position.set(1.5, 2.75, 1.5);
+	mainLight.position.multiplyScalar(50);
+	var temp = 25
+	mainLight.shadow.camera.top = temp;
+	mainLight.shadow.camera.bottom = -temp;
+	mainLight.shadow.camera.left = -20;
+	mainLight.shadow.camera.right = 70;
+	mainLight.shadow.camera.near = 0;
+	mainLight.shadow.camera.far = 1000;
+	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
+}
+scene.add(mainLight)
 
 
 //Post Proccessing
@@ -459,7 +460,7 @@ function renderWorld() {
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
 	mainLight.castShadow = false;
-	scene.add(player)
+	scene.add(playerModel)
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	mainLight.castShadow = true;
@@ -470,7 +471,7 @@ function renderWorld() {
 
 
 function mapTargets() { // rotates targets for appearence on the map camera
-	
+
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
@@ -486,35 +487,35 @@ function worldTargets() { //remove the map targets from the scene
 	}
 }
 
-function moveTargets(){
-	for(var i=0;i<TargetArr.length;i++){
-		if(TargetArr[i].moves==true){
-			var tempPos=new THREE.Vector3()
-				tempPos.copy(TargetArr[i].getCylinder().position)
-				tempPos.x=tempPos.x.toFixed(2)
-				tempPos.y=tempPos.y.toFixed(2)
-				tempPos.z=tempPos.z.toFixed(2)
-				var tempEnd=new THREE.Vector3()
-				tempEnd.copy(TargetArr[i].endPoint)
-				tempEnd.x=tempEnd.x.toFixed(2)
-				tempEnd.y=tempEnd.y.toFixed(2)
-				tempEnd.z=tempEnd.z.toFixed(2)
-				var tempStart=new THREE.Vector3()
-				tempStart.copy(TargetArr[i].startPoint)
-				tempStart.x=tempStart.x.toFixed(2)
-				tempStart.y=tempStart.y.toFixed(2)
-				tempStart.z=tempStart.z.toFixed(2)
-			if(!tempPos.equals(tempEnd) && TargetArr[i].moveZ==true){
+function moveTargets() {
+	for (var i = 0; i < TargetArr.length; i++) {
+		if (TargetArr[i].moves == true) {
+			var tempPos = new THREE.Vector3()
+			tempPos.copy(TargetArr[i].getCylinder().position)
+			tempPos.x = tempPos.x.toFixed(2)
+			tempPos.y = tempPos.y.toFixed(2)
+			tempPos.z = tempPos.z.toFixed(2)
+			var tempEnd = new THREE.Vector3()
+			tempEnd.copy(TargetArr[i].endPoint)
+			tempEnd.x = tempEnd.x.toFixed(2)
+			tempEnd.y = tempEnd.y.toFixed(2)
+			tempEnd.z = tempEnd.z.toFixed(2)
+			var tempStart = new THREE.Vector3()
+			tempStart.copy(TargetArr[i].startPoint)
+			tempStart.x = tempStart.x.toFixed(2)
+			tempStart.y = tempStart.y.toFixed(2)
+			tempStart.z = tempStart.z.toFixed(2)
+			if (!tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
 				TargetArr[i].getCylinder().translateZ(0.01)
-			}else if(tempPos.equals(tempEnd) && TargetArr[i].moveZ==true){
-				TargetArr[i].moveZ=false
+			} else if (tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
+				TargetArr[i].moveZ = false
 				TargetArr[i].getCylinder().translateZ(-0.01)
-			}else if(TargetArr[i].moveZ==false &&!tempPos.equals(tempStart)){
+			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
 				TargetArr[i].getCylinder().translateZ(-0.01)
 
-			}else{
+			} else {
 				TargetArr[i].getCylinder().translateZ(0.01)
-				TargetArr[i].moveZ=true
+				TargetArr[i].moveZ = true
 			}
 		}
 	}
@@ -525,8 +526,8 @@ function moveTargets(){
 function addTargets(position) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i][0], position[i][1], position[i][2],new THREE.Vector3(position[i][0]+5, position[i][1], position[i][2]));
-		target.moves=true
+		var target = new Targets(i, position[i][0], position[i][1], position[i][2], new THREE.Vector3(position[i][0] + 5, position[i][1], position[i][2]));
+		target.moves = true
 		TargetArr.push(target)
 		scene.add(target.getCylinder())
 
@@ -540,7 +541,7 @@ function init() { //initialise for a reset of level
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
-	playerBody.canJump=false
+	playerBody.canJump = false
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
