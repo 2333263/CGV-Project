@@ -13,8 +13,8 @@ var boxCollision = [];
 var boxCollisionCANNON = [];
 
 //Wire fences must be kept same size for optimisation
-var wireColor = loader.load('../Objects/Textures/Fence/Fence003_1K_Color.png')
-var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_1K_NormalGL.png')
+var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
+var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
 var wireAlpha = loader.load('../Objects/Textures/Fence/Fence003_1K_Opacity.png')
 wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
