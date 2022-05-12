@@ -79,7 +79,7 @@ class BuildWorld {
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
                     hullCollision.push(child)
-
+                    /*
 
                     const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
                     const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
@@ -91,10 +91,17 @@ class BuildWorld {
                     console.log(sizeWidth, sizeDepth, sizeHeight)
                     child.material.side = THREE.FrontSide
                     child.material.normalMap = normal
+                    console.log(child)
+                    */
                 }
-                else if (name.substring(0, 10) === 'BarrelBody') {
+                else if (name.substring(0, 11) === 'InvisHitbox') {
+                    //Add the invisible hitboxes
+                    child.visible = false
+                    hullCollision.push(child)
+                }
+                else if (name.substring(0, 4) === 'Wall') {
                     //Add barrels to collision detection
-                    barrelCollision.push(child)
+                    boxCollision.push(child)
                 }
                 else if (name.substring(0, 8) === 'TrashBin' || name.substring(0, 5) === 'Crate') {
                     //Add trash bins and crates to collision detection
@@ -274,6 +281,7 @@ class BuildWorld {
         const headGeometry = new THREE.BoxGeometry(0.7,0.7,0.4);
         const eyeGeometry = new THREE.PlaneGeometry(0.1,0.2);
         const legGeometry = new THREE.BoxGeometry(0.45,0.8,0.45);
+        
 
         //Define materials
         const redMat = new THREE.MeshPhongMaterial({
@@ -293,7 +301,7 @@ class BuildWorld {
         const torsoMesh = new THREE.Mesh(torseGeometry, redMat);
         torsoMesh.name = 'torso';
 
-        //Make arms
+        //Make arms, add pivot for rotation
         const armRight = new THREE.Mesh(armGeometry, redMat);
         armRight.name = 'armRight';
         const armLeft = new THREE.Mesh(armGeometry, redMat);
