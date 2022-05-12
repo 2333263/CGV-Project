@@ -147,7 +147,8 @@ class loadLevelWithCollision {
 
                 else if (name.substring(0, 9) === 'WireFence') {
                     var sideShown = THREE.FrontSide;
-
+                    child.castShadow = false
+                    child.receiveShadow = false
                     //Add fence to collision detection
                     boxCollision.push(child);
 
