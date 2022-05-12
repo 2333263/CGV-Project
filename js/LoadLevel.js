@@ -157,7 +157,7 @@ class loadLevelWithCollision {
                     const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
                     const sizeWidth = Math.sqrt(Math.pow(sizex,2)+Math.pow(sizey,2))/2
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z/2
-                    console.log(sizeHeight)
+                    //console.log(sizeHeight)
                     
                     //Wrap texture depending on path size
                     wireColor.repeat.set(sizeWidth, sizeHeight)
