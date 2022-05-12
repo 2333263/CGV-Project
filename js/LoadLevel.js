@@ -29,21 +29,28 @@ class loadLevelWithCollision {
     constructor() {
     }
 
-    static loadLevel(scene, world, level) {
+    /**
+     * Function to load a specified level into the scene and world
+     * @param {THREE.Scene} scene The scene that the level is loaded to
+     * @param {CANNON.World} world The world that the collisions are loaded to
+     * @param {int} level The level of the world as an int
+     * 
+     */
+    static loadLevel(scene, world, level = 1) {
         var url;
         //Select which level to load with switch 
         switch (level) {
-            case 1: 
+            case 1:
                 url = models.level1body.url
                 break;
-            case 2: 
+            case 2:
                 url = models.level2body.url
                 break;
-            case 3: 
+            case 3:
                 url = models.level3body.url
                 break;
-            default: 
-                //In Case the level is not defined, load level 1
+            default:
+                //In Case the level is defined incorrectly, load level 1
                 url = models.level1body.url
         }
         const gltfLoader = new GLTFLoader(manager);
@@ -156,15 +163,15 @@ class loadLevelWithCollision {
                     child.castShadow = false;
                     const sizex = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) * child.scale.x
                     const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
-                    const sizeWidth = Math.sqrt(Math.pow(sizex,2)+Math.pow(sizey,2))/2
-                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z/2
+                    const sizeWidth = Math.sqrt(Math.pow(sizex, 2) + Math.pow(sizey, 2)) / 2
+                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z / 2
                     //console.log(sizeHeight)
-                    
+
                     //Wrap texture depending on path size
                     wireColor.repeat.set(sizeWidth, sizeHeight)
                     wireNormal.repeat.set(sizeWidth, sizeHeight)
                     wireAlpha.repeat.set(sizeWidth, sizeHeight)
-                    
+
 
                     const newMat = new THREE.MeshPhongMaterial({
                         map: wireColor,
@@ -175,7 +182,7 @@ class loadLevelWithCollision {
                         side: sideShown
                     })
                     child.material = newMat
-                    
+
                 }
 
 
@@ -186,7 +193,7 @@ class loadLevelWithCollision {
             //Visually render scene
             root.name = 'Level_Root'
             scene.add(root);
-            
+
 
             //Add collisions
             for (const obj of hullCollision) {
@@ -209,13 +216,19 @@ class loadLevelWithCollision {
         });
     }
 
-    static unloadCurrentLevel(scene, world){
-        
+
+    /**
+     * Function to unload current world
+     * @param {THREE.Scene} scene The scene to have only the level objects removed
+     * @param {CANNON.World} world The world to have only the level collisions removed
+     */
+    static unloadCurrentLevel(scene, world) {
+
         //Unload THREE meshes
         //console.log(scene.getObjectByName('Scene'))
         scene.remove(scene.getObjectByName('Level_Root'))
 
-        //Unload CANNON collisions
+        //Unload CANNON collisions of different types
         for (const obj of hullCollisionCANNON) {
             console.log('Unloading CANNON Body')
             world.removeBody(obj)
