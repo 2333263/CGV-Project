@@ -12,6 +12,13 @@ var barrelCollisionCANNON = [];
 var boxCollision = [];
 var boxCollisionCANNON = [];
 
+//Wire fences must be kept same size for optimisation
+var wireColor = loader.load('../Objects/Textures/Fence/Fence003_1K_Color.png')
+var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_1K_NormalGL.png')
+var wireAlpha = loader.load('../Objects/Textures/Fence/Fence003_1K_Opacity.png')
+wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
+wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
+wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
     level1body: { url: '/Objects/Level_1/Level_1.gltf' },
     level2body: { url: '/Objects/Level_1/Level_2.gltf' },
@@ -66,19 +73,24 @@ class loadLevelWithCollision {
                     //Add houses to collision detection
                     hullCollision.push(child)
                 }
-                if (name.substring(0, 10) === 'BarrelBody') {
+                else if (name.substring(0, 10) === 'BarrelBody') {
                     //Add barrels to collision detection
                     barrelCollision.push(child)
                 }
-                if (name.substring(0, 11) === 'WindowGlass') {
+                else if (name.substring(0, 8) === 'TrashBin' || name.substring(0, 5) === 'Crate') {
+                    //Add trash bins and crates to collision detection
+                    boxCollision.push(child)
+                }
+
+                else if (name.substring(0, 11) === 'WindowGlass') {
                     child.material.specular = new THREE.Color('#31A5E7')
                 }
-                if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign') {
+                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign') {
                     child.castShadow = false;
                 }
 
 
-                if (name.substring(0, 5) === 'Sign0') {
+                else if (name.substring(0, 5) === 'Sign0') {
                     //Replace textures
                     const textureTemp = child.material.map
                     const newMat = new THREE.MeshPhongMaterial({
@@ -88,13 +100,13 @@ class loadLevelWithCollision {
                     child.material = newMat
                 }
 
-                if (name.substring(0, 5) === 'Floor') {
+                else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     boxCollision.push(child)
-                    const textureTemp = loader.load('Objects/Textures/Floor/Ground049B_1K_Color.jpg')
+                    const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(9, 9)
-                    const normal = loader.load('Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
+                    const normal = loader.load('../Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(9, 9)
 
@@ -106,7 +118,7 @@ class loadLevelWithCollision {
                     child.material = newMat
                 }
 
-                if (name.substring(0, 8) === 'PathLong') {
+                else if (name.substring(0, 8) === 'PathLong') {
                     //Replace textures
                     child.castShadow = false;
 
@@ -114,10 +126,10 @@ class loadLevelWithCollision {
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z
 
                     //Wrap texture depending on path size
-                    const textureTemp = loader.load('Objects/Textures/Path/Bricks075A_1K_Color.png')
+                    const textureTemp = loader.load('../Objects/Textures/Path/Bricks075A_1K_Color.png')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(sizeWidth, sizeHeight)
-                    const normal = loader.load('Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
+                    const normal = loader.load('../Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(sizeWidth, sizeHeight)
 
@@ -128,9 +140,41 @@ class loadLevelWithCollision {
                     })
                     child.material = newMat
                 }
-                if (name.substring(0, 11) === 'Pathoutline') {
+                else if (name.substring(0, 11) === 'Pathoutline') {
                     //Turn off shadows
                     child.castShadow = false;
+                }
+
+                else if (name.substring(0, 9) === 'WireFence') {
+                    var sideShown = THREE.FrontSide;
+
+                    //Add fence to collision detection
+                    boxCollision.push(child);
+
+                    //Replace textures
+                    child.castShadow = false;
+                    const sizex = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) * child.scale.x
+                    const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
+                    const sizeWidth = Math.sqrt(Math.pow(sizex,2)+Math.pow(sizey,2))/2
+                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z/2
+                    console.log(sizeHeight)
+                    
+                    //Wrap texture depending on path size
+                    wireColor.repeat.set(sizeWidth, sizeHeight)
+                    wireNormal.repeat.set(sizeWidth, sizeHeight)
+                    wireAlpha.repeat.set(sizeWidth, sizeHeight)
+                    
+
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: wireColor,
+                        normalMap: wireNormal,
+                        alphaMap: wireAlpha,
+                        transparent: true,
+                        shininess: 5,
+                        side: sideShown
+                    })
+                    child.material = newMat
+                    
                 }
 
 

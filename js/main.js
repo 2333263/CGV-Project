@@ -24,13 +24,12 @@ import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.
 
 
 import Stats from "stats";
-import { PointerLockControls } from '/js/PointerLockControls.js';
-import { HUD } from "/js/HUD.js"
+import { PointerLockControls } from '../js/PointerLockControls.js';
+import { HUD } from "../js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { threeToCannonObj } from '/js/ThreeToCannonObj.js'
-import { loadLevelWithCollision } from '/js/LoadLevel.js'
-import { leaderBoard } from './LeaderBoard.js';
+import { loadLevelWithCollision } from '../js/LoadLevel.js'
+import { leaderBoard } from '../js/LeaderBoard.js';
 
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
@@ -60,9 +59,7 @@ const raycaster = new THREE.Raycaster();
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 const timestep = 1 / 60
-const material = new THREE.MeshStandardMaterial({
-	map: loader.load('textureOne.jpg') //test texture
-});
+
 const TargetArr = [];
 const mapTargetArr = [];
 const TargetPos = [[20, 3, 20], [10, 6, 15], [20, 10, 3]]
@@ -140,17 +137,6 @@ loadLevelWithCollision.loadLevel(scene, world, 1)
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)
 
 
-
-
-/*
-const ft = new THREE.TextureLoader().load("daylightbox_Front.bmp");
-const bk = new THREE.TextureLoader().load("daylightbox_Back.bmp");
-const up = new THREE.TextureLoader().load("daylightbox_Top.bmp");
-const dn = new THREE.TextureLoader().load("daylightbox_Bottom.bmp");
-const rt = new THREE.TextureLoader().load("daylightbox_Right.bmp");
-const lf = new THREE.TextureLoader().load("daylightbox_Left.bmp");*/
-
-//let pathStrings = ["miramar_ft.tga","miramar_bk.tga","miramar_up.tga","miramar_dn.tga","miramar_rt.tga","miramar_lf.tga"]
 let pathStrings = ["bluecloud_ft.jpg", "bluecloud_bk.jpg", "bluecloud_up.jpg", "bluecloud_dn.jpg", "bluecloud_rt.jpg", "bluecloud_lf.jpg",]
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
@@ -169,27 +155,8 @@ const skybox = new THREE.Mesh(skybxGeo, materialArray);
 scene.add(skybox);
 
 const light = new THREE.HemisphereLight("white", "white", 0.5);
-
-/*
-const floorGeo = new THREE.BoxGeometry(100, 0.1, 100);
-const floorMat = new THREE.MeshLambertMaterial({ map: loader.load("goomba.png") }); //testure on floor to show depth of movement
-const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.receiveShadow = true;
-
-const groundBody = new CANNON.Body({
-	shape: new CANNON.Box(new CANNON.Vec3(100, 0.1, 100)), //have floor be really thin box since plane was having collision issues 
-	mass: 0, //no mass so it does not fall
-	type: CANNON.Body.STATIC, //does not move
-	material: planeMaterial //to add friction 
-});
-groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 0), Math.PI * 0.5); //flat surface 
-world.addBody(groundBody) //add floor to world
-floor.position.copy(groundBody.position);
-floor.quaternion.copy(groundBody.quaternion);
-
-scene.add(floor.translateZ(-6).translateY(-2))
-*/
 scene.add(light)
+
 camera.position.z = 9; //initialise camera position
 camera.position.y = 9;
 pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
@@ -210,9 +177,11 @@ const modelsPlayer = {
 		gltfPlayerLoader.load(model.url, (gltf) => {
 			player=gltf.scene
 			player.name="model"
+			
 			Torso=gltf.scene.getObjectByName("Torso")
 			player.traverse(function (child) {
 				if (child.isMesh){
+					child.castShadow = true;
 					child.material = new THREE.MeshPhongMaterial( {
 						color: new THREE.Color(child.material.color), 
 						side: THREE.FrontSide,
@@ -228,13 +197,6 @@ const modelsPlayer = {
 	}
 }
 
-//var player = new THREE.Mesh(playerModel, material);
- //visibile representation of player hitbox
-//player.scale.set(0.01,0.01)
-//player=scene.getObjectByName(player.name)
-
-//player.castShadow = true;
-//player.receiveShadow = true;
 
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
@@ -270,23 +232,7 @@ playerBody.addEventListener('collide', (event) => {
 })
 
 
-const direcLight = new THREE.DirectionalLight(0xffffff, 1);
-direcLight.position.set( 1.5, 2.75, 1.5 );
-direcLight.position.multiplyScalar(50)
-direcLight.target = player
-direcLight.castShadow = true;
-//scene.add(direcLight)
 
-var temp = 50
-direcLight.shadow.camera.top = temp;
-direcLight.shadow.camera.bottom = -temp;
-direcLight.shadow.camera.left = -temp;
-direcLight.shadow.camera.right = temp;
-direcLight.shadow.camera.near = 0;
-direcLight.shadow.camera.far = 3500;
-direcLight.shadow.bias = 0.0000; //EVIL ATTRIBUTE THAT BREAKS THIGNS (SET TO 0)
-direcLight.shadow.mapSize.width = direcLight.shadow.mapSize.height = 1024*8;
-direcLight.shadow.camera.fov = 70;
 
 //scene.add( new THREE.CameraHelper( direcLight.shadow.camera ) );
 
@@ -422,7 +368,7 @@ var stats = new Stats();
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
-player.rotation.z = controls.getObject().rotation.z
+
 
 function animate() {
 	stats.begin() //For monitoring
@@ -472,7 +418,9 @@ function animate() {
 //Post Proccessing
 //USING CUSTOM POSTPROCESSING PACKAGE
 
-const composer = new POSTPROCESSING.EffectComposer(renderer);
+const composer = new POSTPROCESSING.EffectComposer(renderer,{
+	multisampling: 3
+});
 composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 
 //New Bloom Effect
@@ -487,9 +435,8 @@ const bloomPass = new POSTPROCESSING.EffectPass(
 
 const chromaticAberationPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
-	new POSTPROCESSING.ChromaticAberrationEffect(13, new THREE.Vector2(1e-3, 5e-4),{
-		//chromaticAberrationOffset: new THREE.Vector2(1,1)
-	})
+	//
+	new POSTPROCESSING.ChromaticAberrationEffect({blendFunction: 13, offset: new THREE.Vector2(1e-3, 5e-4)})
 );
 
 
@@ -506,13 +453,23 @@ sun.matrixAutoUpdate = false;
 
 
 
-const mainLight = new THREE.PointLight(0xffe3b1);
-		mainLight.position.copy(direcLight.position);
+const mainLight = new THREE.DirectionalLight(0xffe3b1);
+{
 		mainLight.castShadow = true;
-		mainLight.shadow.radius = 3;
-		mainLight.shadow.bias = 0.0000125;
+		//mainLight.shadow.radius = 3;
+		mainLight.shadow.bias = 0.0000125*2;
 		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*4;
-
+		mainLight.position.set( 1.5, 2.75, 1.5 );
+		mainLight.position.multiplyScalar(50);
+		var temp = 25
+		mainLight.shadow.camera.top = temp;
+		mainLight.shadow.camera.bottom = -temp;
+		mainLight.shadow.camera.left = -20;
+		mainLight.shadow.camera.right = 70;
+		mainLight.shadow.camera.near = 0;
+		mainLight.shadow.camera.far = 1000;
+		//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
+}
 scene.add(mainLight)
 
 const group = new THREE.Group();
@@ -526,7 +483,6 @@ const godRayPass = new POSTPROCESSING.EffectPass(
 		sun, 
 		{
 			height: 480,
-			//kernelSize: KernelSize.SMALL,
 			density: 1,
 			decay: 0.92,
 			weight: 0.5,
@@ -536,15 +492,13 @@ const godRayPass = new POSTPROCESSING.EffectPass(
 	})
 )
 //Add to composer
-
-
 composer.addPass(godRayPass);
-//godRayPass.renderToScreen = true
 
 composer.addPass(bloomPass);
-//bloomPass.renderToScreen = true;
 
 composer.addPass(chromaticAberationPass)
+
+
 /*
 //USING BUILT IN THREE.JS POST PROCESSING
 const composer = new EffectComposer(renderer);
@@ -556,20 +510,8 @@ composer.addPass(renderPass);
 //new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
 const unrealBloomPass = new UnrealBloomPass({x: 512, y: 512}, 0.2, 0.0, 0.25);
 composer.addPass(unrealBloomPass);
-
-
-//new BloomPass( strength = 1, kernelSize = 25, sigma = 4, resolution = 256 );
-//const bloomPass = new BloomPass(1, 25, 4, 512);
-//composer.addPass(bloomPass);
-
-//Film Grain
-//composer.addPass(new ShaderPass(FilmShader))
-
-//Colour correction
-//composer.addPass(new ShaderPass(ColorCorrectionShader))
-
-//composer.addPass(new ShaderPass(ColorCorrectionShader))
 */
+//composer.shadowMap.type = THREE.PCFSoftShadowMap
 animate();
 
 
@@ -586,12 +528,10 @@ function renderWorld() {
 	mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
-	direcLight.castShadow = false;
 	mainLight.castShadow = false;
 	scene.add(player)
 	renderer.render(scene, pipcamera);
 	worldTargets();
-	direcLight.castShadow = true;
 	mainLight.castShadow = true;
 	renderer.setViewport(port);
 	renderer.render(sceneHUD, HudCamera)
