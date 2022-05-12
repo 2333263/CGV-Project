@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import * as POSTPROCESSING from "postprocessing";
 
 //Pass imports
 import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
@@ -22,13 +21,14 @@ import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, Go
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
 import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
 
-
+//Custom Classes
 import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
 import { Targets } from '/js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { loadLevelWithCollision } from '../js/LoadLevel.js'
+import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
 
 const width = window.innerWidth + 20
@@ -415,120 +415,33 @@ function animate() {
 
 };
 
-//Post Proccessing
-//USING CUSTOM POSTPROCESSING PACKAGE
 
-const composer = new POSTPROCESSING.EffectComposer(renderer);
-composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
-
-const areaImage = new Image();
-areaImage.src = POSTPROCESSING.SMAAEffect.areaImageDataURL;
-const searchImage = new Image();
-searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
-const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
-
-//New Bloom Effect
-const bloomEffect = new POSTPROCESSING.BloomEffect({
-		luminanceThreshold: 0.45,
-		intensity:0.5
-
-	})
-const bloomPass = new POSTPROCESSING.EffectPass(
-	controls.getObject(),
-	bloomEffect
-);
-
-//Add some chromatic aberration for visual effect
-const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({blendFunction: 13, offset: new THREE.Vector2(1e-3, 5e-4)})
-const chromaticAberationPass = new POSTPROCESSING.EffectPass(
-	controls.getObject(), 
-	//
-	chromaticAberrationEffect
-);
-
-//Sun material (changed color og volumetric lighting)
-const sunMaterial = new THREE.MeshBasicMaterial({
-	color: 0xffddaa,
-	transparent: true,
-	fog: false
-});
-
-//Sun to act as volumetric source
-const sunGeometry = new THREE.SphereBufferGeometry(10, 32, 32);
-const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-sun.frustumCulled = false;
-sun.matrixAutoUpdate = false;
-
-
-//Light for volumentric lighting
+//Generate main directional lighting for the world
 const mainLight = new THREE.DirectionalLight(0xffe3b1);
-{
-		mainLight.castShadow = true;
-		//mainLight.shadow.radius = 3;
-		mainLight.shadow.bias = 0.0000125*2;
-		mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024*4;
-		mainLight.position.set( 1.5, 2.75, 1.5 );
-		mainLight.position.multiplyScalar(50);
-		var temp = 25
-		mainLight.shadow.camera.top = temp;
-		mainLight.shadow.camera.bottom = -temp;
-		mainLight.shadow.camera.left = -20;
-		mainLight.shadow.camera.right = 70;
-		mainLight.shadow.camera.near = 0;
-		mainLight.shadow.camera.far = 1000;
-		//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
-}
-scene.add(mainLight)
+        {
+            mainLight.castShadow = true;
+            //mainLight.shadow.radius = 3;
+            mainLight.shadow.bias = 0.0000125 * 2;
+            mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
+            mainLight.position.set(1.5, 2.75, 1.5);
+            mainLight.position.multiplyScalar(50);
+            var temp = 25
+            mainLight.shadow.camera.top = temp;
+            mainLight.shadow.camera.bottom = -temp;
+            mainLight.shadow.camera.left = -20;
+            mainLight.shadow.camera.right = 70;
+            mainLight.shadow.camera.near = 0;
+            mainLight.shadow.camera.far = 1000;
+            //scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
+        }
+        scene.add(mainLight)
 
-//Copy sun position to where light is
-const group = new THREE.Group();
-group.position.copy(mainLight.position);
-group.add(sun);
 
-//Add volumetric lighting with antialias
-const godRayEffect = new POSTPROCESSING.GodRaysEffect(
-	controls.getObject(), 
-	sun, 
-	{
-		height: 480,
-		density: 1,
-		decay: 0.92,
-		weight: 0.5,
-		exposure: 0.54,
-		samples: 30,
-		clampMax: 1.0
-})
-const godRayPass = new POSTPROCESSING.EffectPass(
-	controls.getObject(), 
-	smaaEffect,
-	godRayEffect
-)
+//Post Proccessing
+const composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
 
 
 
-
-
-//Add to different passes composer
-composer.addPass(godRayPass);
-
-composer.addPass(bloomPass);
-
-composer.addPass(chromaticAberationPass)
-
-
-/*
-//USING BUILT IN THREE.JS POST PROCESSING
-const composer = new EffectComposer(renderer);
-
-const renderPass = new RenderPass(scene, controls.getObject());
-composer.addPass(renderPass);
-
-
-//new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
-const unrealBloomPass = new UnrealBloomPass({x: 512, y: 512}, 0.2, 0.0, 0.25);
-composer.addPass(unrealBloomPass);
-*/
-//composer.shadowMap.type = THREE.PCFSoftShadowMap
 animate();
 
 
