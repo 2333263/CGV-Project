@@ -169,7 +169,7 @@ const initcam = controls.getObject().quaternion // save camera rotation to be us
 
 // const playerLoader = new GLTFLoader()
 // var player = new THREE.Object3D();
-// var Torso = new THREE.Object3D()
+// 
 // {
 // 	const gltfPlayerLoader = new GLTFLoader(manager);
 
@@ -197,7 +197,9 @@ const initcam = controls.getObject().quaternion // save camera rotation to be us
 
 // }
 
+var Torso = new THREE.Object3D()
 var playerModel = BuildWorld.buildPlayer();
+Torso = playerModel.getObjectByName("torso")
 
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
