@@ -37,8 +37,8 @@ class PointerLockControls extends EventDispatcher {
 		this.pointerSpeed = 1.0;
 
 		const scope = this;
-		var prevMoveX=1
-		var prevMoveY=1
+		var prevMoveX=-999
+		var prevMoveY=-999
 		var count=1
 		var aveX=1
 		var aveY=1
@@ -49,7 +49,7 @@ class PointerLockControls extends EventDispatcher {
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 			//console.log("X",movementX,"Y",movementY)
 			//Math.abs(movementX)>window.innerWidth/2.3
-			if(Math.abs(Math.abs(movementX)-Math.abs(prevMoveX))>100){
+			if(Math.abs(Math.abs(movementX)-Math.abs(prevMoveX))>100 && prevMoveX!=-999){
 			console.log("prevX",prevMoveX,"prevY",prevMoveY)
 			console.log("X",movementX,"Y",movementY)
 				movementX=(window.innerWidth/movementX)-2.3
@@ -61,7 +61,7 @@ class PointerLockControls extends EventDispatcher {
 				count++
 				aveX=temp/count
 			
-			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>100){
+			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>100 && prevMoveY!=-999){
 			//	console.log("Y",movementY)
 				movementY=(window.innerHeight/movementY)-2.3
 			//movementY=movementY-window.innerHeight/2.3
