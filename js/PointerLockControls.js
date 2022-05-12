@@ -44,10 +44,13 @@ class PointerLockControls extends EventDispatcher {
 			
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-			if(Math.abs(movementX)>50){
+			if(Math.abs(movementX)>60){
+				console.log("X",movementX)
 				movementX=prevMoveX
+				
 
-			}if( Math.abs(movementY)>50){
+			}if( Math.abs(movementY)>60){
+				console.log("Y",movementY)
 				movementY=prevMoveY
 			}
 			_euler.setFromQuaternion( camera.quaternion );
