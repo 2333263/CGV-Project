@@ -6,6 +6,13 @@ class threeToCannonObj{
     constructor(){
         
     }
+
+    /**
+     * Convert a THREE.Mesh to a CANNON.Body
+     * @param {THREE.Mesh} threeOBJ The object to be converted
+     * @param {string} meshType An optioanl param to determing the body's shape
+     * @returns {CANNON.Body} The finished body with collisions
+     */
     static getCannonMesh (threeOBJ, meshType = 'HULL'){
         //Optional param of item type
         var result = null;
@@ -23,7 +30,8 @@ class threeToCannonObj{
                 break;
         }
         
-        const quaternionObj = threeOBJ.quaternion //Set offset and quaternion manually
+        //Set offset and quaternion manually
+        const quaternionObj = threeOBJ.quaternion 
         const offsetObj = threeOBJ.position
         const planeMaterial = new CANNON.Material({
             friction: 10,

@@ -20,6 +20,15 @@ class POSTPROCESSINGPASSES {
     constructor() {
 
     }
+    
+    /**
+     * Apply preset Post Processing effects to the scene
+     * @param {THREE.WebGLRenderer} renderer The renderer to be used
+     * @param {THREE.PerspectiveCamera} camera The camera to be used
+     * @param {THREE.Scene} scene The scene to be used
+     * @param {THREE.DirectionalLight | THREE.PointLight} mainLight The light to be used
+     * @returns {POSTPROCESSING.EffectComposer} The composer with post processing applied
+     */
     static doPasses(renderer, camera, scene, mainLight) {
         const composer = new POSTPROCESSING.EffectComposer(renderer);
         composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
