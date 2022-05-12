@@ -105,7 +105,7 @@ class POSTPROCESSINGPASSES {
 
         composer.addPass(bloomPass);
 
-        composer.addPass(chromaticAberationPass)
+        //composer.addPass(chromaticAberationPass)
 
         return composer;
     }

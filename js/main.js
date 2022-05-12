@@ -167,33 +167,6 @@ pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
 const initcam = controls.getObject().quaternion // save camera rotation to be used in init function
 
 
-// const playerLoader = new GLTFLoader()
-// var player = new THREE.Object3D();
-// 
-// {
-// 	const gltfPlayerLoader = new GLTFLoader(manager);
-
-// 	gltfPlayerLoader.load('/Objects/Character/player-model-noInnderFaces.gltf', (gltf) => {
-// 		player = gltf.scene
-// 		player.name = "model"
-
-// 		Torso = gltf.scene.getObjectByName("Torso")
-// 		playerModel.traverse(function (child) {
-// 			if (child.isMesh) {
-// 				child.castShadow = true;
-// 				child.material = new THREE.MeshPhongMaterial({
-// 					color: new THREE.Color(child.material.color),
-// 					side: THREE.FrontSide,
-// 					shininess: 0
-// 				})
-// 			}
-// 			//Adjust Legs
-// 			if (child.name.substring(0, 5) === 'Left-' || child.name.substring(0, 6) === 'Right-') {
-// 				child.translateY(1.3)
-// 				child.scale.set(child.scale.x, child.scale.y / 3, child.scale.z);
-// 			}
-// 		});
-// 	});
 
 // }
 
