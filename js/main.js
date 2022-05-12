@@ -418,41 +418,49 @@ function animate() {
 //Post Proccessing
 //USING CUSTOM POSTPROCESSING PACKAGE
 
-const composer = new POSTPROCESSING.EffectComposer(renderer,{
-	multisampling: 3
-});
+const composer = new POSTPROCESSING.EffectComposer(renderer);
 composer.addPass(new POSTPROCESSING.RenderPass(scene, controls.getObject()));
 
+const areaImage = new Image();
+areaImage.src = POSTPROCESSING.SMAAEffect.areaImageDataURL;
+const searchImage = new Image();
+searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
+const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
+
 //New Bloom Effect
-const bloomPass = new POSTPROCESSING.EffectPass(
-	controls.getObject(), 
-	new POSTPROCESSING.BloomEffect({
+const bloomEffect = new POSTPROCESSING.BloomEffect({
 		luminanceThreshold: 0.45,
 		intensity:0.5
 
 	})
+const bloomPass = new POSTPROCESSING.EffectPass(
+	controls.getObject(),
+	bloomEffect
 );
 
+//Add some chromatic aberration for visual effect
+const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({blendFunction: 13, offset: new THREE.Vector2(1e-3, 5e-4)})
 const chromaticAberationPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
 	//
-	new POSTPROCESSING.ChromaticAberrationEffect({blendFunction: 13, offset: new THREE.Vector2(1e-3, 5e-4)})
+	chromaticAberrationEffect
 );
 
-
+//Sun material (changed color og volumetric lighting)
 const sunMaterial = new THREE.MeshBasicMaterial({
 	color: 0xffddaa,
 	transparent: true,
 	fog: false
 });
 
+//Sun to act as volumetric source
 const sunGeometry = new THREE.SphereBufferGeometry(10, 32, 32);
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.frustumCulled = false;
 sun.matrixAutoUpdate = false;
 
 
-
+//Light for volumentric lighting
 const mainLight = new THREE.DirectionalLight(0xffe3b1);
 {
 		mainLight.castShadow = true;
@@ -472,26 +480,35 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 }
 scene.add(mainLight)
 
+//Copy sun position to where light is
 const group = new THREE.Group();
 group.position.copy(mainLight.position);
 group.add(sun);
 
+//Add volumetric lighting with antialias
+const godRayEffect = new POSTPROCESSING.GodRaysEffect(
+	controls.getObject(), 
+	sun, 
+	{
+		height: 480,
+		density: 1,
+		decay: 0.92,
+		weight: 0.5,
+		exposure: 0.54,
+		samples: 30,
+		clampMax: 1.0
+})
 const godRayPass = new POSTPROCESSING.EffectPass(
 	controls.getObject(), 
-	new POSTPROCESSING.GodRaysEffect(
-		controls.getObject(), 
-		sun, 
-		{
-			height: 480,
-			density: 1,
-			decay: 0.92,
-			weight: 0.5,
-			exposure: 0.54,
-			samples: 30,
-			clampMax: 1.0
-	})
+	smaaEffect,
+	godRayEffect
 )
-//Add to composer
+
+
+
+
+
+//Add to different passes composer
 composer.addPass(godRayPass);
 
 composer.addPass(bloomPass);
