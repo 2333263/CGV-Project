@@ -39,37 +39,20 @@ class PointerLockControls extends EventDispatcher {
 		const scope = this;
 		var prevMoveX=-999
 		var prevMoveY=-999
-		var count=1
-		var aveX=1
-		var aveY=1
 		function onMouseMove( event ) {
 			if ( scope.isLocked === false ) return;
 			
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-			//console.log("X",movementX,"Y",movementY)
-			//Math.abs(movementX)>window.innerWidth/2.3
+			// this if statement is a work around to a bug in chrome where it wouldnt read the mouse position properly
 			if(Math.abs(Math.abs(movementX)-Math.abs(prevMoveX))>100 && prevMoveX!=-999){
-			console.log("prevX",prevMoveX,"prevY",prevMoveY)
-			console.log("X",movementX,"Y",movementY)
 				movementX=(window.innerWidth/movementX)-2.3
-				//movementX=movementX-window.innerWidth/2.3
 
 		}
-				var temp=aveX*count
-				temp+=Math.abs(movementX)
-				count++
-				aveX=temp/count
-			
+			// this if statement is a work around to a bug in chrome where it wouldnt read the mouse position properly
 			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>100 && prevMoveY!=-999){
-			//	console.log("Y",movementY)
 				movementY=(window.innerHeight/movementY)-2.3
-			//movementY=movementY-window.innerHeight/2.3
 			}
-				var temp=aveY*count
-				temp+=Math.abs(movementY)
-				count++
-				aveY=temp/count
 			
 			_euler.setFromQuaternion( camera.quaternion );
 
