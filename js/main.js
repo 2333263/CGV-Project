@@ -99,6 +99,7 @@ const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
 Menucamera.position.set(5,30,25)
 orbitControls.target.set(50,0,-50)
 orbitControls.autoRotate=true
+orbitControls.dispose()
 orbitControls.update()
 //scene.add(orbitControls.object)
 let musicPlaying=false;
@@ -267,6 +268,7 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown", (e) => {
+	if(e.button==0){
 	if (musicPlaying==false)
 	{
 		touchStarted()
@@ -274,7 +276,7 @@ document.addEventListener("mousedown", (e) => {
 	else {}
 	
 	if (controls.isLocked == true) {
-		if(e.button==0){
+		
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
 			gunshotSound()
@@ -295,7 +297,7 @@ document.addEventListener("mousedown", (e) => {
 				removeTargets();
 			}
 		}
-		}
+		
 		if (hud.gamestate == -1) // game fail
 		{
 
@@ -316,6 +318,7 @@ document.addEventListener("mousedown", (e) => {
 		controls.lock();
 		menu=false
 	}
+}
 })
 
 const pressedKeys = {};
