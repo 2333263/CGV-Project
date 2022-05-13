@@ -97,7 +97,7 @@ sceneHUD.add(HudPlane)
 
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
-Menucamera.position.set(5,30,25)
+Menucamera.position.set(0,30,30)
 orbitControls.target.set(30.5453,0,-32.0482)
 orbitControls.autoRotate=true
 orbitControls.dispose()
