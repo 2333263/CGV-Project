@@ -20,9 +20,9 @@ wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
-    level1body: { url: '/Objects/Level_1/Level_1.gltf' },
-    level2body: { url: '/Objects/Level_1/Level_2.gltf' },
-    level3body: { url: '/Objects/Level_1/Level_3.gltf' }
+    level1body: { url: '../Objects/Level_1/Level_1.gltf' },
+    level2body: { url: '../Objects/Level_1/Level_2.gltf' },
+    level3body: { url: '../Objects/Level_1/Level_3.gltf' }
 };
 
 class BuildWorld {
@@ -304,12 +304,12 @@ class BuildWorld {
         //Make arms, add pivot for rotation
         const armRight = new THREE.Mesh(armGeometry, redMat);
         const armRightPivot = new THREE.Object3D()
-        armRightPivot.add(armRight.translateY(-0.6));
+        armRightPivot.add(armRight.translateY(-0.4));
         armRight.name = 'armRight';
         armRightPivot.name = 'armRightPivot';
         const armLeft = new THREE.Mesh(armGeometry, redMat);
         const armLeftPivot = new THREE.Object3D()
-        armLeftPivot.add(armLeft.translateY(-0.6));
+        armLeftPivot.add(armLeft.translateY(-0.4));
         armLeft.name = 'armLeft';
         armLeftPivot.name = 'armLeftPivot';
 
@@ -336,8 +336,8 @@ class BuildWorld {
         legRight.name = 'legRight';
 
         //Add limbs + head to torse
-        torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.7).rotateY(Math.PI ));
-        torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.7).rotateY(Math.PI ));
+        torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.5).rotateY(Math.PI ));
+        torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.5).rotateY(Math.PI ));
         torsoMesh.add(head.translateY(0.7))
         torsoMesh.add(legRight.translateX(-0.25).translateY(-0.8))
         torsoMesh.add(legLeft.translateX(0.25).translateY(-0.8))
@@ -350,9 +350,24 @@ class BuildWorld {
         armRight.add(handRight.translateY(-0.6));
         armLeft.add(handLeft.translateY(-0.6));
         
-        //Rotate arm to be visible
+        //set up arms 
         armRightPivot.rotateX(Math.PI/2)
-        //armLeftPivot.rotateX(Math.PI/2)
+        //armLeftPivot.rotateY(Math.PI / 4)
+
+
+        const gltfLoader = new GLTFLoader(manager);
+
+        const url = '../Objects/Weapons/m4_2.gltf'
+        gltfLoader.load(url, (gltf) => {
+            const weapon = gltf.scene
+            weapon.name = 'weaponsM4'
+            weapon.translateX(0.2)
+            weapon.scale.set(0.7,0.7,0.7)
+            weapon.rotateX( Math.PI / 2)
+            handRight.add(weapon)
+        });
+
+
         return torsoMesh;
     }
 

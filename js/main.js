@@ -417,6 +417,7 @@ function animate() {
 		playerModel.rotation.set(0, theta , 0)
 
 		playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm+Math.PI, 0, 0)
+		//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
 		playerModel.translateZ(-0.30)
 
 		dt = Clock.getDelta()
