@@ -167,13 +167,12 @@ class BuildWorld {
                     scene.add(streetLight)
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
-                    const emisMap = loader.load('../Objects/Textures/WhiteEmission/square.png')
-                    const color = child.material.color
-                    const newMat = new THREE.MeshPhongMaterial({
-                        color: color,
-                        emissiveMap: emisMap,
-                        emissiveIntensity: 2,
-                        emissive: color
+
+                    const colorHigh = new THREE.Color(2, 2, 10.3525)
+                    //console.log(colorHigh)
+                    const newMat = new THREE.MeshBasicMaterial({
+                        color: colorHigh,
+                        toneMapped: false
                     })
                     child.material = newMat
                 }

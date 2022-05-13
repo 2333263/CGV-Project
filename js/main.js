@@ -48,6 +48,7 @@ const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
+renderer.toneMapping = THREE.CineonToneMapping
 renderer.antialias = true
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
@@ -97,7 +98,7 @@ sceneHUD.add(HudPlane)
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
 Menucamera.position.set(5,30,25)
-orbitControls.target.set(50,0,-50)
+orbitControls.target.set(30.5453,0,-32.0482)
 orbitControls.autoRotate=true
 orbitControls.dispose()
 orbitControls.update()
@@ -390,8 +391,33 @@ function move() {
 
 
 
+//Generate main directional lighting for the world
+const mainLight = new THREE.DirectionalLight(0xffe3b1);
+{
+	mainLight.castShadow = true;
+	//mainLight.shadow.radius = 3;
+	mainLight.shadow.bias = 0.0000125 * 2;
+	//TODO Add variable shadowMap size
+	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
+	mainLight.position.set(1.5, 2.75, 1.5);
+	mainLight.position.multiplyScalar(50);
+	var temp = 40
+	mainLight.shadow.camera.top = 50;
+	mainLight.shadow.camera.bottom = -30;
+	mainLight.shadow.camera.left = -20;
+	mainLight.shadow.camera.right = 100;
+	mainLight.shadow.camera.near = 0;
+	mainLight.shadow.camera.far = 1000;
+	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
+}
+scene.add(mainLight)
 
 
+//Post Proccessing
+const composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+
+//Post processing for menu
+const composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
 
 //----------------------------------------------------------------
 //Stats for fps
@@ -401,11 +427,12 @@ document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
 
 
+
 function animate() {
 	stats.begin() //For monitoring
 	if (menu==true){
 		orbitControls.update()
-		renderer.render(scene,Menucamera)
+		composerMenu.render()
 	}else{
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
@@ -457,30 +484,8 @@ function animate() {
 };
 
 
-//Generate main directional lighting for the world
-const mainLight = new THREE.DirectionalLight(0xffe3b1);
-{
-	mainLight.castShadow = true;
-	//mainLight.shadow.radius = 3;
-	mainLight.shadow.bias = 0.0000125 * 2;
-	//TODO Add variable shadowMap size
-	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
-	mainLight.position.set(1.5, 2.75, 1.5);
-	mainLight.position.multiplyScalar(50);
-	var temp = 40
-	mainLight.shadow.camera.top = 50;
-	mainLight.shadow.camera.bottom = -30;
-	mainLight.shadow.camera.left = -20;
-	mainLight.shadow.camera.right = 100;
-	mainLight.shadow.camera.near = 0;
-	mainLight.shadow.camera.far = 1000;
-	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
-}
-scene.add(mainLight)
 
-
-//Post Proccessing
-const composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+//const composerHighPass = POSTPROCESSINGPASSES.unrealPass(renderer, controls.getObject(), scene)
 
 
 

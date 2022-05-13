@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import * as POSTPROCESSING from "postprocessing";
+import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
 
 
 
@@ -15,12 +18,17 @@ composer.addPass(renderPass);
 const unrealBloomPass = new UnrealBloomPass({x: 512, y: 512}, 0.2, 0.0, 0.25);
 composer.addPass(unrealBloomPass);
 */
+const areaImage = new Image();
+areaImage.src = POSTPROCESSING.SMAAEffect.areaImageDataURL;
+const searchImage = new Image();
+searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
+const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
 
 class POSTPROCESSINGPASSES {
     constructor() {
 
     }
-    
+
     /**
      * Apply preset Post Processing effects to the scene
      * @param {THREE.WebGLRenderer} renderer The renderer to be used
@@ -33,21 +41,27 @@ class POSTPROCESSINGPASSES {
         const composer = new POSTPROCESSING.EffectComposer(renderer);
         composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 
-        const areaImage = new Image();
-        areaImage.src = POSTPROCESSING.SMAAEffect.areaImageDataURL;
-        const searchImage = new Image();
-        searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
-        const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
 
         //New Bloom Effect
         const bloomEffect = new POSTPROCESSING.BloomEffect({
             luminanceThreshold: 0.45,
-            intensity: 0.5
+            intensity: 0.6
 
         })
         const bloomPass = new POSTPROCESSING.EffectPass(
             camera,
             bloomEffect
+        );
+
+        //New High Bloom Effect
+        const bloomEffectHigh = new POSTPROCESSING.BloomEffect({
+            luminanceThreshold: 1,
+            intensity: 10
+
+        })
+        const bloomPassHigh = new POSTPROCESSING.EffectPass(
+            camera,
+            bloomEffectHigh
         );
 
         //Add some chromatic aberration for visual effect
@@ -102,15 +116,33 @@ class POSTPROCESSINGPASSES {
         const colorDepthEffect = new POSTPROCESSING.ColorDepthEffect({ bits: 16 });
         const colorDepthPass = new POSTPROCESSING.EffectPass(camera, smaaEffect, colorDepthEffect)
 
+        composer.addPass(bloomPassHigh)
+
         //Add to different passes composer
         composer.addPass(godRayPass);
 
         composer.addPass(bloomPass);
+
+        //Add bloom pass to only affect high range colours
+        
+
 
         //composer.addPass(colorDepthPass);
         composer.addPass(chromaticAberationPass)
 
         return composer;
     }
+    // static unrealPass(renderer, camera, scene) {
+    //     const composer = new EffectComposer(renderer);
+
+    //     const renderPass = new RenderPass(scene, camera);
+    //     composer.addPass(renderPass);
+
+
+    //     //new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
+    //     const unrealBloomPass = new UnrealBloomPass({ x: 512, y: 512 }, 2, 1, 0.99);
+    //     composer.addPass(unrealBloomPass);
+    //     return composer
+    // }
 }
-export {POSTPROCESSINGPASSES};
+export { POSTPROCESSINGPASSES };
