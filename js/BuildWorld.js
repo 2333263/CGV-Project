@@ -167,6 +167,16 @@ class BuildWorld {
                     //Add light to scene
                     scene.add(streetLight)
 
+                } else if (name.substring(0, 16) === 'StreetLightGlass') {
+                    const emisMap = loader.load('../Objects/Textures/WhiteEmission/square.png')
+                    const color = child.material.color
+                    const newMat = new THREE.MeshPhongMaterial({
+                        color: color,
+                        emissiveMap: emisMap,
+                        emissiveIntensity: 2,
+                        emissive: color
+                    })
+                    child.material = newMat
                 }
                 else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign' || name.substring(0, 11) === 'Pathoutline') {
                     //Stop these from cast shadows

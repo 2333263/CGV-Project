@@ -51,7 +51,7 @@ class POSTPROCESSINGPASSES {
         );
 
         //Add some chromatic aberration for visual effect
-        const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({ blendFunction: 13, offset: new THREE.Vector2(1e-3, 5e-4) })
+        const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({ blendFunction: 13, offset: new THREE.Vector2(1e-4, 5e-5) })
         const chromaticAberationPass = new POSTPROCESSING.EffectPass(
             camera,
             //
@@ -99,13 +99,16 @@ class POSTPROCESSINGPASSES {
 
 
 
+        const colorDepthEffect = new POSTPROCESSING.ColorDepthEffect({ bits: 16 });
+        const colorDepthPass = new POSTPROCESSING.EffectPass(camera, smaaEffect, colorDepthEffect)
 
         //Add to different passes composer
         composer.addPass(godRayPass);
 
         composer.addPass(bloomPass);
 
-        //composer.addPass(chromaticAberationPass)
+        //composer.addPass(colorDepthPass);
+        composer.addPass(chromaticAberationPass)
 
         return composer;
     }
