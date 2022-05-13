@@ -12,6 +12,8 @@ var barrelCollisionCANNON = [];
 var boxCollision = [];
 var boxCollisionCANNON = [];
 
+var streetLights = [];
+
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
 var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
@@ -32,6 +34,7 @@ class BuildWorld {
     /**
      * Function to load a specified level into the scene and world
      * @param {THREE.Scene} scene The scene that the level is loaded to
+     * @param {CANNON.World} world The world that the collisions are loaded to
      * @param {CANNON.World} world The world that the collisions are loaded to
      * @param {int} level The level of the world as an int
      * 
@@ -57,6 +60,11 @@ class BuildWorld {
 
         gltfLoader.load(url, (gltf) => {
 
+            const root = gltf.scene;
+
+            //Add scene to object
+            root.name = 'Level_Root'
+            
 
             gltf.scene.traverse(function (child) {
 
@@ -79,8 +87,8 @@ class BuildWorld {
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
                     hullCollision.push(child)
-                    /*
 
+                    /*
                     const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
                     const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
@@ -97,21 +105,71 @@ class BuildWorld {
                 else if (name.substring(0, 11) === 'InvisHitbox') {
                     //Add the invisible hitboxes
                     child.visible = false
+
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 4) === 'Wall') {
-                    //Add barrels to collision detection
+                    //Add walls to collision detection
                     hullCollision.push(child)
                 }
-                else if (name.substring(0, 8) === 'TrashBin' || name.substring(0, 5) === 'Crate') {
-                    //Add trash bins and crates to collision detection
+                else if (name.substring(0, 8) === 'TrashBin' /*|| name.substring(0, 5) === 'Crate'*/) {
+                    //Add trash bins to collision detection, crates handled with invis
                     boxCollision.push(child)
                 }
 
                 else if (name.substring(0, 11) === 'WindowGlass') {
+                    //Make glass specular
                     child.material.specular = new THREE.Color('#31A5E7')
                 }
-                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign') {
+                else if (name.substring(0, 15) === 'StreetLightSpot') {
+                    //Add spotlights to the street lights
+
+                    //Make the points invisible
+                    child.visible = false
+
+                    //Create light
+                    const streetLight = new THREE.SpotLight('#FFFFE0')
+
+                    //Adjust light properties
+                    //scene.add( new THREE.CameraHelper( streetLight.shadow.camera ) )
+                    streetLight.power = 2
+                    streetLight.decay = 2
+                    streetLight.castShadow = true;
+                    streetLight.shadow.mapSize.width = 512;
+                    streetLight.shadow.mapSize.height = 512;
+                    streetLight.shadow.focus = 0.9
+                    // streetLight.shadow.camera.near = 2;
+                    // streetLight.shadow.camera.far = 10;
+                    streetLight.angle = Math.PI / 3
+                    streetLight.penumbra = 0.5
+                    streetLight.position.set(
+                        child.position.x,
+                        child.position.y, 
+                        child.position.z
+                    )
+                    //Create light target
+                    const target = new THREE.Object3D
+
+                    //position.copy was creating problems, do it manually
+                    target.position.set(child.children[0].position.x + child.position.x, 
+                        child.children[0].position.y + child.position.y,
+                        child.children[0].position.z + child.position.z
+                        );
+                    
+                    scene.add(target)
+
+
+                    streetLight.target = target
+                    
+                    //Add light to lights array
+                    streetLights.push(streetLight)
+
+                    //Add light to scene
+                    scene.add(streetLight)
+
+                }
+                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign' || name.substring(0, 11) === 'Pathoutline') {
+                    //Stop these from cast shadows
                     child.castShadow = false;
                 }
 
@@ -166,10 +224,6 @@ class BuildWorld {
                     })
                     child.material = newMat
                 }
-                else if (name.substring(0, 11) === 'Pathoutline') {
-                    //Turn off shadows
-                    child.castShadow = false;
-                }
 
                 else if (name.substring(0, 9) === 'WireFence') {
                     var sideShown = THREE.FrontSide;
@@ -207,14 +261,10 @@ class BuildWorld {
 
             });
 
-            const root = gltf.scene;
+            
 
-            //Visually render scene
-            root.name = 'Level_Root'
             scene.add(root);
-
-
-            //Add collisions
+            
             for (const obj of hullCollision) {
                 var CANNONBody = threeToCannonObj.getCannonMesh(obj)
                 world.addBody(CANNONBody);
@@ -265,7 +315,7 @@ class BuildWorld {
     }
 
     /**
-     * Method to build the player
+     * Method to build the player using THREE objects
      * @returns {THREE.Mesh} Player mesh
      */
     static buildPlayer(){
@@ -369,6 +419,18 @@ class BuildWorld {
 
 
         return torsoMesh;
+    }
+
+    static turnOffLightShadow(){
+        for (const light of streetLights){
+            light.castShadow = false
+        }
+    }
+
+    static turnOnLightShadow(){
+        for (const light of streetLights){
+            light.castShadow = true
+        }
     }
 
 }

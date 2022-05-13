@@ -493,10 +493,12 @@ function renderWorld() {
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
 	mainLight.castShadow = false;
+	BuildWorld.turnOffLightShadow()
 	scene.add(playerModel)
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	mainLight.castShadow = true;
+	BuildWorld.turnOnLightShadow()
 	renderer.setViewport(port);
 	renderer.render(sceneHUD, HudCamera)
 }
