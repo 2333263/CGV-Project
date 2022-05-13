@@ -94,9 +94,6 @@ HudPlane.onBeforeRender = function (renderer) {
 }
 sceneHUD.add(HudPlane)
 
-var board = new leaderBoard();
-board.addItem("f", -99)
-
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
 Menucamera.position.set(5,30,25)
@@ -232,14 +229,7 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere for e
 	material: planeMaterial //to add friction 
 });
 
-//playerBody.pitchObject = new THREE.Object3D()
-//playerBody.pitchObject.add(camera)
 playerBody.noBullets = hud.currammo
-//playerBody.yawObject = new THREE.Object3D()
-//playerBody.yawObject.position.z = 5;
-//playerBody.yawObject.position.y = 2;
-//playerBody.yawObject.add(playerBody.pitchObject)
-//playerBody.euler = new THREE.Euler()
 playerBody.canJump = false;
 
 const contNorm = new CANNON.Vec3()
@@ -284,6 +274,7 @@ document.addEventListener("mousedown", (e) => {
 	else {}
 	
 	if (controls.isLocked == true) {
+		if(e.button==0){
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
 			gunshotSound()
@@ -303,6 +294,7 @@ document.addEventListener("mousedown", (e) => {
 			if (playerBody.noBullets == 0) {
 				removeTargets();
 			}
+		}
 		}
 		if (hud.gamestate == -1) // game fail
 		{
