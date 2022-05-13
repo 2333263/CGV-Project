@@ -100,6 +100,47 @@ const controls = new PointerLockControls(camera, document.body); //links control
 
 scene.add(controls.getObject());
 
+let musicPlaying=false;
+let backgroundmusic;
+let gunsound;
+const audioLoader = new THREE.AudioLoader();
+function touchStarted() { 
+	//audioLoader.resume();
+	musicPlaying = true;
+	//backgroundMusic();
+	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
+	camera.add(listener);
+
+	//audio loader
+	//create, load and play background music
+
+	const backgroundSound = new THREE.Audio(listener);
+
+	//load sound file
+	audioLoader.load("js/GameMusic.mp3",function(buffer){
+		
+		backgroundSound.setBuffer( buffer );
+		backgroundSound.setLoop( true );
+		backgroundSound.setVolume(0.4);
+		backgroundSound.play();
+
+	});
+	
+  }
+function gunshotSound(){
+	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
+	camera.add(listener);
+	const gunsound = new THREE.Audio(listener);
+	audioLoader.load("js/rifle.mp3",function (buffer){
+		
+		gunsound.setBuffer( buffer );
+		gunsound.setLoop( false );
+		gunsound.setVolume(0.4);
+		gunsound.play();
+	});
+}
+
+
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
 /*
 const alphaIndex = 10
@@ -232,6 +273,12 @@ controls.addEventListener('unlocked', () => {
 })
 
 document.addEventListener("mousedown", (e) => {
+	if (musicPlaying==false)
+	{
+		touchStarted()
+	}
+	else {gunshotSound()}
+	
 	if (controls.isLocked == true) {
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
