@@ -10,7 +10,7 @@ class threeToCannonObj{
     /**
      * Convert a THREE.Mesh to a CANNON.Body
      * @param {THREE.Mesh} threeOBJ The object to be converted
-     * @param {string} meshType An optioanl param to determing the body's shape
+     * @param {string} meshType An optional param to determing the body's shape
      * @returns {CANNON.Body} The finished body with collisions
      */
     static getCannonMesh (threeOBJ, meshType = 'HULL'){
