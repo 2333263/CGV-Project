@@ -101,7 +101,7 @@ class BuildWorld {
                 }
                 else if (name.substring(0, 4) === 'Wall') {
                     //Add barrels to collision detection
-                    boxCollision.push(child)
+                    hullCollision.push(child)
                 }
                 else if (name.substring(0, 8) === 'TrashBin' || name.substring(0, 5) === 'Crate') {
                     //Add trash bins and crates to collision detection
@@ -276,7 +276,7 @@ class BuildWorld {
 
         //Define geometries
         const torseGeometry = new THREE.BoxGeometry(1.2,1.5,0.5);
-        const armGeometry = new THREE.BoxGeometry(0.4,1.3,0.4);
+        const armGeometry = new THREE.BoxGeometry(0.4,1.1,0.4);
         const handGeometry = new THREE.BoxGeometry(0.36,0.2,0.36);
         const headGeometry = new THREE.BoxGeometry(0.7,0.7,0.4);
         const eyeGeometry = new THREE.PlaneGeometry(0.1,0.2);
@@ -303,9 +303,15 @@ class BuildWorld {
 
         //Make arms, add pivot for rotation
         const armRight = new THREE.Mesh(armGeometry, redMat);
+        const armRightPivot = new THREE.Object3D()
+        armRightPivot.add(armRight.translateY(-0.6));
         armRight.name = 'armRight';
+        armRightPivot.name = 'armRightPivot';
         const armLeft = new THREE.Mesh(armGeometry, redMat);
+        const armLeftPivot = new THREE.Object3D()
+        armLeftPivot.add(armLeft.translateY(-0.6));
         armLeft.name = 'armLeft';
+        armLeftPivot.name = 'armLeftPivot';
 
         //Make hands
         const handRight = new THREE.Mesh(handGeometry, skinMat);
@@ -330,22 +336,23 @@ class BuildWorld {
         legRight.name = 'legRight';
 
         //Add limbs + head to torse
-        torsoMesh.add(armRight.translateX(0.8));
-        torsoMesh.add(armLeft.translateX(-0.8).rotateY(Math.PI / 2));
+        torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.7).rotateY(Math.PI ));
+        torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.7).rotateY(Math.PI ));
         torsoMesh.add(head.translateY(0.7))
-        torsoMesh.add(legRight.translateX(0.25).translateY(-0.8))
-        torsoMesh.add(legLeft.translateX(-0.25).translateY(-0.8))
+        torsoMesh.add(legRight.translateX(-0.25).translateY(-0.8))
+        torsoMesh.add(legLeft.translateX(0.25).translateY(-0.8))
 
         //Add eyes to head slight in front of head to avoid clipping
-        head.add(eyeLeft.translateX(-0.15).translateZ(0.201).translateY(0.15));
-        head.add(eyeRight.translateX(0.15).translateZ(0.201).translateY(0.15));
+        head.add(eyeLeft.translateX(0.15).translateZ(0.201).translateY(0.15));
+        head.add(eyeRight.translateX(-0.15).translateZ(0.201).translateY(0.15));
 
         //Add hands to arms
-        armRight.add(handRight.translateY(-0.7));
-        armLeft.add(handLeft.translateY(-0.7));
+        armRight.add(handRight.translateY(-0.6));
+        armLeft.add(handLeft.translateY(-0.6));
         
-        //torsoMesh.rotateY(Math.PI)
-        
+        //Rotate arm to be visible
+        armRightPivot.rotateX(Math.PI/2)
+        //armLeftPivot.rotateX(Math.PI/2)
         return torsoMesh;
     }
 

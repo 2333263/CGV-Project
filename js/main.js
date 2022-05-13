@@ -408,10 +408,15 @@ function animate() {
 		
 		var tempVec = new THREE.Vector3();
 		controls.getObject().getWorldDirection(tempVec)
+		//Get angle player is facing through arctan
 		var theta = Math.atan2(tempVec.x, tempVec.z);
+		var xz = Math.sqrt(Math.pow(tempVec.x,2)+Math.pow(tempVec.z,2))
+		var thetaArm = Math.atan2(xz, tempVec.y);
 
 		playerModel.translateY(-0.2)
 		playerModel.rotation.set(0, theta , 0)
+
+		playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm+Math.PI, 0, 0)
 		playerModel.translateZ(-0.30)
 
 		dt = Clock.getDelta()
