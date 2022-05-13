@@ -132,17 +132,30 @@ class POSTPROCESSINGPASSES {
 
         return composer;
     }
-    // static unrealPass(renderer, camera, scene) {
-    //     const composer = new EffectComposer(renderer);
+    static selectiveBloomPass(composer, camera, scene, glowing) {
+        
+        console.log(glowing)
 
-    //     const renderPass = new RenderPass(scene, camera);
-    //     composer.addPass(renderPass);
+        const selectiveBloomEffect = new POSTPROCESSING.SelectiveBloomEffect(
+            scene, camera, 
+            {
+            luminanceThreshold: 0,
+            intensity: 1
+        })
 
-
-    //     //new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
-    //     const unrealBloomPass = new UnrealBloomPass({ x: 512, y: 512 }, 2, 1, 0.99);
-    //     composer.addPass(unrealBloomPass);
-    //     return composer
-    // }
+        const selection = selectiveBloomEffect.selection;
+        for (var selectedObject of glowing){
+            selection.add(selectedObject);
+        } 
+        
+        const selectiveBloomPass = new POSTPROCESSING.EffectPass(
+            camera,
+            smaaEffect,
+            selectiveBloomEffect
+        )
+        
+        composer.addPass(selectiveBloomPass)
+        return composer
+    }
 }
 export { POSTPROCESSINGPASSES };

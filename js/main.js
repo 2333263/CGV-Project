@@ -414,7 +414,15 @@ scene.add(mainLight)
 
 
 //Post Proccessing
-const composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+var composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+
+const glowing = BuildWorld.getGlowing();
+console.log(glowing)
+console.log(glowing.length)
+if (glowing.length > 0){
+	console.log('got glowing')
+	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+}
 
 //Post processing for menu
 const composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
@@ -500,6 +508,8 @@ function renderWorld() {
 	renderer.autoClear = false;
 	renderer.clear();
 	//Render with composer for post processing
+	
+
 	composer.render()
 	//renderer.render(scene, controls.getObject())
 	mapTargets();
