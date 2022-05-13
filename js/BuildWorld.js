@@ -64,8 +64,7 @@ class BuildWorld {
 
             //Add scene to object
             root.name = 'Level_Root'
-            
-
+           
             gltf.scene.traverse(function (child) {
 
                 //Traverse through all objects to get the collision
@@ -87,7 +86,7 @@ class BuildWorld {
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
                     hullCollision.push(child)
-
+        
                     /*
                     const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
                     const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 

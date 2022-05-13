@@ -104,7 +104,7 @@ class HUD {
         }
 
 
-         this.setEntered=function(){
+        this.setEntered=function(){
             this.entered=true
         }
 
