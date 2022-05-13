@@ -30,6 +30,7 @@ import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoade
 import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
+import {OrbitControls} from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
 
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
@@ -40,8 +41,8 @@ const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
-var mirrorCam = new THREE.PerspectiveCamera(75, 2 / 3, 0.1, 1000)
-
+var menu=true
+const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 //2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
 //(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
@@ -97,9 +98,12 @@ var board = new leaderBoard();
 board.addItem("f", -99)
 
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
-
-scene.add(controls.getObject());
-
+const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
+Menucamera.position.set(5,30,25)
+orbitControls.target.set(50,0,-50)
+orbitControls.autoRotate=true
+orbitControls.update()
+//scene.add(orbitControls.object)
 let musicPlaying=false;
 let backgroundmusic;
 let gunsound;
@@ -313,7 +317,12 @@ document.addEventListener("mousedown", (e) => {
 			init();
 		}
 	} else {
+		if(menu==true){
+			scene.add(playerModel)
+			scene.add(controls.getObject());
+		}
 		controls.lock();
+		menu=false
 	}
 })
 
@@ -399,7 +408,10 @@ document.body.appendChild(stats.dom)
 
 function animate() {
 	stats.begin() //For monitoring
-
+	if (menu==true){
+		orbitControls.update()
+		renderer.render(scene,Menucamera)
+	}else{
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
 		hud.isPaused(false);
@@ -440,8 +452,9 @@ function animate() {
 		hudTexture.needsUpdate = true;
 
 	}
-
 	renderWorld()
+	}
+//
 
 	stats.end() //For monitoring
 	requestAnimationFrame(animate);
@@ -494,7 +507,6 @@ function renderWorld() {
 	renderer.setViewport(width - 250, 50, 200, 200)
 	mainLight.castShadow = false;
 	BuildWorld.turnOffLightShadow()
-	scene.add(playerModel)
 	renderer.render(scene, pipcamera);
 	worldTargets();
 	mainLight.castShadow = true;
