@@ -135,7 +135,7 @@ function gunshotSound(){
 		
 		gunsound.setBuffer( buffer );
 		gunsound.setLoop( false );
-		gunsound.setVolume(0.4);
+		gunsound.setVolume(0.1);
 		gunsound.play();
 	});
 }
@@ -277,12 +277,12 @@ document.addEventListener("mousedown", (e) => {
 	{
 		touchStarted()
 	}
-	else {gunshotSound()}
+	else {}
 	
 	if (controls.isLocked == true) {
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
-
+			gunshotSound()
 			raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 			const intersects = raycaster.intersectObjects(scene.children);
 			for (let j = 0; j < TargetArr.length; j++) {
