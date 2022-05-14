@@ -27,7 +27,7 @@ class HUD {
         this.entered=true
         this.Paused=false;
         this.name="";
-        this.leaderBoard=new leaderBoard(this.document)
+        this.leaderBoard=new leaderBoard()
 
         //var body=document.getElementsByTagName("body")[0];
         //document.body.appendChild(this.canvas)

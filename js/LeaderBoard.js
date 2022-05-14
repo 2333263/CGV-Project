@@ -53,6 +53,17 @@ class leaderBoard{
           
              return (top)
         }
+        this.getAll=function(){
+            this.keys=this.Sort()
+            var all=[]
+             for (var i=0;i<this.keys.length;i++){
+               var temp=(i+1)+")"+"  "+String(this.keys[i])+addSpaces(String(this.keys[i]),10)+this.LeaderBoard[this.keys[i]];
+                all.push(temp)
+                             
+             }
+          
+             return (all)
+        }
 
         
         
