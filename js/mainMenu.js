@@ -17,6 +17,7 @@ class MainMenu{
         this.canvas.id = "mainMenu";
         this.canvas.width = width;
         this.canvas.height = height;
+        this.page=0
         //#########################mainMenu variables init#########################
         this.callMenu=true;
         this.graphics = this.canvas.getContext("2d");
@@ -29,49 +30,63 @@ class MainMenu{
         
         //#########################functions#########################
 
-        //?
         this.getMenu=function(){
             return this.canvas
         }
 
         //Ok this one I know what it is
-        this.draw=function() {
-            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-            
-          var g = this.graphics;
-            g.fillStyle = "rgba(172, 166, 166, 0.90)";
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
-            g.font = String(size)+"px Courier";
-            g.fillRect(X_LEFT*50/100,
-                       Y_TOP*20/100,
-                       -X_LEFT,
-                       Y_TOP*20/100)
-            g.fillRect(X_LEFT*50/100,
-                       Y_TOP*-10/100,
-                       -X_LEFT,
-                       Y_TOP*20/100)
-            g.fillRect(X_LEFT*50/100,
-                       Y_TOP*-40/100,
-                       -X_LEFT,
-                       Y_TOP*20/100)
-            g.fillRect(X_LEFT*50/100,
-                       Y_TOP*-70/100,
-                       -X_LEFT,
-                       Y_TOP*20/100);
-
-            //Words
-            g.fillStyle = 'rgb(0,0,0)';
-            var word = "PLAY";
-            g.fillText(word,X_LEFT*7/100,Y_TOP*26/100);
-            var word = "LEADERBOARD";
-            g.fillText(word,X_LEFT*20/100,Y_TOP*-4/100);
-            var word = "OPTIONS";
-            g.fillText(word,X_LEFT*12/100,Y_TOP*-34/100);
-            var word = "CREDITS";
-            g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
+        this.draw=function() {//this function draws a different screen depending on what page the person is on
+           switch(this.page){
+               case 0://main menu
+                   this.drawMainMenu();
+                   break;
+                case 1://leaderboard
+                    this.drawLeaderboard();
+                    break;
+                case 2://options
+                    break;
+                case 3://credits
+                    this.drawCredits();
+                    break;
+                
+           }
             }
-
-            this.drawLeaderboard=function(){
+            this.drawMainMenu=function(){//draws the main menu
+                this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+            
+                var g = this.graphics;
+                  g.fillStyle = "rgba(172, 166, 166, 0.90)";
+                  var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+                  g.font = String(size)+"px Courier";
+                  g.fillRect(X_LEFT*50/100,
+                             Y_TOP*20/100,
+                             -X_LEFT,
+                             Y_TOP*20/100)
+                  g.fillRect(X_LEFT*50/100,
+                             Y_TOP*-10/100,
+                             -X_LEFT,
+                             Y_TOP*20/100)
+                  g.fillRect(X_LEFT*50/100,
+                             Y_TOP*-40/100,
+                             -X_LEFT,
+                             Y_TOP*20/100)
+                  g.fillRect(X_LEFT*50/100,
+                             Y_TOP*-70/100,
+                             -X_LEFT,
+                             Y_TOP*20/100);
+      
+                  //Words
+                  g.fillStyle = 'rgb(0,0,0)';
+                  var word = "PLAY";
+                  g.fillText(word,X_LEFT*7/100,Y_TOP*26/100);
+                  var word = "LEADERBOARD";
+                  g.fillText(word,X_LEFT*20/100,Y_TOP*-4/100);
+                  var word = "OPTIONS";
+                  g.fillText(word,X_LEFT*12/100,Y_TOP*-34/100);
+                  var word = "CREDITS";
+                  g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
+            }
+            this.drawLeaderboard=function(){//this function draws the leaderboard on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
                 var size=60*scaleFitNative
                 this.graphics.font = String(size)+"px monospace"
@@ -89,9 +104,11 @@ class MainMenu{
                 
                
             }
-            this.drawCredits=function(){
+            this.drawCredits=function(){//this draws the credits on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-                var credits=["example object: where we got it","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841"]
+            /*put the credits in here----> */var credits=[
+                "example object: where we got it","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841"
+            ]
                 var size=60*scaleFitNative
                 this.graphics.font = String(size)+"px monospace"
                 this.graphics.fillStyle = "rgb(0,0,0)"
@@ -104,7 +121,7 @@ class MainMenu{
                 this.drawBackButton()
                 
             }
-            this.drawBackButton=function(){
+            this.drawBackButton=function(){//this draws a back button in the bottom left corner
                 this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
                 this.graphics.fillRect(X_LEFT,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
                 this.graphics.fillStyle = 'rgb(0,0,0)';
@@ -113,7 +130,7 @@ class MainMenu{
                 var word = "BACK";
                 this.graphics.fillText(word,X_LEFT+20*scaleFitNative,Y_BOTTOM-30*scaleFitNative)
             }
-            this.drawNextButton=function(){
+            this.drawNextButton=function(){//this draws a next button in the bottom right corner
                 this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
                 this.graphics.fillRect(X_RIGHT-180*scaleFitNative,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
                 this.graphics.fillStyle = 'rgb(0,0,0)';
@@ -125,25 +142,28 @@ class MainMenu{
 
 
 
-            this.Clicked=function(posX,posY,MenuPage){
+            this.Clicked=function(posX,posY){//this function simulates an on click listner for the buttons but seeing where the user clicked on the screen
                 var centerX=(width/2)
                 var centerY=height/2
                 //converts click coords to canvas coords
                 posX=(posX-centerX)
                 posY=(posY-centerY)
-                switch (MenuPage){
+                switch (this.page){//checks different locations based on which screen theyre on
                     case(0)://if on first page
                         if(posX>=X_LEFT*50/100 && posX<=(X_LEFT*50/100)+X_RIGHT){//check to see if theyre clicking in the right place on the x plane
                             if(posY<=Y_TOP*20/100 && posY>=(Y_TOP*20/100)+(Y_TOP*20/100)){//if they click in the same Y position as the play button, return 0
                                 return(0)
                             }else if(posY<=Y_TOP*-10/100 && posY>=(Y_TOP*-10/100)+(Y_TOP*20/100)){//if they click in the same position as the leader board return 1
                                 console.log("LeaderBoard");
+                                this.page=1
                                 return (1) 
                             }else if(posY<=Y_TOP*-40/100 && posY>=(Y_TOP*-40/100)+(Y_TOP*20/100)){//if they click in the same Y position as the options button return 2
                                 console.log("options")
+                                this.page=0 //for now this is 0, we need to change it to 2 when we add a page for it
                                 return(2)
                             }else if(posY<=Y_TOP*-70/100 && posY>=(Y_TOP*-70/100)+(Y_TOP*20/100)){ //if they click in the same Y position as the credits button return 3
                                 console.log("credits")
+                                this.page=3
                                 return(3)
                             }
                         }
@@ -151,16 +171,19 @@ class MainMenu{
                     case(1)://if theyre on the leaderboard
                         if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
                             console.log("BACK")
+                            this.page=0
                             return(4)
                         }else if(posX>=X_RIGHT-150*scaleFitNative &&posY>=Y_BOTTOM-120*scaleFitNative){//if they click next
                             console.log("next")
                         }    
                         break;
                     case(2)://if theyre on options
+                        this.page=0
                         break;
                     case(3)://if theyre on credits
                         if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
                             console.log("BACK")
+                            this.page=0
                             return(4)
                         }
                         break;

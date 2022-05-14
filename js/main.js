@@ -284,7 +284,6 @@ controls.addEventListener('lock', () => {
 controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 })
-var menuPage=0;
 document.addEventListener("mousedown", (e) => {
 	if(e.button==0){
 	if (musicPlaying==false)
@@ -330,30 +329,13 @@ document.addEventListener("mousedown", (e) => {
 		}
 	} else {
 		if(menu==true){
-			var ButtonClicked=homeScreen.Clicked(e.clientX,e.clientY,menuPage)
-			switch (ButtonClicked){
-				case 0://if they clicked on play
-					scene.add(playerModel)
-					scene.add(controls.getObject());
-					controls.lock();
-					menu=false
-					break;
-				case 1://if the user clicked on  leaderboard
-					menuPage=1
-					homeScreen.drawLeaderboard();
-					break;
-				case 2: //if the user clicked on options
-					break;
-				case 3: //if the user clicked on credits
-					menuPage=3
-					break;
-				case 4:// if any button is clicked that returns to home screen
-					menuPage=0
-					break;
-				default: //this will never occur
-					break;
+			var ButtonClicked=homeScreen.Clicked(e.clientX,e.clientY)
+			if(ButtonClicked==0){
+				scene.add(playerModel)
+				scene.add(controls.getObject());
+				controls.lock();
+				menu=false	
 			}
-			
 		}else{
 			controls.lock();
 			menu=false
@@ -482,20 +464,7 @@ function animate() {
 	if (menu==true){
 		orbitControls.update()
 		composerMenu.render()
-		switch (menuPage){
-			case 0:
-				homeScreen.draw()
-				break;
-			case 1:
-				homeScreen.drawLeaderboard()
-				break;
-			case 2: //options
-				break;
-			case 3://Credits
-				homeScreen.drawCredits()
-				break;
-
-		}
+		homeScreen.draw()
 		
 		MenuTexture.needsUpdate=true
 		renderer.render(menuScene,HudCamera)
