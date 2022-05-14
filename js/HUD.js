@@ -1,13 +1,7 @@
-var dpr = window.devicePixelRatio
-const conversionW = (window.innerWidth+20) / 1900
-const conversionH = (window.innerHeight+20) / 935
+import {leaderBoard} from "../js/LeaderBoard.js"
 const width=window.innerWidth+20
 const height=window.innerHeight+20
-import {leaderBoard} from "../js/LeaderBoard.js"
 
-
-
-//console.log(dpr)
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
         this.currammo = currammo
@@ -28,23 +22,13 @@ class HUD {
         this.Paused=false;
         this.name="";
         this.leaderBoard=new leaderBoard()
-
-        //var body=document.getElementsByTagName("body")[0];
-        //document.body.appendChild(this.canvas)
-
-        //body.appendChild(this.canvas)
-        var scaleFillNative = Math.max(width / 1900, height / 935)
         var scaleFitNative = Math.min(width / 1900, height / 935)
-
-
-        var X_LEFT = (-width / 2)  // The xy limits for the coordinate system.
+//=============================== XY LIMITS FOR THE CANVAS ====================================================================================
+        var X_LEFT = (-width / 2)  
         var X_RIGHT = (width / 2)
         var Y_BOTTOM = (height / 2)
         var Y_TOP = (-height / 2)
         var pixelSize;
-
-
-
         var graphics = this.canvas.getContext("2d")
 
 
@@ -68,10 +52,9 @@ class HUD {
         this.setStartTime();
         applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         graphics.lineWidth = pixelSize
-        //graphics.scale(width/1900,height/935)
-        //graphics.translate(width/2,height/2)
 
-        //graphics.scale(scaleFitNative,scaleFitNative)
+
+
         this.addInput=function(){
             var input=document.createElement("input")
             input.type = 'text';
@@ -82,15 +65,8 @@ class HUD {
             input.addEventListener("keypress",function(e){
                 var keyCode = e.keyCode;
                 if (keyCode == 13) {
-                    ///console.log(this.entered)
-                    ///console.log(document.body.getElementsByClassName("input"))
-                    //drawText(this.value, parseInt(this.style.left, 10), parseInt(this.style.top, 10));
-
                     console.log(input.id)
                     document.body.removeChild(document.body.lastElementChild)
-                    
-                    //console.log("removed")
-                   // hasInput = false;
                    
                 }
             })
@@ -100,7 +76,6 @@ class HUD {
 
             input.focus();
 
-            //hasInput = true;        
         }
 
 
@@ -174,7 +149,6 @@ class HUD {
                     if(this.entered==true){
                         var size=60*scaleFitNative
                         graphics.font = String(size)+"px monospace"
-                      //  graphics.fillText(, -300, -300)
                         var top=this.leaderBoard.getTop10()
 
                         graphics.fillStyle = "rgb(0,0,0)"
@@ -226,13 +200,11 @@ class HUD {
                 if(this.Paused==false) {
                     
                     this.pausedtime =getTimeElappsed(this.startTime)
-                    //console.log(this.pausedtime+" Paused")
                 }
                
                 this.Paused=true;
             
             }else{  if(this.Paused==true){ this.startTime+=getTimeElappsed(this.startTime) -this.pausedtime
-               // console.log(this.startTime+" newstart")
             }
                 this.Paused=false;
              
@@ -402,8 +374,6 @@ class HUD {
         }
 
         function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
-            //var width = canvas.width;   // The width of this drawing area, in pixels.
-            //var height = canvas.height; // The height of this drawing area, in pixels.
             if (preserveAspect) {
                 // Adjust the limits to match the aspect ratio of the drawing area.
                 var displayAspect = Math.abs(height / width);

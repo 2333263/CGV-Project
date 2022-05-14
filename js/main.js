@@ -44,8 +44,6 @@ var frustumSize = 14;
 var dt = 0;
 var menu=true
 const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-//2*frustumSize, 2*-frustumSize , frustumSize , -frustumSize , 0, 10 
-//(width-20)/(-2*frustumSize),(width-20)/(2*frustumSize),(height-20)/(2*frustumSize),(height-20)/(-2*frustumSize),1,1000 
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
@@ -59,8 +57,6 @@ renderer.setClearColor(0xADD8E6, 1)
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4)
 const raycaster = new THREE.Raycaster();
-const loader = new THREE.TextureLoader();
-const manager = new THREE.LoadingManager();
 const timestep = 1 / 60
 
 const TargetArr = [];
@@ -119,7 +115,6 @@ orbitControls.target.set(30.5453,0,-32.0482)
 orbitControls.autoRotate=true
 orbitControls.dispose()
 orbitControls.update()
-//scene.add(orbitControls.object)
 let musicPlaying=false;
 let backgroundmusic;
 let gunsound;
@@ -265,18 +260,9 @@ playerBody.addEventListener('collide', (event) => {
 	}
 })
 
-
-
-
-//scene.add( new THREE.CameraHelper( direcLight.shadow.camera ) );
-
 playerBody.linearDamping = 0.9;
 
 world.addBody(playerBody); //adds player body to the world
-
-
-
-
 
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
@@ -368,10 +354,6 @@ function HitTarget(name) {
 function move() {
 	playerBody.linearDamping = 0.9
 	playerBody.angularDamping = 0.9
-	//playerBody.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x))
-
-	//playerBody.yawObject.rotation.y = camera.rotation.y;
-
 	var tempVec = new THREE.Vector3(0, 0, 0);
 	var delta = dt * 1000
 	delta *= 0.1
@@ -391,22 +373,17 @@ function move() {
 		}
 		if (pressedKeys[" "]) {
 			if (playerBody.canJump == true) {
-				//playerBody.inertia=new CANNON.Vec3(0,-2,0)
-				//playerBody.applyLocalImpulse(new CANNON.Vec3(0,80,0))
 				playerBody.velocity.y = 15
-				//	playerBody.applyLocalImpulse(0,20*delta,0)
 			}
 			playerBody.canJump = false
 		}
 
 	}
 
-	//playerBody.quaternion.copy(camera.quaternion)
 	tempVec.applyQuaternion(controls.getObject().quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
 	controls.getObject().position.copy(playerBody.position);
-	//	camera.quaternion.copy(playerBody.quaternion)
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 
@@ -461,13 +438,13 @@ document.body.appendChild(stats.dom)
 
 function animate() {
 	stats.begin() //For monitoring
-	if (menu==true){
-		orbitControls.update()
+	if (menu==true){//if were in the menu
+		orbitControls.update()//rotate around the world
 		composerMenu.render()
-		homeScreen.draw()
+		homeScreen.draw()//draw the main menu
 		
-		MenuTexture.needsUpdate=true
-		renderer.render(menuScene,HudCamera)
+		MenuTexture.needsUpdate=true//update main menu
+		renderer.render(menuScene,HudCamera)//render the main menu
 	}else{
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
@@ -528,17 +505,12 @@ animate();
 
 
 function renderWorld() {
-	//player=scene.getObjectByName("player")
-	//scene.remove(player)
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
 	renderer.autoClear = false;
 	renderer.clear();
 	//Render with composer for post processing
-	
-
 	composer.render()
-	//renderer.render(scene, controls.getObject())
 	mapTargets();
 	renderer.clearDepth();
 	renderer.setViewport(width - 250, 50, 200, 200)
@@ -611,7 +583,7 @@ function addTargets(position) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
 		var target = new Targets(i, position[i][0], position[i][1], position[i][2], new THREE.Vector3(position[i][0] + 5, position[i][1], position[i][2]));
-		target.moves = true
+		target.moves = false
 		TargetArr.push(target)
 		scene.add(target.getCylinder())
 
