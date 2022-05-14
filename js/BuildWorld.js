@@ -116,12 +116,12 @@ class BuildWorld {
                     */
                 }
                 else if (name.substring(0, 6) === 'Target') {
-                    //Add targets positions to respective arrays
+                    //Add targets to respective arrays
                     child.visible = false;
                     if (name.substring(6, 10) === 'Move'){
-                        targetsMoving.push(child.position);
+                        targetsMoving.push(child);
                     } else{
-                        targetsStill.push(child.position);
+                        targetsStill.push(child);
                     }
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
