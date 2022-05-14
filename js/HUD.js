@@ -115,24 +115,25 @@ class HUD {
               
             }
             else if(this.Paused ){
-                graphics.fillStyle="rgba(0,0,0,0.5)"
+                graphics.fillStyle="rgba(0,0,0,0.6)"
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 graphics.fillStyle = "black"
                 var size=30*scaleFitNative
                 graphics.font = String(size)+"px Arial"
+                graphics.fillStyle = "rgb(255,255,255)"
                 var word = "Paused"
-                graphics.fillText(word, 0, -40)
+                graphics.fillText(word, -20, -40)
                 word="Press R to restart"
-                graphics.fillText(word, 0, 0)
+                graphics.fillText(word, -20, 0)
                 word="Click anywhere to resume"
-                graphics.fillText(word, 0, 40)
+                graphics.fillText(word, -20, 40)
             }
 
 
         };
         this.checkgameState=function() {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
-                graphics.fillStyle="rgba(0,0,0,0.5)"
+                graphics.fillStyle="rgba(0,0,0,0.6)"
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]])
                 var size=60*scaleFitNative
                 graphics.font = String(size)+"px Arial"
@@ -151,7 +152,7 @@ class HUD {
                         graphics.font = String(size)+"px monospace"
                         var top=this.leaderBoard.getTop10()
 
-                        graphics.fillStyle = "rgb(0,0,0)"
+                        graphics.fillStyle = "rgb(255,255,255)"
                         graphics.fillText("Top "+top.length, X_LEFT+200, Y_TOP+50*scaleFitNative)
                         
                         for (var i=0 ;i<top.length; i++){
