@@ -112,10 +112,10 @@ class MainMenu{
                 this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             /*put the credits in here----> */var credits=[ 
                 "H.Developers","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841",
-                "H.Models","Unless otherwise stated, all were handcrafted by developement team in JS code or Blender","Lamp Post Model:",
-                "H.Textures","Unless otherwise stated, handcrafted by developement team in JS code or PowerPoint", "Icons used in textures from Microsoft 365 illustrations","Skybox Texture:Pieter ‘Spiney’ Verhoeven: http://www.spiney.me/ ",
+                "H.Models","Unless otherwise stated, all were handcrafted by developement team in JS code or Blender","Lamp Post Model: Algirdas Lalys is licensed under CC BY 4.0 - https://bit.ly/3NfeBnj",
+                "H.Textures","Unless otherwise stated, handcrafted by developement team in JS code,", "PowerPoint, or under CC0", "Icons used in textures from Microsoft 365 illustrations","Skybox Texture:Pieter ‘Spiney’ Verhoeven: http://www.spiney.me/ ",
                 "H.Audio", "BGM: Original composition by Jeremy Stott", "Gun sound effect: ",
-                "H.Dependencies","Cannon es", "ThreeToCannon", "Three.js modules: Orbit controls, Pointer lock controls, Stats, Postprossing"
+                "H.Dependencies","Cannon es", "ThreeToCannon", "Three.js modules: Orbit controls, Pointer lock controls", "Post Processing", "Stats.js"
 
             ]
                 var size=35*scaleFitNative
