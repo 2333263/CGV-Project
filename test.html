@@ -35,10 +35,9 @@
         //#########################mainMenu variables init#########################
         callMenu=true;
         var graphics = canvas.getContext("2d");
-        graphics.translate(width/2, height/2);
+        //graphics.translate(width/2, height/2);
+        applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         draw();
-        //applyLimits(graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
-        graphics.lineWidth = pixelSize;
 
         
         //#########################functions#########################
@@ -56,6 +55,8 @@
             
             g = graphics;
             g.fillStyle = "rgba(172, 166, 166, 0.90)";
+            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+            g.font = String(size)+"px Courier";
             g.fillRect(X_LEFT*50/100,
                        Y_TOP*20/100,
                        -X_LEFT,
@@ -71,7 +72,18 @@
             g.fillRect(X_LEFT*50/100,
                        Y_TOP*-70/100,
                        -X_LEFT,
-                       Y_TOP*20/100)
+                       Y_TOP*20/100);
+
+            //Words
+            g.fillStyle = 'rgb(0,0,0)';
+            var word = "PLAY";
+            g.fillText(word,X_LEFT*7/100,Y_TOP*26/100);
+            var word = "LEADERBOARD";
+            g.fillText(word,X_LEFT*20/100,Y_TOP*-4/100);
+            var word = "OPTIONS";
+            g.fillText(word,X_LEFT*12/100,Y_TOP*-34/100);
+            var word = "CREDITS";
+            g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
             }
 
             function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
