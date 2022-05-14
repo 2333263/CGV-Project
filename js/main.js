@@ -37,13 +37,13 @@ const width = window.innerWidth + 20
 const height = window.innerHeight + 20
 var scene = new THREE.Scene();
 const aspectRatio = width / height
-const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
 const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
 var menu=true
-const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
 const renderer = new THREE.WebGLRenderer();
@@ -200,11 +200,12 @@ function createMaterialArray() {
 	});
 	return materialArray;
 } // this function maps over the array of images 
-//returns a Three.js material
 
+//returns a Three.js material
 const materialArray = createMaterialArray()
 
-const skybxGeo = new THREE.BoxGeometry(1000, 1000, 1000);
+//Smaller skybox that follows the player
+const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
 const skybox = new THREE.Mesh(skybxGeo, materialArray);
 scene.add(skybox);
 
@@ -267,6 +268,11 @@ controls.addEventListener('lock', () => {
 controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 })
+
+document.addEventListener("mouseup", (e) => {
+	//Remove muzzle flash on mouse up
+	scene.getObjectByName('muzzleFlash').visible = false;
+})
 document.addEventListener("mousedown", (e) => {
 	if(e.button==0){
 	if (musicPlaying==false)
@@ -280,6 +286,7 @@ document.addEventListener("mousedown", (e) => {
 		if (playerBody.noBullets > 0) { //if player has any bullets 
 			playerBody.noBullets--; //decrement bullet count
 			gunshotSound()
+			scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
 			raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 			const intersects = raycaster.intersectObjects(scene.children);
 			for (let j = 0; j < TargetArr.length; j++) {
@@ -292,6 +299,7 @@ document.addEventListener("mousedown", (e) => {
 					hud.increaseTarget();
 				}
 			}
+			
 			//renderer.readRenderTargetPixels(scene, camera)
 			if (playerBody.noBullets == 0) {
 				removeTargets();
@@ -424,10 +432,14 @@ BuildWorld.loadLevel(scene, world, 1, function() {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+	BuildWorld.addGun(playerModel)
 	const glowing = BuildWorld.getGlowing();
-	console.log(glowing)
 
 	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+
+	//Do selective bloom (mainly for the the lights and muzzle flash)
+	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+
 	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
 
 	
@@ -461,15 +473,28 @@ function animate() {
 		composerMenu.render()
 		homeScreen.draw()//draw the main menu
 		
+		//Make skybox follow orbital camera to make the distance to the skybox look infinite
+		skybox.position.copy(orbitControls.object.position)
+
+		//Code to make it look like only the level is rotating (stops skybox rotation)
+		// var tempVec = new THREE.Vector3();
+		// orbitControls.object.getWorldDirection(tempVec)
+		// var theta = Math.atan2(tempVec.x, tempVec.z);
+		// skybox.rotation.set(0, theta , 0)
+
 		MenuTexture.needsUpdate=true//update main menu
 		renderer.render(menuScene,HudCamera)//render the main menu
 	}else{
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
+		
 		hud.isPaused(false);
 		if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
 		playerModel.position.copy(playerBody.position);
 		
+		//Make skybox follow player to make the distance to the skybox look infinite
+		skybox.position.copy(playerBody.position)
+
 		var tempVec = new THREE.Vector3();
 		controls.getObject().getWorldDirection(tempVec)
 		//Get angle player is facing through arctan

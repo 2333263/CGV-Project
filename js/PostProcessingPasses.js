@@ -5,7 +5,27 @@ import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/Re
 import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
 
 
-
+var BlendFunction = {
+    SKIP: 0,
+    ADD: 1,
+    ALPHA: 2,
+    AVERAGE: 3,
+    COLOR_BURN: 4,
+    COLOR_DODGE: 5,
+    DARKEN: 6,
+    DIFFERENCE: 7,
+    EXCLUSION: 8,
+    LIGHTEN: 9,
+    MULTIPLY: 10,
+    DIVIDE: 11,
+    NEGATION: 12,
+    NORMAL: 13,
+    OVERLAY: 14,
+    REFLECT: 15,
+    SCREEN: 16,
+    SOFT_LIGHT: 17,
+    SUBTRACT: 18
+  };
 /*
 //USING BUILT IN THREE.JS POST PROCESSING
 const composer = new EffectComposer(renderer);
@@ -53,16 +73,6 @@ class POSTPROCESSINGPASSES {
             bloomEffect
         );
 
-        //New High Bloom Effect
-        const bloomEffectHigh = new POSTPROCESSING.BloomEffect({
-            luminanceThreshold: 1,
-            intensity: 10
-
-        })
-        const bloomPassHigh = new POSTPROCESSING.EffectPass(
-            camera,
-            bloomEffectHigh
-        );
 
         //Add some chromatic aberration for visual effect
         const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({ blendFunction: 13, offset: new THREE.Vector2(1e-4, 5e-5) })
@@ -116,45 +126,59 @@ class POSTPROCESSINGPASSES {
         const colorDepthEffect = new POSTPROCESSING.ColorDepthEffect({ bits: 16 });
         const colorDepthPass = new POSTPROCESSING.EffectPass(camera, smaaEffect, colorDepthEffect)
 
-        composer.addPass(bloomPassHigh)
 
         //Add to different passes composer
-        composer.addPass(godRayPass);
-
-        composer.addPass(bloomPass);
-
-        //Add bloom pass to only affect high range colours
         
+        composer.addPass(godRayPass);
+        composer.addPass(bloomPass);
+        //composer.addPass(chromaticAberationPass)
 
 
         //composer.addPass(colorDepthPass);
-        composer.addPass(chromaticAberationPass)
-
         return composer;
     }
     static selectiveBloomPass(composer, camera, scene, glowing) {
         
-        console.log(glowing)
 
         const selectiveBloomEffect = new POSTPROCESSING.SelectiveBloomEffect(
             scene, camera, 
             {
-            luminanceThreshold: 0,
-            intensity: 1
+            luminanceThreshold: 0.1,
+            intensity: 4
         })
 
+        
         const selection = selectiveBloomEffect.selection;
         for (var selectedObject of glowing){
+            //console.log(glowing)
             selection.add(selectedObject);
         } 
-        
+        selectiveBloomEffect.selection = selection;
+        selectiveBloomEffect.ignoreBackground = true;
+        selectiveBloomEffect.inverted = false;
+
+        const blendMode = selectiveBloomEffect.blendMode
+        blendMode.setBlendFunction(BlendFunction.SCREEN);
+        selectiveBloomEffect.blendMode = blendMode;
+
+        selectiveBloomEffect
         const selectiveBloomPass = new POSTPROCESSING.EffectPass(
             camera,
-            smaaEffect,
+            //smaaEffect,
             selectiveBloomEffect
         )
-        
+
+        //selectiveBloomPass.renderToScreen = true;
+
+
+        const depthEff = new POSTPROCESSING.DepthEffect()
+        const depthPass = new POSTPROCESSING.EffectPass(
+            camera,
+            //smaaEffect,
+            depthEff
+        )
         composer.addPass(selectiveBloomPass)
+        //composer.addPass(depthPass)
         return composer
     }
 }

@@ -5,6 +5,9 @@ import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
+
+const emissiveMapTex = loader.load('../Objects/Textures/WhiteEmission/square.png')
+
 var hullCollision = [];
 var hullCollisionCANNON = [];
 var barrelCollision = [];
@@ -66,7 +69,7 @@ class BuildWorld {
 
             //Add scene to object
             root.name = 'Level_Root'
-           
+
             gltf.scene.traverse(function (child) {
 
                 //Traverse through all objects to get the collision
@@ -88,7 +91,7 @@ class BuildWorld {
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
                     hullCollision.push(child)
-        
+
                     /*
                     const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
                     const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
@@ -145,23 +148,23 @@ class BuildWorld {
                     streetLight.penumbra = 0.5
                     streetLight.position.set(
                         child.position.x,
-                        child.position.y, 
+                        child.position.y,
                         child.position.z
                     )
                     //Create light target
                     const target = new THREE.Object3D
 
                     //position.copy was creating problems, do it manually
-                    target.position.set(child.children[0].position.x + child.position.x, 
+                    target.position.set(child.children[0].position.x + child.position.x,
                         child.children[0].position.y + child.position.y,
                         child.children[0].position.z + child.position.z
-                        );
-                    
+                    );
+
                     scene.add(target)
 
 
                     streetLight.target = target
-                    
+
                     //Add light to lights array
                     streetLights.push(streetLight)
 
@@ -171,11 +174,11 @@ class BuildWorld {
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
 
                     glowing.push(child)
-                    const colorHigh = new THREE.Color(2, 2, 10.3525)
-                    //console.log(colorHigh)
-                    const newMat = new THREE.MeshBasicMaterial({
-                        color: colorHigh,
-                        toneMapped: false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        color: child.material.color,
+                        emissiveMap: emissiveMapTex,
+                        emissive: child.material.color,
+                        emissiveIntensity: 1
                     })
                     child.material = newMat
                 }
@@ -272,10 +275,10 @@ class BuildWorld {
 
             });
 
-            
+
 
             scene.add(root);
-            
+
             for (const obj of hullCollision) {
                 var CANNONBody = threeToCannonObj.getCannonMesh(obj)
                 world.addBody(CANNONBody);
@@ -294,7 +297,6 @@ class BuildWorld {
             }
             //Callback to ensure that the scene is loaded (will only run when scene is loaded due to .load of GLTF loader)
             callback();
-            //onsole.log(glowing)
 
         });
 
@@ -334,20 +336,20 @@ class BuildWorld {
      * Method to build the player using THREE objects
      * @returns {THREE.Mesh} Player mesh
      */
-    static buildPlayer(){
+    static buildPlayer() {
         //Player colours
         const colorRed = new THREE.Color('#BC4937');
         const colorPeach = new THREE.Color('#F7C0A3');
         const colorBlack = new THREE.Color('#000000');
 
         //Define geometries
-        const torseGeometry = new THREE.BoxGeometry(1.2,1.5,0.5);
-        const armGeometry = new THREE.BoxGeometry(0.4,1.1,0.4);
-        const handGeometry = new THREE.BoxGeometry(0.36,0.2,0.36);
-        const headGeometry = new THREE.BoxGeometry(0.7,0.7,0.4);
-        const eyeGeometry = new THREE.PlaneGeometry(0.1,0.2);
-        const legGeometry = new THREE.BoxGeometry(0.45,0.8,0.45);
-        
+        const torseGeometry = new THREE.BoxGeometry(1.2, 1.5, 0.5);
+        const armGeometry = new THREE.BoxGeometry(0.4, 1.1, 0.4);
+        const handGeometry = new THREE.BoxGeometry(0.36, 0.2, 0.36);
+        const headGeometry = new THREE.BoxGeometry(0.7, 0.7, 0.4);
+        const eyeGeometry = new THREE.PlaneGeometry(0.1, 0.2);
+        const legGeometry = new THREE.BoxGeometry(0.45, 0.8, 0.45);
+
 
         //Define materials
         const redMat = new THREE.MeshPhongMaterial({
@@ -362,7 +364,7 @@ class BuildWorld {
             color: colorBlack,
             side: THREE.FrontSide
         });
-        
+
         //Make main player mesh
         const torsoMesh = new THREE.Mesh(torseGeometry, redMat);
         torsoMesh.name = 'torso';
@@ -396,14 +398,14 @@ class BuildWorld {
         eyeLeft.name = 'eyeLeft';
 
         //Make Legs
-        const legLeft = new THREE.Mesh(legGeometry,blackMat);
+        const legLeft = new THREE.Mesh(legGeometry, blackMat);
         legLeft.name = 'legLeft';
         const legRight = new THREE.Mesh(legGeometry, blackMat);
         legRight.name = 'legRight';
 
         //Add limbs + head to torse
-        torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.5).rotateY(Math.PI ));
-        torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.5).rotateY(Math.PI ));
+        torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.5).rotateY(Math.PI));
+        torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.5).rotateY(Math.PI));
         torsoMesh.add(head.translateY(0.7))
         torsoMesh.add(legRight.translateX(-0.25).translateY(-0.8))
         torsoMesh.add(legLeft.translateX(0.25).translateY(-0.8))
@@ -415,12 +417,19 @@ class BuildWorld {
         //Add hands to arms
         armRight.add(handRight.translateY(-0.6));
         armLeft.add(handLeft.translateY(-0.6));
-        
+
         //set up arms 
-        armRightPivot.rotateX(Math.PI/2)
+        armRightPivot.rotateX(Math.PI / 2)
         //armLeftPivot.rotateY(Math.PI / 4)
 
 
+
+
+
+        return torsoMesh;
+    }
+
+    static addGun(scene) {
         const gltfLoader = new GLTFLoader(manager);
 
         const url = '../Objects/Weapons/m4_2.gltf'
@@ -428,28 +437,50 @@ class BuildWorld {
             const weapon = gltf.scene
             weapon.name = 'weaponsM4'
             weapon.translateX(0.2)
-            weapon.scale.set(0.7,0.7,0.7)
-            weapon.rotateX( Math.PI / 2)
-            handRight.add(weapon)
+            weapon.scale.set(0.7, 0.7, 0.7)
+            weapon.rotateX(Math.PI / 2)
+
+
+
+            scene.getObjectByName('handRight').add(weapon)
+
         });
 
+        const muzzelFlashGeo = new THREE.ConeGeometry(0.3, 0.7, 16)
+        const muzzleFlash = new THREE.Mesh(muzzelFlashGeo, new THREE.MeshPhongMaterial({
+            color: new THREE.Color('#FFA500'),
+            emissiveMap: emissiveMapTex,
+            emissive: new THREE.Color('#FFA500'),
+            emissiveIntensity: 1,
+            transparent: true,
+            opacity: 0.7
+        }))
+        //Translate muzzle flash to be in position with gun
+        muzzleFlash
+        .translateZ(0.11)
+        .translateX(0.2)
+        .translateY(-1);
 
-        return torsoMesh;
+        muzzleFlash.name = 'muzzleFlash'
+        glowing.push(muzzleFlash)
+        muzzleFlash.visible = false;
+        //Add muzzleflash to hand to ensure it will be in the glowing objects when called
+        scene.getObjectByName('handRight').add(muzzleFlash)
     }
 
-    static turnOffLightShadow(){
-        for (const light of streetLights){
+    static turnOffLightShadow() {
+        for (const light of streetLights) {
             light.castShadow = false
         }
     }
 
-    static turnOnLightShadow(){
-        for (const light of streetLights){
+    static turnOnLightShadow() {
+        for (const light of streetLights) {
             light.castShadow = true
         }
     }
 
-    static getGlowing(){
+    static getGlowing() {
         return glowing
     }
 
