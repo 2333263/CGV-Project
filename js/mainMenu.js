@@ -88,6 +88,8 @@ class MainMenu{
             }
             this.drawLeaderboard=function(){//this function draws the leaderboard on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+                this.graphics.fillStyle="rgba(255,255,255,0.6)"
+                this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
                 var size=60*scaleFitNative
                 this.graphics.font = String(size)+"px monospace"
                 var all=lb.getAll()
@@ -106,7 +108,7 @@ class MainMenu{
             }
             this.drawCredits=function(){//this draws the credits on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-                this.graphics.fillStyle="rgba(255,255,255,0.5)"
+                this.graphics.fillStyle="rgba(255,255,255,0.6)"
                 this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             /*put the credits in here----> */var credits=[ 
                 "H.Developers","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841",
