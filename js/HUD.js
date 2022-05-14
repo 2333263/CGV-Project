@@ -37,10 +37,10 @@ class HUD {
         var scaleFitNative = Math.min(width / 1900, height / 935)
 
 
-        var X_LEFT = (-width / 2) * scaleFitNative;    // The xy limits for the coordinate system.
-        var X_RIGHT = (width / 2) * scaleFitNative;
-        var Y_BOTTOM = (height / 2) * scaleFitNative;
-        var Y_TOP = (-height / 2) * scaleFitNative;
+        var X_LEFT = (-width / 2)  // The xy limits for the coordinate system.
+        var X_RIGHT = (width / 2)
+        var Y_BOTTOM = (height / 2)
+        var Y_TOP = (-height / 2)
         var pixelSize;
 
 

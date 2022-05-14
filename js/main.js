@@ -31,6 +31,7 @@ import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
 import {OrbitControls} from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+import { MainMenu } from '/js/mainMenu.js';
 
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
@@ -94,6 +95,22 @@ HudPlane.onBeforeRender = function (renderer) {
 	renderer.clearDepth();
 }
 sceneHUD.add(HudPlane)
+
+var menuScene=new THREE.Scene()
+var homeScreen=new MainMenu()
+homeScreen.draw()
+var MenuTexture=new THREE.Texture(homeScreen.getMenu())
+MenuTexture.needsUpdate=true
+var MenuMat=new THREE.MeshBasicMaterial({map: MenuTexture})
+MenuMat.transparent=true
+var menuGeom=new THREE.BoxGeometry(width,height,0)
+var MenuPlane=new THREE.Mesh(menuGeom,MenuMat)
+MenuPlane.material.depthWrite=false
+menuScene.add(MenuPlane)
+
+
+
+
 
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
 const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
@@ -313,11 +330,15 @@ document.addEventListener("mousedown", (e) => {
 		}
 	} else {
 		if(menu==true){
+			if(homeScreen.Clicked(e.clientX,e.clientY)==0){
 			scene.add(playerModel)
 			scene.add(controls.getObject());
+			controls.lock();
+			menu=false	
+			}
+			
 		}
-		controls.lock();
-		menu=false
+		
 	}
 }
 })
@@ -441,6 +462,9 @@ function animate() {
 	if (menu==true){
 		orbitControls.update()
 		composerMenu.render()
+		homeScreen.draw()
+		MenuTexture.needsUpdate=true
+		renderer.render(menuScene,HudCamera)
 	}else{
 	//direcLight.translateX(-0.01)
 	if (controls.isLocked) {
