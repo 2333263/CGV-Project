@@ -345,6 +345,7 @@ document.addEventListener("mousedown", (e) => {
 				case 2: //if the user clicked on options
 					break;
 				case 3: //if the user clicked on credits
+					menuPage=3
 					break;
 				case 4:// if any button is clicked that returns to home screen
 					menuPage=0
@@ -487,6 +488,13 @@ function animate() {
 				break;
 			case 1:
 				homeScreen.drawLeaderboard()
+				break;
+			case 2: //options
+				break;
+			case 3://Credits
+				homeScreen.drawCredits()
+				break;
+
 		}
 		
 		MenuTexture.needsUpdate=true

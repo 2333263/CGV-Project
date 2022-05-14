@@ -84,18 +84,46 @@ class MainMenu{
                     this.graphics.fillText(all[i],  X_LEFT+200, bottom+60*scaleFitNative)
                     bottom=bottom+60*scaleFitNative
                 }
+                this.drawBackButton()
+                this.drawNextButton()
+                
+               
+            }
+            this.drawCredits=function(){
+                this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+                var credits=["example object: where we got it","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841"]
+                var size=60*scaleFitNative
+                this.graphics.font = String(size)+"px monospace"
+                this.graphics.fillStyle = "rgb(0,0,0)"
+                this.graphics.fillText("Credits:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
+                var bottom=Y_TOP+60*scaleFitNative
+                for(var i=0;i<credits.length;i++){
+                    this.graphics.fillText(credits[i],  X_LEFT+200, bottom+60*scaleFitNative)
+                    bottom=bottom+60*scaleFitNative
+                }
+                this.drawBackButton()
+                
+            }
+            this.drawBackButton=function(){
                 this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
                 this.graphics.fillRect(X_LEFT,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
-                this.graphics.fillRect(X_RIGHT-180*scaleFitNative,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
                 this.graphics.fillStyle = 'rgb(0,0,0)';
                 var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
                 this.graphics.font = String(size)+"px Courier";
                 var word = "BACK";
                 this.graphics.fillText(word,X_LEFT+20*scaleFitNative,Y_BOTTOM-30*scaleFitNative)
+            }
+            this.drawNextButton=function(){
+                this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
+                this.graphics.fillRect(X_RIGHT-180*scaleFitNative,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
+                this.graphics.fillStyle = 'rgb(0,0,0)';
+                var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+                this.graphics.font = String(size)+"px Courier";
                 var word = "NEXT";
                 this.graphics.fillText(word,X_RIGHT-150*scaleFitNative,Y_BOTTOM-30*scaleFitNative)
-               
             }
+
+
 
             this.Clicked=function(posX,posY,MenuPage){
                 var centerX=(width/2)
@@ -124,17 +152,23 @@ class MainMenu{
                         if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
                             console.log("BACK")
                             return(4)
-                        }else if(posX>=X_RIGHT-150*scaleFitNative &&posY>=Y_BOTTOM-120*scaleFitNative){
+                        }else if(posX>=X_RIGHT-150*scaleFitNative &&posY>=Y_BOTTOM-120*scaleFitNative){//if they click next
                             console.log("next")
                         }    
-                    break;
+                        break;
+                    case(2)://if theyre on options
+                        break;
+                    case(3)://if theyre on credits
+                        if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
+                            console.log("BACK")
+                            return(4)
+                        }
+                        break;
 
                 }
             }
 
             function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
-                //var width = this.canvas.width;   // The width of this drawing area, in pixels.
-                //var height = this.canvas.height; // The height of this drawing area, in pixels.
                if (preserveAspect) {
                     // Adjust the limits to match the aspect ratio of the drawing area.
                     var displayAspect = Math.abs(height / width);
