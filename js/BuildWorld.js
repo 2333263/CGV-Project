@@ -14,6 +14,8 @@ var boxCollisionCANNON = [];
 
 var streetLights = [];
 
+var glowing = [];
+
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
 var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
@@ -168,6 +170,7 @@ class BuildWorld {
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
 
+                    glowing.push(child)
                     const colorHigh = new THREE.Color(2, 2, 10.3525)
                     //console.log(colorHigh)
                     const newMat = new THREE.MeshBasicMaterial({
@@ -439,6 +442,10 @@ class BuildWorld {
         for (const light of streetLights){
             light.castShadow = true
         }
+    }
+
+    static getGlowing(){
+        return glowing
     }
 
 }

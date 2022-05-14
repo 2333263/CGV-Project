@@ -64,7 +64,7 @@ const timestep = 1 / 60
 
 const TargetArr = [];
 const mapTargetArr = [];
-const TargetPos = [[20, 3, 20], [10, 6, 15], [20, 10, 3]]
+const TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
@@ -414,7 +414,15 @@ scene.add(mainLight)
 
 
 //Post Proccessing
-const composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+var composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+
+const glowing = BuildWorld.getGlowing();
+console.log(glowing)
+console.log(glowing.length)
+if (glowing.length > 0){
+	console.log('got glowing')
+	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+}
 
 //Post processing for menu
 const composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
@@ -500,6 +508,8 @@ function renderWorld() {
 	renderer.autoClear = false;
 	renderer.clear();
 	//Render with composer for post processing
+	
+
 	composer.render()
 	//renderer.render(scene, controls.getObject())
 	mapTargets();
