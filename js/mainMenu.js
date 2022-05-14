@@ -88,6 +88,8 @@ class MainMenu{
             }
             this.drawLeaderboard=function(){//this function draws the leaderboard on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+                this.graphics.fillStyle="rgba(255,255,255,0.6)"
+                this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
                 var size=60*scaleFitNative
                 this.graphics.font = String(size)+"px monospace"
                 var all=lb.getAll()
@@ -106,17 +108,26 @@ class MainMenu{
             }
             this.drawCredits=function(){//this draws the credits on the screen
                 this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-            /*put the credits in here----> */var credits=[
-                "example object: where we got it","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841"
+                this.graphics.fillStyle="rgba(255,255,255,0.6)"
+                this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            /*put the credits in here----> */var credits=[ 
+                "H.Developers","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841",
+                "H.Models","Unless otherwise stated, all were handcrafted by developement team in JS code or Blender","Lamp Post Model:",
+                "H.Textures","Unless otherwise stated, handcrafted by developement team in JS code or PowerPoint", "Icons used in textures from Microsoft 365 illustrations","Skybox Texture:Pieter ‘Spiney’ Verhoeven: http://www.spiney.me/ ",
+                "H.Audio", "BGM: Original composition by Jeremy Stott", "Gun sound effect: ",
+                "H.Dependencies","Cannon es", "ThreeToCannon", "Three.js modules: Orbit controls, Pointer lock controls, Stats, Postprossing"
+
             ]
-                var size=60*scaleFitNative
-                this.graphics.font = String(size)+"px monospace"
+                var size=35*scaleFitNative
+                this.graphics.font = "bold "+String(size)+"px monospace";
                 this.graphics.fillStyle = "rgb(0,0,0)"
                 this.graphics.fillText("Credits:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
-                var bottom=Y_TOP+60*scaleFitNative
+                var bottom=Y_TOP+50*scaleFitNative
                 for(var i=0;i<credits.length;i++){
-                    this.graphics.fillText(credits[i],  X_LEFT+200, bottom+60*scaleFitNative)
-                    bottom=bottom+60*scaleFitNative
+                    if(credits[i].startsWith("H.")) this.graphics.font="bold "+String(size)+"px monospace"; //H. used to indicate headings so that they can be made bold
+                    else  this.graphics.font = String(size)+"px monospace"
+                    this.graphics.fillText(credits[i].replace("H.",""),  X_LEFT+200, bottom+35*scaleFitNative)
+                    bottom=bottom+35*scaleFitNative
                 }
                 this.drawBackButton()
                 
