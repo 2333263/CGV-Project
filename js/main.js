@@ -330,11 +330,22 @@ document.addEventListener("mousedown", (e) => {
 		}
 	} else {
 		if(menu==true){
-			if(homeScreen.Clicked(e.clientX,e.clientY)==0){
-			scene.add(playerModel)
-			scene.add(controls.getObject());
-			controls.lock();
-			menu=false	
+			var ButtonClicked=homeScreen.Clicked(e.clientX,e.clientY)
+			switch (ButtonClicked){
+				case 0://if they clicked on play
+					scene.add(playerModel)
+					scene.add(controls.getObject());
+					controls.lock();
+					menu=false
+					break;
+				case 1:	//if the user clicked on  leaderboard
+					break;
+				case 2: //if the user clicked on options
+					break;
+				case 3: //if the user clicked on credits
+					break;
+				default: //this will never occur
+					break;
 			}
 			
 		}
