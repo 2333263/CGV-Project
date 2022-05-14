@@ -64,7 +64,7 @@ const timestep = 1 / 60
 
 const TargetArr = [];
 const mapTargetArr = [];
-const TargetPos = [[20, 3, 20], [10, 6, 15], [20, 10, 3]]
+const TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
