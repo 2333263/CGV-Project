@@ -41,7 +41,7 @@ class BuildWorld {
      * @param {int} level The level of the world as an int
      * 
      */
-    static loadLevel(scene, world, level = 1) {
+    static loadLevel(scene, world, level = 1, callback) {
         var url;
         //Select which level to load with switch 
         switch (level) {
@@ -292,8 +292,13 @@ class BuildWorld {
                 world.addBody(CANNONBody);
                 boxCollisionCANNON.push(CANNONBody)
             }
+            //Callback to ensure that the scene is loaded (will only run when scene is loaded due to .load of GLTF loader)
+            callback();
+            //onsole.log(glowing)
 
         });
+
+        //callback();
     }
 
 

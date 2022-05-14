@@ -188,11 +188,7 @@ scene.add(new Reflector(mirrorGeo, {
 
 
 
-//Add blender objects to scene and collisions to world
-BuildWorld.loadLevel(scene, world, 1)
 
-//To unload current world
-//loadLevelWithCollision.unloadCurrentLevel(scene, world)
 
 
 let pathStrings = ["bluecloud_ft.jpg", "bluecloud_bk.jpg", "bluecloud_up.jpg", "bluecloud_dn.jpg", "bluecloud_rt.jpg", "bluecloud_lf.jpg",]
@@ -227,6 +223,7 @@ const initcam = controls.getObject().quaternion // save camera rotation to be us
 // }
 
 var Torso = new THREE.Object3D()
+//Player model done in THREE so no need for callback (gun model is irrelevant to following code)
 var playerModel = BuildWorld.buildPlayer();
 Torso = playerModel.getObjectByName("torso")
 playerModel.traverse(function(child){
@@ -412,27 +409,48 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 }
 scene.add(mainLight)
 
-
-//Post Proccessing
-var composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
-
-const glowing = BuildWorld.getGlowing();
-console.log(glowing)
-console.log(glowing.length)
-if (glowing.length > 0){
-	console.log('got glowing')
-	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
-}
-
-//Post processing for menu
-const composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
-
 //----------------------------------------------------------------
 //Stats for fps
 var stats = new Stats();
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 //----------------------------------------------------------------
+
+//Add blender objects to scene and collisions to world
+//Use callback to ensure level is loaded
+var composer;
+var composerMenu
+BuildWorld.loadLevel(scene, world, 1, function() {
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+	const glowing = BuildWorld.getGlowing();
+	console.log(glowing)
+
+	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
+
+	
+	animate();
+})
+
+//To unload current world
+//loadLevelWithCollision.unloadCurrentLevel(scene, world)
+
+//Post Proccessing
+
+
+
+// console.log(glowing.length)
+// if (glowing.length > 0){
+// 	console.log('got glowing')
+// 	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+// }
+
+//Post processing for menu
+
+
+
 
 
 
@@ -501,7 +519,7 @@ function animate() {
 
 
 
-animate();
+
 
 
 function renderWorld() {
