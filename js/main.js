@@ -428,6 +428,7 @@ document.body.appendChild(stats.dom)
 //Use callback to ensure level is loaded
 var composer;
 var composerMenu
+//(THREE.Scene, CANNON.World, Level Number)
 BuildWorld.loadLevel(scene, world, 1, function() {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
@@ -435,6 +436,8 @@ BuildWorld.loadLevel(scene, world, 1, function() {
 	BuildWorld.addGun(playerModel)
 	const glowing = BuildWorld.getGlowing();
 
+
+	
 	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
 
 	//Do selective bloom (mainly for the the lights and muzzle flash)
@@ -442,7 +445,10 @@ BuildWorld.loadLevel(scene, world, 1, function() {
 
 	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
 
-	
+	console.log('Moving target positions:')
+	console.log(BuildWorld.getTargetsMoving())
+	console.log('Still target positions:')
+	console.log(BuildWorld.getTargetsStill())
 	animate();
 })
 

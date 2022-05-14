@@ -8,6 +8,7 @@ const manager = new THREE.LoadingManager();
 
 const emissiveMapTex = loader.load('../Objects/Textures/WhiteEmission/square.png')
 
+//Arrays of collision objects
 var hullCollision = [];
 var hullCollisionCANNON = [];
 var barrelCollision = [];
@@ -15,9 +16,15 @@ var barrelCollisionCANNON = [];
 var boxCollision = [];
 var boxCollisionCANNON = [];
 
+//Array of street lights (spotlights)
 var streetLights = [];
 
+//Array of glowing objects
 var glowing = [];
+
+//Array of targets
+var targetsMoving = [];
+var targetsStill = [];
 
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
@@ -40,10 +47,11 @@ class BuildWorld {
      * Function to load a specified level into the scene and world
      * @param {THREE.Scene} scene The scene that the level is loaded to
      * @param {CANNON.World} world The world that the collisions are loaded to
-     * @param {CANNON.World} world The world that the collisions are loaded to
      * @param {int} level The level of the world as an int
+     * @param {Function} callback function to run when level loaded
      * 
      */
+    
     static loadLevel(scene, world, level = 1, callback) {
         var url;
         //Select which level to load with switch 
@@ -69,8 +77,9 @@ class BuildWorld {
 
             //Add scene to object
             root.name = 'Level_Root'
+            scene.add(root);
 
-            gltf.scene.traverse(function (child) {
+            root.traverse(function (child) {
 
                 //Traverse through all objects to get the collision
 
@@ -106,10 +115,19 @@ class BuildWorld {
                     console.log(child)
                     */
                 }
+                else if (name.substring(0, 6) === 'Target') {
+                    //Add targets positions to respective arrays
+                    child.visible = false;
+                    if (name.substring(6, 10) === 'Move'){
+                        targetsMoving.push(child.position);
+                    } else{
+                        targetsStill.push(child.position);
+                    }
+                }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
                     //Add the invisible hitboxes
                     child.visible = false
-
+                    
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 4) === 'Wall') {
@@ -170,6 +188,8 @@ class BuildWorld {
 
                     //Add light to scene
                     scene.add(streetLight)
+
+                    //Only make glass glow if the light is present
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
 
@@ -277,7 +297,7 @@ class BuildWorld {
 
 
 
-            scene.add(root);
+            
 
             for (const obj of hullCollision) {
                 var CANNONBody = threeToCannonObj.getCannonMesh(obj)
@@ -468,20 +488,46 @@ class BuildWorld {
         scene.getObjectByName('handRight').add(muzzleFlash)
     }
 
+    /**
+     * Function to turn OFF street light shadows
+     */
     static turnOffLightShadow() {
         for (const light of streetLights) {
             light.castShadow = false
         }
     }
 
+    /**
+     * Function to turn ON street light shadows
+     */
     static turnOnLightShadow() {
         for (const light of streetLights) {
             light.castShadow = true
         }
     }
 
+    /**
+     * Function get all objects that must be glowing
+     * @returns {Array.<THREE.Object3D>} The glowing objects
+     */
     static getGlowing() {
         return glowing
+    }
+
+    /**
+     * Function get all the stationary targets' positions
+     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     */
+    static getTargetsStill(){
+        return targetsStill
+    }
+
+    /**
+     * Function get all the moving targets' positions
+     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     */
+     static getTargetsMoving(){
+        return targetsMoving
     }
 
 }
