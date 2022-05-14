@@ -348,6 +348,9 @@ document.addEventListener("mousedown", (e) => {
 					break;
 			}
 			
+		}else{
+			controls.lock();
+			menu=false
 		}
 		
 	}
