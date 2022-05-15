@@ -46,6 +46,10 @@ const timestep = 1 / 60
 const TargetArr = [];
 const mapTargetArr = [];
 const TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
+addTargets(TargetPos); //adds targets to the target array and to the scene
+
+
+
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
@@ -54,7 +58,7 @@ const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
 })
-addTargets(TargetPos); //adds targets to the target array and to the scene
+
 
 const totalammo = parseInt(TargetArr.length * 1.5) //make total amo proportional to no targets 
 
@@ -435,6 +439,17 @@ BuildWorld.loadLevel(scene, world, 1, function() {
 	console.log(BuildWorld.getTargetsMoving())
 	console.log('Still target positions:')
 	console.log(BuildWorld.getTargetsStill())
+
+	// const targetArrayMeshStill = BuildWorld.getTargetsStill()
+	// const targetStillPos = []
+	// for( const tarMesh of targetArrayMeshStill){
+	// 	const x = tarMesh.position.x
+	// 	const y = tarMesh.position.y
+	// 	const z = tarMesh.position.z
+	// 	targetStillPos.push([x,y,z])
+	// }
+	// console.log(targetStillPos)
+	// addTargets(targetStillPos); //adds targets to the target array and to the scene
 	animate();
 })
 
