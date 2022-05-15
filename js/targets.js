@@ -6,11 +6,11 @@ class Targets{
     constructor(name, tX,tY,tZ,endPoint){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
         this.CrossMat=new THREE.MeshBasicMaterial({
-            map: loader.load("crosstarget.png")
+            map: loader.load("../Objects/Textures/Targets/crosstarget.png")
           
         })
         this.TickMat=new THREE.MeshBasicMaterial({
-            map: loader.load("correctTarget.jpg")
+            map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
 
         })
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
