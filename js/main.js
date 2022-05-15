@@ -1,25 +1,9 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
-//Pass imports
-import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
-import { BloomPass } from "../node_modules/three/examples/jsm/postprocessing/BloomPass.js"
-import { ShaderPass } from "../node_modules/three/examples/jsm/postprocessing/ShaderPass.js"
-
 //Shader imports
-import { ToonShader1, ToonShader2 } from "../node_modules/three/examples/jsm/shaders/ToonShader.js"
-import { DigitalGlitch } from "../node_modules/three/examples/jsm/shaders/DigitalGlitch.js"
-import { BokehShader } from "../node_modules/three/examples/jsm/shaders/BokehShader.js"
-import { FilmShader } from "../node_modules/three/examples/jsm/shaders/FilmShader.js"
-import { FreiChenShader } from "../node_modules/three/examples/jsm/shaders/FreiChenShader.js"
-import { ColorCorrectionShader } from "../node_modules/three/examples/jsm/shaders/ColorCorrectionShader.js"
-import { SubsurfaceScatteringShader } from "../node_modules/three/examples/jsm/shaders/SubsurfaceScatteringShader.js"
-import { MirrorShader } from "../node_modules/three/examples/jsm/shaders/MirrorShader.js"
-import { GodRaysDepthMaskShader, GodRaysGenerateShader, GodRaysCombineShader, GodRaysFakeSunShader } from "../node_modules/three/examples/jsm/shaders/GodRaysShader.js"
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
-import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
+
 
 //Custom Classes
 import Stats from "stats";

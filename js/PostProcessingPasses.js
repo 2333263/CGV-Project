@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import * as POSTPROCESSING from "postprocessing";
-import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
+// import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
+// import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
+//import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
 
 
 var BlendFunction = {
