@@ -165,13 +165,7 @@ const toonMaterial = new THREE.MeshToonMaterial({
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 */
 
-const mirrorGeo = new THREE.PlaneGeometry(3, 3);
 
-scene.add(new Reflector(mirrorGeo, {
-	clipBias: 0.003,
-	textureWidth: 1920,
-	textureHeight: 1080
-}).translateY(1).translateX(1).translateZ(3))
 
 
 

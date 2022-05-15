@@ -2,11 +2,16 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
+import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
 
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
 const emissiveMapTex = loader.load('../Objects/Textures/WhiteEmission/square.png')
+
+
+const width = window.innerWidth + 20
+const height = window.innerHeight + 20
 
 //Arrays of collision objects
 var hullCollision = [];
@@ -51,7 +56,7 @@ class BuildWorld {
      * @param {Function} callback function to run when level loaded
      * 
      */
-    
+
     static loadLevel(scene, world, level = 1, callback) {
         var url;
         //Select which level to load with switch 
@@ -84,7 +89,7 @@ class BuildWorld {
                 //Traverse through all objects to get the collision
 
                 //Change Material for lighting purposes
-                if (child instanceof THREE.Mesh && child.name.substring(0, 4) != 'Sign') {
+                if (child instanceof THREE.Mesh && !(child.name.substring(0, 4) === 'Sign' || child.name.substring(0, 6) === 'Mirror')) {
                     const colourTemp = new THREE.Color(child.material.color)
                     const newMat = new THREE.MeshPhongMaterial({
                         color: colourTemp,
@@ -118,16 +123,32 @@ class BuildWorld {
                 else if (name.substring(0, 6) === 'Target') {
                     //Add targets to respective arrays
                     child.visible = false;
-                    if (name.substring(6, 10) === 'Move'){
+                    if (name.substring(6, 10) === 'Move') {
                         targetsMoving.push(child);
-                    } else{
+                    } else {
                         targetsStill.push(child);
                     }
+                }
+                else if (name.substring(0, 6) === 'Mirror') {
+                    //Add Mirror
+                    const mirrorGeo = new THREE.PlaneGeometry(3, 3);
+                    const mirror = new Reflector(mirrorGeo, {
+                        clipBias: 0.003,
+                        textureWidth: width,
+                        textureHeight: height
+                    })
+                    mirror.position.copy(child.position)
+                    mirror.quaternion.copy(child.quaternion)
+                    mirror.rotateX(-Math.PI / 2)
+                    
+                    child.visible = false
+                    scene.add(mirror)
+
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
                     //Add the invisible hitboxes
                     child.visible = false
-                    
+
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 4) === 'Wall') {
@@ -297,7 +318,7 @@ class BuildWorld {
 
 
 
-            
+
 
             for (const obj of hullCollision) {
                 var CANNONBody = threeToCannonObj.getCannonMesh(obj)
@@ -477,9 +498,9 @@ class BuildWorld {
         }))
         //Translate muzzle flash to be in position with gun
         muzzleFlash
-        .translateZ(0.11)
-        .translateX(0.2)
-        .translateY(-1);
+            .translateZ(0.11)
+            .translateX(0.2)
+            .translateY(-1);
 
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
@@ -518,7 +539,7 @@ class BuildWorld {
      * Function get all the stationary targets' positions
      * @returns {Array.<THREE.Vector3>} The positions of the targets
      */
-    static getTargetsStill(){
+    static getTargetsStill() {
         return targetsStill
     }
 
@@ -526,7 +547,7 @@ class BuildWorld {
      * Function get all the moving targets' positions
      * @returns {Array.<THREE.Vector3>} The positions of the targets
      */
-     static getTargetsMoving(){
+    static getTargetsMoving() {
         return targetsMoving
     }
 
