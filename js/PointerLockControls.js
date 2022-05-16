@@ -53,7 +53,10 @@ class PointerLockControls extends EventDispatcher {
 			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>100 && prevMoveY!=-999){
 				movementY=(window.innerHeight/movementY)-2.3
 			}
-			
+
+		//	console.log("X",movementX,"XAfter",(window.innerWidth/movementX)-2.3,"Y",movementY,"YAfter",(window.innerHeight/movementY)-2.3)
+		//  console.log(movementX,movementY)
+
 			_euler.setFromQuaternion( camera.quaternion );
 
 			_euler.y -= movementX * 0.002 * scope.pointerSpeed;
