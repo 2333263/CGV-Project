@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'GLTF-Loader';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 import { Reflector } from "reflector"
 

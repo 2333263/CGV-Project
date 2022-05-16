@@ -10,7 +10,7 @@ import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
 import { Targets } from '../js/targets.js';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'GLTF-Loader';
 import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
