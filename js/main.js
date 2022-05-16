@@ -219,14 +219,14 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 	//mainLight.shadow.radius = 3;
 	mainLight.shadow.bias = 0.0000125 * 2;
 	//TODO Add variable shadowMap size
-	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
+	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 5;
 	mainLight.position.set(1.5, 2.75, 1.5);
 	mainLight.position.multiplyScalar(50);
 	var temp = 40
 	mainLight.shadow.camera.top = 50;
-	mainLight.shadow.camera.bottom = -30;
+	mainLight.shadow.camera.bottom = -40;
 	mainLight.shadow.camera.left = -20;
-	mainLight.shadow.camera.right = 100;
+	mainLight.shadow.camera.right = 105;
 	mainLight.shadow.camera.near = 0;
 	mainLight.shadow.camera.far = 1000;
 	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
