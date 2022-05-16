@@ -249,6 +249,7 @@ var composerMenu
 const TargetArr = [];
 const mapTargetArr = [];
 const TargetPos = [];
+const TargetQuat = [];
 
 //Init hud attributes
 var totalammo;
@@ -302,12 +303,16 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 		const x = tarMesh.position.x
 		const y = tarMesh.position.y
 		const z = tarMesh.position.z
-		TargetPos.push([x, y, z])
+		const targetPosition = tarMesh.position;
+		TargetPos.push(targetPosition);
+		const targetQuaterion =  tarMesh.quaternion;
+		TargetQuat.push(targetQuaterion);
 	}
 	//TargetPos = targetStillPos
 
 	//Send positions to addTargets func
-	addTargets(TargetPos);
+	console.log(TargetPos, TargetQuat)
+	addTargets(TargetPos, TargetQuat);
 
 	//Make total amo proportional to no targets 
 	totalammo = parseInt(TargetArr.length * 1.5) 
@@ -501,11 +506,15 @@ function moveTargets() {
 }
 
 
-
-function addTargets(position) { // places targets
+/**
+ * Function to add the targets to the scene
+ * @param {THREE.Vector3} position 
+ * @param {THREE.Quaternion} quaternion 
+ */
+function addTargets(position, quaternion) { // places targets
 
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i][0], position[i][1], position[i][2], new THREE.Vector3(position[i][0] + 5, position[i][1], position[i][2]));
+		var target = new Targets(i, position[i], quaternion[i], new THREE.Vector3(position[i].x + 5, position[i].y, position[i].z));
 		target.moves = false
 		TargetArr.push(target)
 		scene.add(target.getCylinder())
@@ -518,7 +527,7 @@ function init() { //initialise for a reset of level
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();
-	addTargets(TargetPos);
+	addTargets(TargetPos, TargetQuat);
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
