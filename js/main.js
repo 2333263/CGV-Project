@@ -607,6 +607,7 @@ document.addEventListener("mousedown", (e) => {
 			if (menu == true) {
 				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
 				if (ButtonClicked == 0) {
+					hud.setStartTime()
 					scene.add(playerModel)
 					scene.add(controls.getObject());
 					controls.lock();
