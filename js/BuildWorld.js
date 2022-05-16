@@ -111,19 +111,6 @@ class BuildWorld {
                     //Add houses to collision detection
                     hullCollision.push(child)
 
-                    /*
-                    const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
-                    const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-
-                    const normal = loader.load('../Objects/Textures/Wall/concrete_normal_low.jpg')
-                    normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-                    normal.repeat.set(sizeHeight*4, (sizeWidth + sizeDepth)*2)
-                    console.log(sizeWidth, sizeDepth, sizeHeight)
-                    child.material.side = THREE.FrontSide
-                    child.material.normalMap = normal
-                    console.log(child)
-                    */
                 }
                 else if (name.substring(0, 6) === 'Target') {
                     //Add targets to respective arrays
