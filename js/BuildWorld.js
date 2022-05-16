@@ -239,21 +239,29 @@ class BuildWorld {
                     child.material = newMat
                 }
 
+                else if (name.substring(0, 5) === 'Crate') {
+                    child.visible = false;
+                    
+                    // child.receiveShadow = false;
+                    // child.castShadow = false;
+                }
+
                 else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
-                    boxCollision.push(child)
+                    hullCollision.push(child)
                     const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
-                    textureTemp.repeat.set(9, 9)
+                    textureTemp.repeat.set(11, 11)
                     const normal = loader.load('../Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-                    normal.repeat.set(9, 9)
+                    normal.repeat.set(11, 11)
 
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
                         normalMap: normal,
                         shininess: 0
                     })
+                    child.castShadow = false;
                     child.material = newMat
                 }
 
