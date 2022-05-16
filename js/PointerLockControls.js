@@ -45,15 +45,16 @@ class PointerLockControls extends EventDispatcher {
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 			// this if statement is a work around to a bug in chrome where it wouldnt read the mouse position properly
-			if(Math.abs(Math.abs(movementX)-Math.abs(prevMoveX))>100 && prevMoveX!=-999){
+			if(Math.abs(Math.abs(movementX)-Math.abs(prevMoveX))>200 && prevMoveX!=-999 &&movementX!=0){
 				movementX=(window.innerWidth/movementX)-2.3
 
-		}
+		}//
 			// this if statement is a work around to a bug in chrome where it wouldnt read the mouse position properly
-			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>100 && prevMoveY!=-999){
+			if( Math.abs(Math.abs(movementY)-Math.abs(prevMoveY))>200 && prevMoveY!=-999 &&movementY!=0){
 				movementY=(window.innerHeight/movementY)-2.3
 			}
-			
+		//	console.log("X",movementX,"XAfter",(window.innerWidth/movementX)-2.3,"Y",movementY,"YAfter",(window.innerHeight/movementY)-2.3)
+		console.log(movementX,movementY)
 			_euler.setFromQuaternion( camera.quaternion );
 
 			_euler.y -= movementX * 0.002 * scope.pointerSpeed;
