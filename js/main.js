@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
 //Shader imports
-import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Reflector } from "reflector"
 
 
 //Custom Classes
@@ -10,12 +10,12 @@ import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
 import { Targets } from '../js/targets.js';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { BuildWorld } from '../js/BuildWorld.js'
+import { GLTFLoader } from 'GLTF-Loader';
+import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
-import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
-import { MainMenu } from '/js/mainMenu.js';
+import {OrbitControls} from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+import { MainMenu } from './mainMenu.js';
 
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
@@ -76,8 +76,7 @@ function touchStarted() {
 	musicPlaying = true;
 	//backgroundMusic();
 	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
-	listener.setMasterVolume=1
-	controls.getObject().add(listener);
+	camera.add(listener);
 
 	//audio loader
 	//create, load and play background music
@@ -97,7 +96,7 @@ function touchStarted() {
 }
 function gunshotSound() {
 	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
-	controls.getObject().add(listener);
+	camera.add(listener);
 	const gunsound = new THREE.Audio(listener);
 	audioLoader.load("js/rifle.mp3", function (buffer) {
 
@@ -138,9 +137,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 
 
-let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
-	"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
-	"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
+let pathStrings = ["/CGV-Project/Objects/Textures/Skybox/bluecloud_ft.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_bk.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_up.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_dn.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_rt.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_lf.jpg",]
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
 	const materialArray = skyboxImagepaths.map(image => {
@@ -461,7 +460,7 @@ function mapTargets() { // rotates targets for appearence on the map camera
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(5))
 	}
 
 
@@ -525,7 +524,7 @@ function addTargets(position, quaternion) { // places targets
 
 }
 function init() { //initialise for a reset of level
-	///hud.Paused=false;
+	hud.Paused=false;
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();
@@ -608,7 +607,6 @@ document.addEventListener("mousedown", (e) => {
 			if (menu == true) {
 				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
 				if (ButtonClicked == 0) {
-					hud.setStartTime()
 					scene.add(playerModel)
 					scene.add(controls.getObject());
 					controls.lock();
@@ -631,7 +629,6 @@ document.addEventListener("keydown", (e) => {
 		pressedKeys[e.key] = true;
 	} else {
 		if (e.key == "r") {
-
 			init();
 		}
 		if (e.key == "m") {
