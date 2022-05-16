@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
 //Shader imports
-import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Reflector } from "reflector"
 
 
 //Custom Classes
