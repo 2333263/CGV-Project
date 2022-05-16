@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-
+//added a comment to force update
 const loader = new THREE.TextureLoader();
 class Targets{
     constructor(name, tX,tY,tZ,endPoint){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
         this.CrossMat=new THREE.MeshBasicMaterial({
-            map: loader.load("../Objects/Textures/Targets/crosstarget.png")
+            map: loader.load("/CGV-Project/Objects/Textures/Targets/crosstarget.png")
           
         })
         this.TickMat=new THREE.MeshBasicMaterial({
-            map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
+            map: loader.load("/CGV-Project/Objects/Textures/Targets/correctTarget.jpg")
 
         })
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)

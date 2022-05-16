@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
 //Shader imports
-import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Reflector } from "reflector"
 
 
 //Custom Classes
@@ -10,7 +10,7 @@ import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
 import { Targets } from '../js/targets.js';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'GLTF-Loader';
 import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
@@ -173,9 +173,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 
 
-let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg", 
-"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg", 
-"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
+let pathStrings = ["/CGV-Project/Objects/Textures/Skybox/bluecloud_ft.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_bk.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_up.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_dn.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_rt.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_lf.jpg",]
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
 	const materialArray = skyboxImagepaths.map(image => {
