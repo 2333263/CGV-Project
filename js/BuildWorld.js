@@ -3,7 +3,7 @@ import * as CANNON from 'cannon-es';
 import { GLTFLoader } from 'GLTF-Loader';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 import { Reflector } from "reflector"
-
+//added comment to force update
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
