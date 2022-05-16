@@ -611,6 +611,7 @@ document.addEventListener("mousedown", (e) => {
 					scene.add(controls.getObject());
 					controls.lock();
 					menu = false
+					hud.setStartTime()
 				}
 			} else {
 				controls.lock();
