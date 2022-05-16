@@ -76,7 +76,8 @@ function touchStarted() {
 	musicPlaying = true;
 	//backgroundMusic();
 	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
-	camera.add(listener);
+	listener.setMasterVolume=1
+	controls.getObject().add(listener);
 
 	//audio loader
 	//create, load and play background music
@@ -96,7 +97,7 @@ function touchStarted() {
 }
 function gunshotSound() {
 	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
-	camera.add(listener);
+	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
 	audioLoader.load("js/rifle.mp3", function (buffer) {
 
