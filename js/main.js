@@ -173,9 +173,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 
 
-let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg", 
-"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg", 
-"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
+let pathStrings = ["/CGV-Project/Objects/Textures/Skybox/bluecloud_ft.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_bk.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_up.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_dn.jpg", 
+"/CGV-Project/Objects/Textures/Skybox/bluecloud_rt.jpg", "/CGV-Project/Objects/Textures/Skybox/bluecloud_lf.jpg",]
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
 	const materialArray = skyboxImagepaths.map(image => {

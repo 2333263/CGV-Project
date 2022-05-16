@@ -7,7 +7,7 @@ import { Reflector } from "reflector"
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
-const emissiveMapTex = loader.load('../Objects/Textures/WhiteEmission/square.png')
+const emissiveMapTex = loader.load('/CGV-Project/Objects/Textures/WhiteEmission/square.png')
 
 
 const width = window.innerWidth + 20
@@ -32,16 +32,16 @@ var targetsMoving = [];
 var targetsStill = [];
 
 //Wire fences must be kept same size for optimisation
-var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
-var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
-var wireAlpha = loader.load('../Objects/Textures/Fence/Fence003_1K_Opacity.png')
+var wireColor = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_Color.png')
+var wireNormal = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
+var wireAlpha = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_1K_Opacity.png')
 wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
-    level1body: { url: '../Objects/Level_1/Level_1.gltf' },
-    level2body: { url: '../Objects/Level_1/Level_2.gltf' },
-    level3body: { url: '../Objects/Level_1/Level_3.gltf' }
+    level1body: { url: '/CGV-Project/Objects/Level_1/Level_1.gltf' },
+    level2body: { url: '/CGV-Project/Objects/Level_1/Level_2.gltf' },
+    level3body: { url: '/CGV-Project/Objects/Level_1/Level_3.gltf' }
 };
 
 class BuildWorld {
@@ -111,7 +111,7 @@ class BuildWorld {
                     const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
 
-                    const normal = loader.load('../Objects/Textures/Wall/concrete_normal_low.jpg')
+                    const normal = loader.load('/CGV-Project/Objects/Textures/Wall/concrete_normal_low.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(sizeHeight*4, (sizeWidth + sizeDepth)*2)
                     console.log(sizeWidth, sizeDepth, sizeHeight)
@@ -242,10 +242,10 @@ class BuildWorld {
                 else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     boxCollision.push(child)
-                    const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
+                    const textureTemp = loader.load('/CGV-Project/Objects/Textures/Floor/Ground049B_1K_Color.jpg')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(9, 9)
-                    const normal = loader.load('../Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
+                    const normal = loader.load('/CGV-Project/Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(9, 9)
 
@@ -265,10 +265,10 @@ class BuildWorld {
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z
 
                     //Wrap texture depending on path size
-                    const textureTemp = loader.load('../Objects/Textures/Path/Bricks075A_1K_Color.png')
+                    const textureTemp = loader.load('/CGV-Project/Objects/Textures/Path/Bricks075A_1K_Color.png')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(sizeWidth, sizeHeight)
-                    const normal = loader.load('../Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
+                    const normal = loader.load('/CGV-Project/Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(sizeWidth, sizeHeight)
 
@@ -473,7 +473,7 @@ class BuildWorld {
     static addGun(scene) {
         const gltfLoader = new GLTFLoader(manager);
 
-        const url = '../Objects/Weapons/m4_2.gltf'
+        const url = '/CGV-Project/Objects/Weapons/m4_2.gltf'
         gltfLoader.load(url, (gltf) => {
             const weapon = gltf.scene
             weapon.name = 'weaponsM4'
