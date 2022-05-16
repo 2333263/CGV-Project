@@ -524,6 +524,7 @@ function addTargets(position, quaternion) { // places targets
 
 }
 function init() { //initialise for a reset of level
+	hud.Paused=false;
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();

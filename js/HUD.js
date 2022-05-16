@@ -205,10 +205,12 @@ class HUD {
                     this.pausedtime = getTimeElappsed(this.startTime);
                 }
                 this.Paused=true;
-            }else{ 
-                if(this.Paused==true){ 
-                    this.startTime += getTimeElappsed(this.startTime) - this.pausedtime;
-                }
+            
+            }else{  if(this.Paused==true){ if(getTimeElappsed(this.startTime)>=this.pausedtime)
+                this.startTime+=getTimeElappsed(this.startTime) -this.pausedtime
+                else setStartTime()
+            }
+
                 this.Paused=false;
             }
         };
