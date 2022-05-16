@@ -1,5 +1,6 @@
-import * as THREE from 'three';
-//added a comment to force update
+import * as THREE from '../node_modules/three/build/three.module.js';
+import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
+
 const loader = new THREE.TextureLoader();
 
 class Targets{
@@ -13,11 +14,11 @@ class Targets{
     constructor(name, position, quaternion, endPoint){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
         this.CrossMat=new THREE.MeshBasicMaterial({
-            map: loader.load("/CGV-Project/Objects/Textures/Targets/crosstarget.png")
+            map: loader.load("../Objects/Textures/Targets/crosstarget.png")
           
         })
         this.TickMat=new THREE.MeshBasicMaterial({
-            map: loader.load("/CGV-Project/Objects/Textures/Targets/correctTarget.jpg")
+            map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
 
         })
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
