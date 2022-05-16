@@ -32,9 +32,9 @@ var targetsMoving = [];
 var targetsStill = [];
 
 //Wire fences must be kept same size for optimisation
-var wireColor = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_Color.png')
-var wireNormal = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
-var wireAlpha = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_1K_Opacity.png')
+var wireColor = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_Color.png');
+var wireNormal = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_0_5K_NormalGL.png');
+var wireAlpha = loader.load('/CGV-Project/Objects/Textures/Fence/Fence003_1K_Opacity.png');
 wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
@@ -62,17 +62,17 @@ class BuildWorld {
         //Select which level to load with switch 
         switch (level) {
             case 1:
-                url = models.level1body.url
+                url = models.level1body.url;
                 break;
             case 2:
-                url = models.level2body.url
+                url = models.level2body.url;
                 break;
             case 3:
-                url = models.level3body.url
+                url = models.level3body.url;
                 break;
             default:
                 //In Case the level is defined incorrectly, load level 1
-                url = models.level1body.url
+                url = models.level1body.url;
         }
         const gltfLoader = new GLTFLoader(manager);
 
@@ -81,7 +81,7 @@ class BuildWorld {
             const root = gltf.scene;
 
             //Add scene to object
-            root.name = 'Level_Root'
+            root.name = 'Level_Root';
             scene.add(root);
 
             root.traverse(function (child) {
@@ -90,35 +90,21 @@ class BuildWorld {
 
                 //Change Material for lighting purposes
                 if (child instanceof THREE.Mesh && !(child.name.substring(0, 4) === 'Sign' || child.name.substring(0, 6) === 'Mirror')) {
-                    const colourTemp = new THREE.Color(child.material.color)
+                    const colourTemp = new THREE.Color(child.material.color);
                     const newMat = new THREE.MeshPhongMaterial({
                         color: colourTemp,
                         //specular: new THREE.Color('#31A5E7'),
                         shininess: 10
                     })
-                    child.material = newMat
+                    child.material = newMat;
                 }
-                var name = child.name
+                var name = child.name;
                 //Enable shadows for all objects
                 child.castShadow = true;
                 child.receiveShadow = true;
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
-                    hullCollision.push(child)
-
-                    /*
-                    const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
-                    const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-
-                    const normal = loader.load('/CGV-Project/Objects/Textures/Wall/concrete_normal_low.jpg')
-                    normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-                    normal.repeat.set(sizeHeight*4, (sizeWidth + sizeDepth)*2)
-                    console.log(sizeWidth, sizeDepth, sizeHeight)
-                    child.material.side = THREE.FrontSide
-                    child.material.normalMap = normal
-                    console.log(child)
-                    */
+                    hullCollision.push(child);
                 }
                 else if (name.substring(0, 6) === 'Target') {
                     //Add targets to respective arrays
@@ -137,12 +123,12 @@ class BuildWorld {
                         textureWidth: width,
                         textureHeight: height
                     })
-                    mirror.position.copy(child.position)
-                    mirror.quaternion.copy(child.quaternion)
-                    mirror.rotateX(-Math.PI / 2)
+                    mirror.position.copy(child.position);
+                    mirror.quaternion.copy(child.quaternion);
+                    mirror.rotateX(-Math.PI / 2);
                     
-                    child.visible = false
-                    scene.add(mirror)
+                    child.visible = false;
+                    scene.add(mirror);
 
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
@@ -174,15 +160,12 @@ class BuildWorld {
                     const streetLight = new THREE.SpotLight('#FFFFE0')
 
                     //Adjust light properties
-                    //scene.add( new THREE.CameraHelper( streetLight.shadow.camera ) )
                     streetLight.power = 2
                     streetLight.decay = 2
                     streetLight.castShadow = true;
                     streetLight.shadow.mapSize.width = 512;
                     streetLight.shadow.mapSize.height = 512;
                     streetLight.shadow.focus = 0.9
-                    // streetLight.shadow.camera.near = 2;
-                    // streetLight.shadow.camera.far = 10;
                     streetLight.angle = Math.PI / 3
                     streetLight.penumbra = 0.5
                     streetLight.position.set(
@@ -470,19 +453,16 @@ class BuildWorld {
         return torsoMesh;
     }
 
+    //Adds the weapon to the scene
     static addGun(scene) {
         const gltfLoader = new GLTFLoader(manager);
-
-        const url = '/CGV-Project/Objects/Weapons/m4_2.gltf'
+        const url = '/CGV-Project/Objects/Weapons/m4_2.gltf';
         gltfLoader.load(url, (gltf) => {
             const weapon = gltf.scene
             weapon.name = 'weaponsM4'
             weapon.translateX(0.2)
             weapon.scale.set(0.7, 0.7, 0.7)
             weapon.rotateX(Math.PI / 2)
-
-
-
             scene.getObjectByName('handRight').add(weapon)
 
         });
@@ -496,6 +476,7 @@ class BuildWorld {
             transparent: true,
             opacity: 0.7
         }))
+        
         //Translate muzzle flash to be in position with gun
         muzzleFlash
             .translateZ(0.11)
@@ -505,6 +486,7 @@ class BuildWorld {
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
         muzzleFlash.visible = false;
+
         //Add muzzleflash to hand to ensure it will be in the glowing objects when called
         scene.getObjectByName('handRight').add(muzzleFlash)
     }
