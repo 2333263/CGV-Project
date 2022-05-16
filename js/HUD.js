@@ -209,7 +209,7 @@ class HUD {
             
             }else{  if(this.Paused==true){ if(getTimeElappsed(this.startTime)>=this.pausedtime)
                 this.startTime+=getTimeElappsed(this.startTime) -this.pausedtime
-                else setStartTime()
+                else this.setStartTime()
             }
                 this.Paused=false;
              

@@ -460,7 +460,7 @@ function mapTargets() { // rotates targets for appearence on the map camera
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(5))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
 	}
 
 
@@ -524,7 +524,7 @@ function addTargets(position, quaternion) { // places targets
 
 }
 function init() { //initialise for a reset of level
-	hud.Paused=false;
+	///hud.Paused=false;
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();
@@ -629,6 +629,7 @@ document.addEventListener("keydown", (e) => {
 		pressedKeys[e.key] = true;
 	} else {
 		if (e.key == "r") {
+
 			init();
 		}
 		if (e.key == "m") {
