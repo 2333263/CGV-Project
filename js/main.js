@@ -224,7 +224,7 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 	mainLight.position.multiplyScalar(50);
 	var temp = 40
 	mainLight.shadow.camera.top = 50;
-	mainLight.shadow.camera.bottom = -40;
+	mainLight.shadow.camera.bottom = -50;
 	mainLight.shadow.camera.left = -20;
 	mainLight.shadow.camera.right = 105;
 	mainLight.shadow.camera.near = 0;
