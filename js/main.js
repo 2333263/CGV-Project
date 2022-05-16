@@ -11,10 +11,10 @@ import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js"
 import { Targets } from '../js/targets.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { BuildWorld} from '../js/BuildWorld.js'
+import { BuildWorld } from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
-import {OrbitControls} from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
 import { MainMenu } from '/js/mainMenu.js';
 
 const width = window.innerWidth + 20
@@ -26,7 +26,7 @@ const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
-var menu=true
+var menu = true
 const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true)
@@ -61,17 +61,17 @@ const planeMaterial = new CANNON.Material({
 
 
 const controls = new PointerLockControls(camera, document.body); //links controls to the camera
-const orbitControls=new OrbitControls(Menucamera,renderer.domElement)
-Menucamera.position.set(0,30,30)
-orbitControls.target.set(30.5453,0,-32.0482)
-orbitControls.autoRotate=true
+const orbitControls = new OrbitControls(Menucamera, renderer.domElement)
+Menucamera.position.set(0, 30, 30)
+orbitControls.target.set(30.5453, 0, -32.0482)
+orbitControls.autoRotate = true
 orbitControls.dispose()
 orbitControls.update()
-let musicPlaying=false;
+let musicPlaying = false;
 let backgroundmusic;
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
-function touchStarted() { 
+function touchStarted() {
 	//audioLoader.resume();
 	musicPlaying = true;
 	//backgroundMusic();
@@ -84,24 +84,24 @@ function touchStarted() {
 	const backgroundSound = new THREE.Audio(listener);
 
 	//load sound file
-	audioLoader.load("js/GameMusic.mp3",function(buffer){
-		
-		backgroundSound.setBuffer( buffer );
-		backgroundSound.setLoop( true );
+	audioLoader.load("js/GameMusic.mp3", function (buffer) {
+
+		backgroundSound.setBuffer(buffer);
+		backgroundSound.setLoop(true);
 		backgroundSound.setVolume(0.4);
 		backgroundSound.play();
 
 	});
-	
-  }
-function gunshotSound(){
+
+}
+function gunshotSound() {
 	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
 	camera.add(listener);
 	const gunsound = new THREE.Audio(listener);
-	audioLoader.load("js/rifle.mp3",function (buffer){
-		
-		gunsound.setBuffer( buffer );
-		gunsound.setLoop( false );
+	audioLoader.load("js/rifle.mp3", function (buffer) {
+
+		gunsound.setBuffer(buffer);
+		gunsound.setLoop(false);
 		gunsound.setVolume(0.1);
 		gunsound.play();
 	});
@@ -137,9 +137,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 
 
-let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg", 
-"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg", 
-"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
+let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
+	"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
+	"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
 	const materialArray = skyboxImagepaths.map(image => {
@@ -175,7 +175,7 @@ var Torso = new THREE.Object3D()
 //Player model done in THREE so no need for callback (gun model is irrelevant to following code)
 var playerModel = BuildWorld.buildPlayer();
 Torso = playerModel.getObjectByName("torso")
-playerModel.traverse(function(child){
+playerModel.traverse(function (child) {
 	child.castShadow = true;
 })
 
@@ -248,111 +248,119 @@ var composerMenu
 //Init target arrays
 const TargetArr = [];
 const mapTargetArr = [];
-var TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
+const TargetPos = [];
+
+//Init hud attributes
+var totalammo;
+var hud;
+var hudTexture;
+
+
+
+
+var menuScene = new THREE.Scene()
+var homeScreen = new MainMenu()
+homeScreen.draw()
+var MenuTexture = new THREE.Texture(homeScreen.getMenu())
+MenuTexture.needsUpdate = true
+var MenuMat = new THREE.MeshBasicMaterial({ map: MenuTexture })
+MenuMat.transparent = true
+var menuGeom = new THREE.BoxGeometry(width, height, 0)
+var MenuPlane = new THREE.Mesh(menuGeom, MenuMat)
+MenuPlane.material.depthWrite = false
+menuScene.add(MenuPlane)
+
+
+
 
 //(THREE.Scene, CANNON.World, Level Number)
-BuildWorld.loadLevel(scene, world, 1, function() {
+BuildWorld.loadLevel(scene, world, 1, function () {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	//Adds the gun model to scene. Done in here to ensure model is loaded 
 	BuildWorld.addGun(playerModel)
+
+	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
 
 
-	
+	//Set up the main composer for the scene using preset post processing
 	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
 
-	//Do selective bloom (mainly for the the lights and muzzle flash)
+	//Do selective bloom (mainly for the the lights and muzzle flash). Simply addes another pass to the composer and returns it
 	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
 
+	//Add post processing to orbital camera
 	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
 
-	console.log('Moving target positions:')
-	console.log(BuildWorld.getTargetsMoving())
-	console.log('Still target positions:')
-	console.log(BuildWorld.getTargetsStill())
-
+	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
-	const targetStillPos = []
-	for( const tarMesh of targetArrayMeshStill){
+
+	for (const tarMesh of targetArrayMeshStill) {
 		const x = tarMesh.position.x
 		const y = tarMesh.position.y
 		const z = tarMesh.position.z
-		targetStillPos.push([x,y,z])
+		TargetPos.push([x, y, z])
 	}
-	TargetPos = targetStillPos
-	// addTargets(targetStillPos); //adds targets to the target array and to the scene
+	//TargetPos = targetStillPos
+
+	//Send positions to addTargets func
+	addTargets(TargetPos);
+
+	//Make total amo proportional to no targets 
+	totalammo = parseInt(TargetArr.length * 1.5) 
+
+	//Create hud with target information
+
+	//initialises the hud
+	hud = new HUD(totalammo, totalammo, TargetArr.length, 0);
+
+	//returns the canvas object to use as a texture
+	hudTexture = new THREE.Texture(hud.getCanvas()) 
+	hudTexture.needsUpdate = true;
+
+	//Create hud mesh
+	var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
+	hudMat.transparent = true
+	var HudGeom = new THREE.BoxGeometry(width, height, 0)
+	var HudPlane = new THREE.Mesh(HudGeom, hudMat)
+
+	//Change hud attrubuts to not interfere with main renderer/scene
+	HudPlane.material.depthWrite = false;
+	HudPlane.castShadow = false
+	HudPlane.onBeforeRender = function (renderer) {
+		renderer.clearDepth();
+	}
+
+	//Add hud to separate hud scene
+	sceneHUD.add(HudPlane)
+
+	//Adjust player body attributes to match hud
+	playerBody.noBullets = hud.currammo
+	playerBody.canJump = false;
+
+	//Run game
 	animate();
 })
 
-console.log(TargetPos)
-addTargets(TargetPos); //adds targets to the target array and to the scene
-
-const totalammo = parseInt(TargetArr.length * 1.5) //make total amo proportional to no targets 
-
-var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the hud
-
-var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
-
-
-
-//hudTexture.repeat.set((width-20)/)
-hudTexture.needsUpdate = true;
-var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
-hudMat.transparent = true
-var HudGeom = new THREE.BoxGeometry(width, height, 0)
-var HudPlane = new THREE.Mesh(HudGeom, hudMat)
-//HudPlane.material.depthTest = false;
-HudPlane.material.depthWrite = false;
-HudPlane.castShadow = false
-HudPlane.onBeforeRender = function (renderer) {
-	renderer.clearDepth();
-}
-sceneHUD.add(HudPlane)
-
-var menuScene=new THREE.Scene()
-var homeScreen=new MainMenu()
-homeScreen.draw()
-var MenuTexture=new THREE.Texture(homeScreen.getMenu())
-MenuTexture.needsUpdate=true
-var MenuMat=new THREE.MeshBasicMaterial({map: MenuTexture})
-MenuMat.transparent=true
-var menuGeom=new THREE.BoxGeometry(width,height,0)
-var MenuPlane=new THREE.Mesh(menuGeom,MenuMat)
-MenuPlane.material.depthWrite=false
-menuScene.add(MenuPlane)
-
-playerBody.noBullets = hud.currammo
-playerBody.canJump = false;
 
 //To unload current world
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)
 
-//Post Proccessing
 
-
-
-// console.log(glowing.length)
-// if (glowing.length > 0){
-// 	console.log('got glowing')
-// 	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
-// }
-
-//Post processing for menu
-
-
-
-
-
-
+/**
+ * Function that runs the game
+ */
 function animate() {
 	stats.begin()
-	console.log(hud.startTime) //For monitoring
-	if (menu==true){//if were in the menu
+	//console.log(hud.startTime) //For monitoring
+	if (menu == true) {//if were in the menu
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
 		homeScreen.draw()//draw the main menu
-		
+
 		//Make skybox follow orbital camera to make the distance to the skybox look infinite
 		skybox.position.copy(orbitControls.object.position)
 
@@ -362,56 +370,56 @@ function animate() {
 		// var theta = Math.atan2(tempVec.x, tempVec.z);
 		// skybox.rotation.set(0, theta , 0)
 
-		MenuTexture.needsUpdate=true//update main menu
-		renderer.render(menuScene,HudCamera)//render the main menu
-	}else{
-	//direcLight.translateX(-0.01)
-	if (controls.isLocked) {
-		
-		hud.isPaused(false);
-		if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
-		playerModel.position.copy(playerBody.position);
-		
-		//Make skybox follow player to make the distance to the skybox look infinite
-		skybox.position.copy(playerBody.position)
+		MenuTexture.needsUpdate = true//update main menu
+		renderer.render(menuScene, HudCamera)//render the main menu
+	} else {
+		//direcLight.translateX(-0.01)
+		if (controls.isLocked) {
 
-		var tempVec = new THREE.Vector3();
-		controls.getObject().getWorldDirection(tempVec)
-		//Get angle player is facing through arctan
-		var theta = Math.atan2(tempVec.x, tempVec.z);
-		var xz = Math.sqrt(Math.pow(tempVec.x,2)+Math.pow(tempVec.z,2))
-		var thetaArm = Math.atan2(xz, tempVec.y);
+			hud.isPaused(false);
+			if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
+			playerModel.position.copy(playerBody.position);
 
-		playerModel.translateY(-0.2)
-		playerModel.rotation.set(0, theta , 0)
+			//Make skybox follow player to make the distance to the skybox look infinite
+			skybox.position.copy(playerBody.position)
 
-		playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm+Math.PI, 0, 0)
-		//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
-		playerModel.translateZ(-0.30)
+			var tempVec = new THREE.Vector3();
+			controls.getObject().getWorldDirection(tempVec)
+			//Get angle player is facing through arctan
+			var theta = Math.atan2(tempVec.x, tempVec.z);
+			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
+			var thetaArm = Math.atan2(xz, tempVec.y);
 
-		dt = Clock.getDelta()
-		if (hud.gamestate == 0)
-			move();
-		var pos = new THREE.Vector3()
-		pos.copy(playerBody.position)
-		pos.y+=0.7
-		controls.getObject().position.copy(pos);
-		hud.updateAmmoCount(playerBody.noBullets)
-		hud.draw();
-		hudTexture.needsUpdate = true;
-		moveTargets()
-		world.step(timestep, dt);
+			playerModel.translateY(-0.2)
+			playerModel.rotation.set(0, theta, 0)
 
+			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
+			//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
+			playerModel.translateZ(-0.30)
+
+			dt = Clock.getDelta()
+			if (hud.gamestate == 0)
+				move();
+			var pos = new THREE.Vector3()
+			pos.copy(playerBody.position)
+			pos.y += 0.7
+			controls.getObject().position.copy(pos);
+			hud.updateAmmoCount(playerBody.noBullets)
+			hud.draw();
+			hudTexture.needsUpdate = true;
+			moveTargets()
+			world.step(timestep, dt);
+
+		}
+		else {
+			hud.isPaused(true);
+			hud.draw();
+			hudTexture.needsUpdate = true;
+
+		}
+		renderWorld()
 	}
-	else {
-		hud.isPaused(true);
-		hud.draw();
-		hudTexture.needsUpdate = true;
-
-	}
-	renderWorld()
-	}
-//
+	//
 
 	stats.end() //For monitoring
 	requestAnimationFrame(animate);
@@ -508,7 +516,7 @@ function addTargets(position) { // places targets
 }
 function init() { //initialise for a reset of level
 	hud.setStartTime()
-	hudTexture.needsUpdate=true
+	hudTexture.needsUpdate = true
 	removeTargets();
 	addTargets(TargetPos);
 	hud.gamestate = 0;
@@ -521,7 +529,7 @@ function init() { //initialise for a reset of level
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
-	
+
 
 }
 function removeTargets() { //remove all targets 
@@ -542,66 +550,65 @@ document.addEventListener("mouseup", (e) => {
 	scene.getObjectByName('muzzleFlash').visible = false;
 })
 document.addEventListener("mousedown", (e) => {
-	if(e.button==0){
-	if (musicPlaying==false)
-	{
-		touchStarted()
-	}
-	else {}
-	
-	if (controls.isLocked == true) {
-		
-		if (playerBody.noBullets > 0) { //if player has any bullets 
-			playerBody.noBullets--; //decrement bullet count
-			gunshotSound()
-			scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
-			raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
-			const intersects = raycaster.intersectObjects(scene.children);
-			for (let j = 0; j < TargetArr.length; j++) {
-				var i = 0
-				while (Torso.children.includes(intersects[i].object)) {
-					i++;
+	if (e.button == 0) {
+		if (musicPlaying == false) {
+			touchStarted()
+		}
+		else { }
+
+		if (controls.isLocked == true) {
+
+			if (playerBody.noBullets > 0) { //if player has any bullets 
+				playerBody.noBullets--; //decrement bullet count
+				gunshotSound()
+				scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
+				raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
+				const intersects = raycaster.intersectObjects(scene.children);
+				for (let j = 0; j < TargetArr.length; j++) {
+					var i = 0
+					while (Torso.children.includes(intersects[i].object)) {
+						i++;
+					}
+					if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
+						HitTarget(intersects[i].object.name)
+						hud.increaseTarget();
+					}
 				}
-				if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
-					HitTarget(intersects[i].object.name)
-					hud.increaseTarget();
+
+				//renderer.readRenderTargetPixels(scene, camera)
+				if (playerBody.noBullets == 0) {
+					removeTargets();
 				}
 			}
-			
-			//renderer.readRenderTargetPixels(scene, camera)
-			if (playerBody.noBullets == 0) {
+
+			if (hud.gamestate == -1) // game fail
+			{
+
+				init();
+
+
+			}
+			else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
 				removeTargets();
+
+				init();
 			}
-		}
-		
-		if (hud.gamestate == -1) // game fail
-		{
-
-			init();
-
-
-		}
-		else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
-			removeTargets();
-
-			init();
-		}
-	} else {
-		if(menu==true){
-			var ButtonClicked=homeScreen.Clicked(e.clientX,e.clientY)
-			if(ButtonClicked==0){
-				scene.add(playerModel)
-				scene.add(controls.getObject());
+		} else {
+			if (menu == true) {
+				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
+				if (ButtonClicked == 0) {
+					scene.add(playerModel)
+					scene.add(controls.getObject());
+					controls.lock();
+					menu = false
+				}
+			} else {
 				controls.lock();
-				menu=false	
+				menu = false
 			}
-		}else{
-			controls.lock();
-			menu=false
+
 		}
-		
 	}
-}
 })
 
 const pressedKeys = {};
@@ -614,9 +621,9 @@ document.addEventListener("keydown", (e) => {
 		if (e.key == "r") {
 			init();
 		}
-		if(e.key=="m"){
+		if (e.key == "m") {
 			init()
-			menu=true
+			menu = true
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())
 		}
