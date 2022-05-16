@@ -240,7 +240,7 @@ class BuildWorld {
                 }
 
                 else if (name.substring(0, 5) === 'Crate') {
-                    child.visible = false;
+                    //child.visible = false;
                     
                     // child.receiveShadow = false;
                     // child.castShadow = false;
