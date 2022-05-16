@@ -19,8 +19,8 @@ class leaderBoard{
             "J":99,
             "L":45,
             "B":1,
-            "D":8;
-        }
+            "D":8
+        };
 
         //Sort items on the leaderboard
         this.Sort=function(){
@@ -29,8 +29,10 @@ class leaderBoard{
             var keys = items.map(
                 (e) => { return e[0] });
             return keys;
-        }
-        this.keys=this.Sort() //Sort from init
+        };
+
+        //Sort from init
+        this.keys=this.Sort();
 
         //Function to return board display
         this.getBoard=function () {
@@ -41,7 +43,7 @@ class leaderBoard{
                 if(i!=keys.length-1) temp+=",";
             }
             return(temp);
-        }
+        };
 
         //Returns the top 10 in the leaderboard
         this.getTop10= function (){
@@ -53,7 +55,7 @@ class leaderBoard{
                 top.push(temp);      
             }
             return (top);
-        }
+        };
 
         //Returns all leaderboard entries
         this.getAll=function(){
@@ -61,16 +63,15 @@ class leaderBoard{
             var all=[];
             for (var i=0;i<this.keys.length;i++){
                 var temp=(i+1)+")"+"  "+String(this.keys[i])+addSpaces(String(this.keys[i]),10)+this.LeaderBoard[this.keys[i]];
-                all.push(temp);
-                             
+                all.push(temp);   
             }
             return (all);
-        }
+        };
 
         //Add an item to the leaderboard
         this.addItem=function(key,value){
             this.LeaderBoard[String(key).trim()]=value;
-        }
+        };
 
         //Adds spaces 
         function addSpaces(word,spaces) {
@@ -79,7 +80,7 @@ class leaderBoard{
                 temp+=" ";
             }
             return (temp);
-        }
+        };
 
         this.getPlayer=function(name,time){
             for(var i=0;i<this.keys.length;i++){
@@ -88,9 +89,10 @@ class leaderBoard{
                 }
             }
             return(999999);
-        }
-    }
-}
+        };
+    };
+};
+
 export{leaderBoard};
 
 

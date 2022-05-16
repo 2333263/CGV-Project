@@ -6,6 +6,7 @@ const height=window.innerHeight+20
 //Constructor for the hud
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
+
         //Variable Init
         this.currammo = currammo;
         this.totalammo = totalammo;
@@ -272,6 +273,7 @@ class HUD {
             graphics.restore();
         };
 
+        //Traces a custom polygon
         function drawCustomPoly(points, size) {
             graphics.beginPath();
             graphics.moveTo(points[0][0], points[0][1]);
@@ -279,12 +281,13 @@ class HUD {
                 graphics.lineTo(points[i][0], points[i][1]);
             }
             graphics.lineTo(points[0][0], points[0][1]);
-            var currwidth = graphics.lineWidth
-            graphics.lineWidth = size
+            var currwidth = graphics.lineWidth;
+            graphics.lineWidth = size;
             graphics.stroke();
-            graphics.lineWidth = currwidth
-        }
+            graphics.lineWidth = currwidth;
+        };
 
+        //Fills in a custom polygon
         function fillCustomPoly(points, size) {
             graphics.beginPath();
             graphics.moveTo(points[0][0], points[0][1]);
@@ -292,61 +295,69 @@ class HUD {
                 graphics.lineTo(points[i][0], points[i][1]);
             }
             graphics.lineTo(points[0][0], points[0][1]);
-            var currwidth = graphics.lineWidth
-            graphics.lineWidth = size
+            var currwidth = graphics.lineWidth;
+            graphics.lineWidth = size;
             graphics.fill();
-            graphics.lineWidth = currwidth
-        }
+            graphics.lineWidth = currwidth;
+        };
+
+        //Traces a circle
         function circle() { // Strokes a circle, diameter = 1, center = (0,0)
             graphics.beginPath();
             graphics.arc(0, 0, 0.5, 0, 2 * Math.PI);
             graphics.stroke();
-        }
+        };
 
+        //Fills a circle
         function filledCircle() { // Fills a circle, diameter = 1, center = (0,0)
             graphics.beginPath();
             graphics.arc(0, 0, 0.5, 0, 2 * Math.PI);
             graphics.fill();
-        }
+        };
 
+        //Draws bullet count + bullet count logic
         function bulletCount(currammo, totalammo) {
-            graphics.fillStyle = "rgb(25,25,25)"
-            var size=30*scaleFitNative
-            graphics.font = String(size)+"px Arial"
+            graphics.fillStyle = "rgb(25,25,25)";
+            var size=30*scaleFitNative;
+            graphics.font = String(size)+"px Arial";
             var word = currammo + " / " + totalammo;
-            graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10)
-        }
+            graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10);
+        };
+
+        //Draws target count + target count logic
         function targetCount(currHits, totaltarget) {
-            graphics.fillStyle = "rgb(25,25,25)"
-            var size=30*scaleFitNative
-            graphics.font = String(size)+"px Arial"
+            graphics.fillStyle = "rgb(25,25,25)";
+            var size=30*scaleFitNative;
+            graphics.font = String(size)+"px Arial";
             var word = currHits + " / " + totaltarget;
-            graphics.fillText(word, X_RIGHT-110, Y_TOP + 30)
-        }
+            graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);
+        };
+
+        //Draws a bullet icon
         function drawBullet() {
             graphics.save();
             graphics.lineWidth = 1;
-            graphics.fillStyle = "rgb(25,25,25)"
-            fillCustomPoly([[-10, -10], [-10, 10], [10, 10], [10, -10]], 0.1)
-            fillCustomPoly([[-10, -10], [-10, 10], [10, 10], [10, -10]], 0.1)
-            graphics.fillStyle = "white"
+            graphics.fillStyle = "rgb(25,25,25)";
+            fillCustomPoly([[-10, -10], [-10, 10], [10, 10], [10, -10]], 0.1);
+            fillCustomPoly([[-10, -10], [-10, 10], [10, 10], [10, -10]], 0.1);
+            graphics.fillStyle = "white";
             graphics.translate(0, 23);
-            fillCustomPoly([[-10, -10], [-10, -12], [10, -12], [10, -10]], 0.1)
-            graphics.fillStyle = "rgb(25,25,25)"
-            fillCustomPoly([[-10, -10], [-10, -5], [10, -5], [10, -10]], 0.1)
+            fillCustomPoly([[-10, -10], [-10, -12], [10, -12], [10, -10]], 0.1);
+            graphics.fillStyle = "rgb(25,25,25)";
+            fillCustomPoly([[-10, -10], [-10, -5], [10, -5], [10, -10]], 0.1);
             graphics.restore();
             graphics.save();
             graphics.lineWidth = 1;
-            graphics.fillStyle = "rgb(25,25,25)"
+            graphics.fillStyle = "rgb(25,25,25)";
             graphics.translate(0, -13);
-            graphics.scale(2, 2)
-            semiCircle(0.1)
-            graphics.fillStyle = "white"
-            fillCustomPoly([[-5, 1], [-5, 0], [5, 0], [5, 1]], 0.1)
+            graphics.scale(2, 2);
+            semiCircle(0.1);
+            graphics.fillStyle = "white";
+            fillCustomPoly([[-5, 1], [-5, 0], [5, 0], [5, 1]], 0.1);
             graphics.restore();
+        };
 
-        }
-
+        //Fills a semi-circle
         function semiCircle(size) {
             graphics.beginPath();
             graphics.moveTo(-5, 0)
@@ -357,25 +368,30 @@ class HUD {
             graphics.fill();
             graphics.lineWidth = currwidth
 
-        }
+        };
+
+        //Update the ammo count
         this.updateAmmoCount = function (currammo) {
             graphics.save();
-            graphics.setTransform(1, 0, 0, 1, 0, 0)
-            graphics.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            graphics.setTransform(1, 0, 0, 1, 0, 0);
+            graphics.clearRect(0, 0, this.canvas.width, this.canvas.height);
             graphics.restore();
             this.currammo = currammo;
-          //removed updating total ammo 
+            //removed updating total ammo 
+        };
 
-        }
-
+        //Returns canvas
         this.getCanvas = function () {
-            return (this.canvas)
-        }
+            return (this.canvas);
+        };
+
+        //Adds to target count
         this.increaseTarget = function () {
             this.currtargets++
-            this.updateTargetNumbers(this.totaltarget, this.currtargets)
-        }
+            this.updateTargetNumbers(this.totaltarget, this.currtargets);
+        };
 
+        //Apply limit function, referenced to Richard Klein
         function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
             if (preserveAspect) {
                 // Adjust the limits to match the aspect ratio of the drawing area.
@@ -398,7 +414,8 @@ class HUD {
             pixelSize = Math.min(pixelWidth, pixelHeight);
             g.scale(width / (xright - xleft), height / (ybottom - ytop));
             g.translate(-xleft, -ytop);
-        }
-    }
-}
+        };
+    };
+};
+
 export { HUD };
