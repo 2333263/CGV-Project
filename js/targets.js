@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 
 const loader = new THREE.TextureLoader();
 class Targets{
