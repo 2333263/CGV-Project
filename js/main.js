@@ -43,13 +43,6 @@ const initposition = new CANNON.Vec3(0, 5, 4)
 const raycaster = new THREE.Raycaster();
 const timestep = 1 / 60
 
-const TargetArr = [];
-const mapTargetArr = [];
-const TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
-addTargets(TargetPos); //adds targets to the target array and to the scene
-
-
-
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
@@ -60,37 +53,8 @@ const planeMaterial = new CANNON.Material({
 })
 
 
-const totalammo = parseInt(TargetArr.length * 1.5) //make total amo proportional to no targets 
 
-var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the hud
 
-var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
-
-//hudTexture.repeat.set((width-20)/)
-hudTexture.needsUpdate = true;
-var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
-hudMat.transparent = true
-var HudGeom = new THREE.BoxGeometry(width, height, 0)
-var HudPlane = new THREE.Mesh(HudGeom, hudMat)
-//HudPlane.material.depthTest = false;
-HudPlane.material.depthWrite = false;
-HudPlane.castShadow = false
-HudPlane.onBeforeRender = function (renderer) {
-	renderer.clearDepth();
-}
-sceneHUD.add(HudPlane)
-
-var menuScene=new THREE.Scene()
-var homeScreen=new MainMenu()
-homeScreen.draw()
-var MenuTexture=new THREE.Texture(homeScreen.getMenu())
-MenuTexture.needsUpdate=true
-var MenuMat=new THREE.MeshBasicMaterial({map: MenuTexture})
-MenuMat.transparent=true
-var menuGeom=new THREE.BoxGeometry(width,height,0)
-var MenuPlane=new THREE.Mesh(menuGeom,MenuMat)
-MenuPlane.material.depthWrite=false
-menuScene.add(MenuPlane)
 
 
 
@@ -225,8 +189,7 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere for e
 	material: planeMaterial //to add friction 
 });
 
-playerBody.noBullets = hud.currammo
-playerBody.canJump = false;
+
 
 const contNorm = new CANNON.Vec3()
 const upAxis = new CANNON.Vec3(0, 1, 0);
@@ -245,6 +208,324 @@ playerBody.addEventListener('collide', (event) => {
 playerBody.linearDamping = 0.9;
 
 world.addBody(playerBody); //adds player body to the world
+
+
+
+
+//Generate main directional lighting for the world
+const mainLight = new THREE.DirectionalLight(0xffe3b1);
+{
+	mainLight.castShadow = true;
+	//mainLight.shadow.radius = 3;
+	mainLight.shadow.bias = 0.0000125 * 2;
+	//TODO Add variable shadowMap size
+	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
+	mainLight.position.set(1.5, 2.75, 1.5);
+	mainLight.position.multiplyScalar(50);
+	var temp = 40
+	mainLight.shadow.camera.top = 50;
+	mainLight.shadow.camera.bottom = -30;
+	mainLight.shadow.camera.left = -20;
+	mainLight.shadow.camera.right = 100;
+	mainLight.shadow.camera.near = 0;
+	mainLight.shadow.camera.far = 1000;
+	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
+}
+scene.add(mainLight)
+
+//----------------------------------------------------------------
+//Stats for fps
+var stats = new Stats();
+stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom)
+//----------------------------------------------------------------
+
+//Add blender objects to scene and collisions to world
+//Use callback to ensure level is loaded
+var composer;
+var composerMenu
+
+//Init target arrays
+const TargetArr = [];
+const mapTargetArr = [];
+var TargetPos = [[40, 20, -21], [50, 15, -50], [20, 30,-6],[0, 12,-6]]
+
+//(THREE.Scene, CANNON.World, Level Number)
+BuildWorld.loadLevel(scene, world, 1, function() {
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+	BuildWorld.addGun(playerModel)
+	const glowing = BuildWorld.getGlowing();
+
+
+	
+	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+
+	//Do selective bloom (mainly for the the lights and muzzle flash)
+	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+
+	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
+
+	console.log('Moving target positions:')
+	console.log(BuildWorld.getTargetsMoving())
+	console.log('Still target positions:')
+	console.log(BuildWorld.getTargetsStill())
+
+	const targetArrayMeshStill = BuildWorld.getTargetsStill()
+	const targetStillPos = []
+	for( const tarMesh of targetArrayMeshStill){
+		const x = tarMesh.position.x
+		const y = tarMesh.position.y
+		const z = tarMesh.position.z
+		targetStillPos.push([x,y,z])
+	}
+	TargetPos = targetStillPos
+	// addTargets(targetStillPos); //adds targets to the target array and to the scene
+	animate();
+})
+
+console.log(TargetPos)
+addTargets(TargetPos); //adds targets to the target array and to the scene
+
+const totalammo = parseInt(TargetArr.length * 1.5) //make total amo proportional to no targets 
+
+var hud = new HUD(totalammo, totalammo, TargetArr.length, 0); //initialises the hud
+
+var hudTexture = new THREE.Texture(hud.getCanvas()) //returns the canvas object to use as a texture
+
+
+
+//hudTexture.repeat.set((width-20)/)
+hudTexture.needsUpdate = true;
+var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
+hudMat.transparent = true
+var HudGeom = new THREE.BoxGeometry(width, height, 0)
+var HudPlane = new THREE.Mesh(HudGeom, hudMat)
+//HudPlane.material.depthTest = false;
+HudPlane.material.depthWrite = false;
+HudPlane.castShadow = false
+HudPlane.onBeforeRender = function (renderer) {
+	renderer.clearDepth();
+}
+sceneHUD.add(HudPlane)
+
+var menuScene=new THREE.Scene()
+var homeScreen=new MainMenu()
+homeScreen.draw()
+var MenuTexture=new THREE.Texture(homeScreen.getMenu())
+MenuTexture.needsUpdate=true
+var MenuMat=new THREE.MeshBasicMaterial({map: MenuTexture})
+MenuMat.transparent=true
+var menuGeom=new THREE.BoxGeometry(width,height,0)
+var MenuPlane=new THREE.Mesh(menuGeom,MenuMat)
+MenuPlane.material.depthWrite=false
+menuScene.add(MenuPlane)
+
+playerBody.noBullets = hud.currammo
+playerBody.canJump = false;
+
+//To unload current world
+//loadLevelWithCollision.unloadCurrentLevel(scene, world)
+
+//Post Proccessing
+
+
+
+// console.log(glowing.length)
+// if (glowing.length > 0){
+// 	console.log('got glowing')
+// 	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+// }
+
+//Post processing for menu
+
+
+
+
+
+
+function animate() {
+	stats.begin() //For monitoring
+	if (menu==true){//if were in the menu
+		orbitControls.update()//rotate around the world
+		composerMenu.render()
+		homeScreen.draw()//draw the main menu
+		
+		//Make skybox follow orbital camera to make the distance to the skybox look infinite
+		skybox.position.copy(orbitControls.object.position)
+
+		//Code to make it look like only the level is rotating (stops skybox rotation)
+		// var tempVec = new THREE.Vector3();
+		// orbitControls.object.getWorldDirection(tempVec)
+		// var theta = Math.atan2(tempVec.x, tempVec.z);
+		// skybox.rotation.set(0, theta , 0)
+
+		MenuTexture.needsUpdate=true//update main menu
+		renderer.render(menuScene,HudCamera)//render the main menu
+	}else{
+	//direcLight.translateX(-0.01)
+	if (controls.isLocked) {
+		
+		hud.isPaused(false);
+		if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
+		playerModel.position.copy(playerBody.position);
+		
+		//Make skybox follow player to make the distance to the skybox look infinite
+		skybox.position.copy(playerBody.position)
+
+		var tempVec = new THREE.Vector3();
+		controls.getObject().getWorldDirection(tempVec)
+		//Get angle player is facing through arctan
+		var theta = Math.atan2(tempVec.x, tempVec.z);
+		var xz = Math.sqrt(Math.pow(tempVec.x,2)+Math.pow(tempVec.z,2))
+		var thetaArm = Math.atan2(xz, tempVec.y);
+
+		playerModel.translateY(-0.2)
+		playerModel.rotation.set(0, theta , 0)
+
+		playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm+Math.PI, 0, 0)
+		//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
+		playerModel.translateZ(-0.30)
+
+		dt = Clock.getDelta()
+		if (hud.gamestate == 0)
+			move();
+		var pos = new THREE.Vector3()
+		pos.copy(playerBody.position)
+		pos.y+=0.7
+		controls.getObject().position.copy(pos);
+		hud.updateAmmoCount(playerBody.noBullets)
+		hud.draw();
+		hudTexture.needsUpdate = true;
+		moveTargets()
+		world.step(timestep, dt);
+
+	}
+	else {
+		hud.isPaused(true);
+		hud.draw();
+		hudTexture.needsUpdate = true;
+
+	}
+	renderWorld()
+	}
+//
+
+	stats.end() //For monitoring
+	requestAnimationFrame(animate);
+
+};
+
+
+function renderWorld() {
+	var port = new THREE.Vector4(0, 0, 0, 0)
+	renderer.getViewport(port)
+	renderer.autoClear = false;
+	renderer.clear();
+	//Render with composer for post processing
+	composer.render()
+	mapTargets();
+	renderer.clearDepth();
+	renderer.setViewport(width - 250, 50, 200, 200)
+	mainLight.castShadow = false;
+	BuildWorld.turnOffLightShadow()
+	renderer.render(scene, pipcamera);
+	worldTargets();
+	mainLight.castShadow = true;
+	BuildWorld.turnOnLightShadow()
+	renderer.setViewport(port);
+	renderer.render(sceneHUD, HudCamera)
+}
+
+
+
+function mapTargets() { // rotates targets for appearence on the map camera
+
+	for (var i = 0; i < TargetArr.length; i++) {
+		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
+		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
+		mapTargetArr.push(tempCylinder)
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(5))
+	}
+
+
+}
+function worldTargets() { //remove the map targets from the scene
+	while (mapTargetArr.length != 0) {
+		scene.remove(mapTargetArr.pop())
+	}
+}
+
+function moveTargets() {
+	for (var i = 0; i < TargetArr.length; i++) {
+		if (TargetArr[i].moves == true) {
+			var tempPos = new THREE.Vector3()
+			tempPos.copy(TargetArr[i].getCylinder().position)
+			tempPos.x = tempPos.x.toFixed(2)
+			tempPos.y = tempPos.y.toFixed(2)
+			tempPos.z = tempPos.z.toFixed(2)
+			var tempEnd = new THREE.Vector3()
+			tempEnd.copy(TargetArr[i].endPoint)
+			tempEnd.x = tempEnd.x.toFixed(2)
+			tempEnd.y = tempEnd.y.toFixed(2)
+			tempEnd.z = tempEnd.z.toFixed(2)
+			var tempStart = new THREE.Vector3()
+			tempStart.copy(TargetArr[i].startPoint)
+			tempStart.x = tempStart.x.toFixed(2)
+			tempStart.y = tempStart.y.toFixed(2)
+			tempStart.z = tempStart.z.toFixed(2)
+			if (!tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
+				TargetArr[i].getCylinder().translateZ(0.01)
+			} else if (tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
+				TargetArr[i].moveZ = false
+				TargetArr[i].getCylinder().translateZ(-0.01)
+			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
+				TargetArr[i].getCylinder().translateZ(-0.01)
+
+			} else {
+				TargetArr[i].getCylinder().translateZ(0.01)
+				TargetArr[i].moveZ = true
+			}
+		}
+	}
+}
+
+
+
+function addTargets(position) { // places targets
+
+	for (var i = 0; i < position.length; i++) {
+		var target = new Targets(i, position[i][0], position[i][1], position[i][2], new THREE.Vector3(position[i][0] + 5, position[i][1], position[i][2]));
+		target.moves = false
+		TargetArr.push(target)
+		scene.add(target.getCylinder())
+
+
+	}
+
+}
+function init() { //initialise for a reset of level
+	removeTargets();
+	addTargets(TargetPos);
+	hud.gamestate = 0;
+	hud.currtargets = 0;
+	playerBody.noBullets = totalammo;
+	playerBody.canJump = false
+	hud.updateAmmoCount(playerBody.noBullets);
+	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
+	playerBody.position.copy(initposition)
+	controls.getObject().position.copy(playerBody.position)
+	controls.getObject().lookAt(0, 5, 0)
+	playerBody.quaternion.copy(controls.getObject().quaternion)
+	hud.setStartTime()
+
+}
+function removeTargets() { //remove all targets 
+	while (TargetArr.length != 0) {
+		scene.remove(TargetArr.pop().getCylinder())
+	}
+}
 
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
@@ -376,283 +657,4 @@ function move() {
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 
-}
-
-
-
-//Generate main directional lighting for the world
-const mainLight = new THREE.DirectionalLight(0xffe3b1);
-{
-	mainLight.castShadow = true;
-	//mainLight.shadow.radius = 3;
-	mainLight.shadow.bias = 0.0000125 * 2;
-	//TODO Add variable shadowMap size
-	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 4;
-	mainLight.position.set(1.5, 2.75, 1.5);
-	mainLight.position.multiplyScalar(50);
-	var temp = 40
-	mainLight.shadow.camera.top = 50;
-	mainLight.shadow.camera.bottom = -30;
-	mainLight.shadow.camera.left = -20;
-	mainLight.shadow.camera.right = 100;
-	mainLight.shadow.camera.near = 0;
-	mainLight.shadow.camera.far = 1000;
-	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
-}
-scene.add(mainLight)
-
-//----------------------------------------------------------------
-//Stats for fps
-var stats = new Stats();
-stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild(stats.dom)
-//----------------------------------------------------------------
-
-//Add blender objects to scene and collisions to world
-//Use callback to ensure level is loaded
-var composer;
-var composerMenu
-//(THREE.Scene, CANNON.World, Level Number)
-BuildWorld.loadLevel(scene, world, 1, function() {
-	// --------------------------------------------------------------------------------------------------------------------------------------------------------
-	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
-	// --------------------------------------------------------------------------------------------------------------------------------------------------------
-	BuildWorld.addGun(playerModel)
-	const glowing = BuildWorld.getGlowing();
-
-
-	
-	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
-
-	//Do selective bloom (mainly for the the lights and muzzle flash)
-	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
-
-	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
-
-	console.log('Moving target positions:')
-	console.log(BuildWorld.getTargetsMoving())
-	console.log('Still target positions:')
-	console.log(BuildWorld.getTargetsStill())
-
-	// const targetArrayMeshStill = BuildWorld.getTargetsStill()
-	// const targetStillPos = []
-	// for( const tarMesh of targetArrayMeshStill){
-	// 	const x = tarMesh.position.x
-	// 	const y = tarMesh.position.y
-	// 	const z = tarMesh.position.z
-	// 	targetStillPos.push([x,y,z])
-	// }
-	// console.log(targetStillPos)
-	// addTargets(targetStillPos); //adds targets to the target array and to the scene
-	animate();
-})
-
-//To unload current world
-//loadLevelWithCollision.unloadCurrentLevel(scene, world)
-
-//Post Proccessing
-
-
-
-// console.log(glowing.length)
-// if (glowing.length > 0){
-// 	console.log('got glowing')
-// 	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
-// }
-
-//Post processing for menu
-
-
-
-
-
-
-function animate() {
-	stats.begin() //For monitoring
-	if (menu==true){//if were in the menu
-		orbitControls.update()//rotate around the world
-		composerMenu.render()
-		homeScreen.draw()//draw the main menu
-		
-		//Make skybox follow orbital camera to make the distance to the skybox look infinite
-		skybox.position.copy(orbitControls.object.position)
-
-		//Code to make it look like only the level is rotating (stops skybox rotation)
-		// var tempVec = new THREE.Vector3();
-		// orbitControls.object.getWorldDirection(tempVec)
-		// var theta = Math.atan2(tempVec.x, tempVec.z);
-		// skybox.rotation.set(0, theta , 0)
-
-		MenuTexture.needsUpdate=true//update main menu
-		renderer.render(menuScene,HudCamera)//render the main menu
-	}else{
-	//direcLight.translateX(-0.01)
-	if (controls.isLocked) {
-		
-		hud.isPaused(false);
-		if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
-		playerModel.position.copy(playerBody.position);
-		
-		//Make skybox follow player to make the distance to the skybox look infinite
-		skybox.position.copy(playerBody.position)
-
-		var tempVec = new THREE.Vector3();
-		controls.getObject().getWorldDirection(tempVec)
-		//Get angle player is facing through arctan
-		var theta = Math.atan2(tempVec.x, tempVec.z);
-		var xz = Math.sqrt(Math.pow(tempVec.x,2)+Math.pow(tempVec.z,2))
-		var thetaArm = Math.atan2(xz, tempVec.y);
-
-		playerModel.translateY(-0.2)
-		playerModel.rotation.set(0, theta , 0)
-
-		playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm+Math.PI, 0, 0)
-		//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
-		playerModel.translateZ(-0.30)
-
-		dt = Clock.getDelta()
-		if (hud.gamestate == 0)
-			move();
-		var pos = new THREE.Vector3()
-		pos.copy(playerBody.position)
-		pos.y+=0.7
-		controls.getObject().position.copy(pos);
-		hud.updateAmmoCount(playerBody.noBullets)
-		hud.draw();
-		hudTexture.needsUpdate = true;
-		moveTargets()
-		world.step(timestep, dt);
-
-	}
-	else {
-		hud.isPaused(true);
-		hud.draw();
-		hudTexture.needsUpdate = true;
-
-	}
-	renderWorld()
-	}
-//
-
-	stats.end() //For monitoring
-	requestAnimationFrame(animate);
-
-};
-
-
-
-//const composerHighPass = POSTPROCESSINGPASSES.unrealPass(renderer, controls.getObject(), scene)
-
-
-
-
-
-
-function renderWorld() {
-	var port = new THREE.Vector4(0, 0, 0, 0)
-	renderer.getViewport(port)
-	renderer.autoClear = false;
-	renderer.clear();
-	//Render with composer for post processing
-	composer.render()
-	mapTargets();
-	renderer.clearDepth();
-	renderer.setViewport(width - 250, 50, 200, 200)
-	mainLight.castShadow = false;
-	BuildWorld.turnOffLightShadow()
-	renderer.render(scene, pipcamera);
-	worldTargets();
-	mainLight.castShadow = true;
-	BuildWorld.turnOnLightShadow()
-	renderer.setViewport(port);
-	renderer.render(sceneHUD, HudCamera)
-}
-
-
-
-function mapTargets() { // rotates targets for appearence on the map camera
-
-	for (var i = 0; i < TargetArr.length; i++) {
-		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
-		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
-		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(5))
-	}
-
-
-}
-function worldTargets() { //remove the map targets from the scene
-	while (mapTargetArr.length != 0) {
-		scene.remove(mapTargetArr.pop())
-	}
-}
-
-function moveTargets() {
-	for (var i = 0; i < TargetArr.length; i++) {
-		if (TargetArr[i].moves == true) {
-			var tempPos = new THREE.Vector3()
-			tempPos.copy(TargetArr[i].getCylinder().position)
-			tempPos.x = tempPos.x.toFixed(2)
-			tempPos.y = tempPos.y.toFixed(2)
-			tempPos.z = tempPos.z.toFixed(2)
-			var tempEnd = new THREE.Vector3()
-			tempEnd.copy(TargetArr[i].endPoint)
-			tempEnd.x = tempEnd.x.toFixed(2)
-			tempEnd.y = tempEnd.y.toFixed(2)
-			tempEnd.z = tempEnd.z.toFixed(2)
-			var tempStart = new THREE.Vector3()
-			tempStart.copy(TargetArr[i].startPoint)
-			tempStart.x = tempStart.x.toFixed(2)
-			tempStart.y = tempStart.y.toFixed(2)
-			tempStart.z = tempStart.z.toFixed(2)
-			if (!tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
-				TargetArr[i].getCylinder().translateZ(0.01)
-			} else if (tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
-				TargetArr[i].moveZ = false
-				TargetArr[i].getCylinder().translateZ(-0.01)
-			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
-				TargetArr[i].getCylinder().translateZ(-0.01)
-
-			} else {
-				TargetArr[i].getCylinder().translateZ(0.01)
-				TargetArr[i].moveZ = true
-			}
-		}
-	}
-}
-
-
-
-function addTargets(position) { // places targets
-
-	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i][0], position[i][1], position[i][2], new THREE.Vector3(position[i][0] + 5, position[i][1], position[i][2]));
-		target.moves = false
-		TargetArr.push(target)
-		scene.add(target.getCylinder())
-
-
-	}
-
-}
-function init() { //initialise for a reset of level
-	removeTargets();
-	addTargets(TargetPos);
-	hud.gamestate = 0;
-	hud.currtargets = 0;
-	playerBody.noBullets = totalammo;
-	playerBody.canJump = false
-	hud.updateAmmoCount(playerBody.noBullets);
-	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
-	playerBody.position.copy(initposition)
-	controls.getObject().position.copy(playerBody.position)
-	controls.getObject().lookAt(0, 5, 0)
-	playerBody.quaternion.copy(controls.getObject().quaternion)
-	hud.setStartTime()
-
-}
-function removeTargets() { //remove all targets 
-	while (TargetArr.length != 0) {
-		scene.remove(TargetArr.pop().getCylinder())
-	}
 }

@@ -537,7 +537,7 @@ class BuildWorld {
 
     /**
      * Function get all the stationary targets' positions
-     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     * @returns {Array.<THREE.Object3D>} The positions of the targets
      */
     static getTargetsStill() {
         return targetsStill
@@ -545,7 +545,7 @@ class BuildWorld {
 
     /**
      * Function get all the moving targets' positions
-     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     * @returns {Array.<THREE.Object3D>} The positions of the targets
      */
     static getTargetsMoving() {
         return targetsMoving
