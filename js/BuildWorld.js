@@ -42,9 +42,9 @@ wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
-level1body: { url: '../Objects/Level_1/Level_1.glb' },
-level2body: { url: '../Objects/Level_1/Level_2.glb' },
-level3body: { url: '../Objects/Level_1/Level_3.glb' }
+level1body: { url: '/CGV-Project/Objects/Level_1/Level_1.glb' },
+level2body: { url: '/CGV-Project/Objects/Level_1/Level_2.glb' },
+level3body: { url: '/CGV-Project/Objects/Level_1/Level_3.glb' }
 
 };
 
