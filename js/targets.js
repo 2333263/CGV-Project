@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-//added a comment
+//added a comment to force update
 const loader = new THREE.TextureLoader();
 class Targets{
     constructor(name, tX,tY,tZ,endPoint){
