@@ -15,7 +15,7 @@ import { BuildWorld} from '../js/BuildWorld.js'
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
 import { leaderBoard } from '../js/LeaderBoard.js';
 import {OrbitControls} from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
-import { MainMenu } from '/js/mainMenu.js';
+import { MainMenu } from './js/mainMenu.js';
 
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
