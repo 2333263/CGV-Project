@@ -105,20 +105,6 @@ class BuildWorld {
                 if (name.substring(0, 4) === 'Base') {
                     //Add houses to collision detection
                     hullCollision.push(child)
-
-                    /*
-                    const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) 
-                    const sizeDepth = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-                    const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) 
-
-                    const normal = loader.load('../Objects/Textures/Wall/concrete_normal_low.jpg')
-                    normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-                    normal.repeat.set(sizeHeight*4, (sizeWidth + sizeDepth)*2)
-                    console.log(sizeWidth, sizeDepth, sizeHeight)
-                    child.material.side = THREE.FrontSide
-                    child.material.normalMap = normal
-                    console.log(child)
-                    */
                 }
                 else if (name.substring(0, 6) === 'Target') {
                     //Add targets to respective arrays
@@ -174,15 +160,12 @@ class BuildWorld {
                     const streetLight = new THREE.SpotLight('#FFFFE0')
 
                     //Adjust light properties
-                    //scene.add( new THREE.CameraHelper( streetLight.shadow.camera ) )
                     streetLight.power = 2
                     streetLight.decay = 2
                     streetLight.castShadow = true;
                     streetLight.shadow.mapSize.width = 512;
                     streetLight.shadow.mapSize.height = 512;
                     streetLight.shadow.focus = 0.9
-                    // streetLight.shadow.camera.near = 2;
-                    // streetLight.shadow.camera.far = 10;
                     streetLight.angle = Math.PI / 3
                     streetLight.penumbra = 0.5
                     streetLight.position.set(
@@ -470,19 +453,17 @@ class BuildWorld {
         return torsoMesh;
     }
 
+    //Adds the weapon to the scene
     static addGun(scene) {
         const gltfLoader = new GLTFLoader(manager);
-
         const url = '../Objects/Weapons/m4_2.gltf'
+
         gltfLoader.load(url, (gltf) => {
             const weapon = gltf.scene
             weapon.name = 'weaponsM4'
             weapon.translateX(0.2)
             weapon.scale.set(0.7, 0.7, 0.7)
             weapon.rotateX(Math.PI / 2)
-
-
-
             scene.getObjectByName('handRight').add(weapon)
 
         });
@@ -496,6 +477,7 @@ class BuildWorld {
             transparent: true,
             opacity: 0.7
         }))
+        
         //Translate muzzle flash to be in position with gun
         muzzleFlash
             .translateZ(0.11)
@@ -505,6 +487,7 @@ class BuildWorld {
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
         muzzleFlash.visible = false;
+
         //Add muzzleflash to hand to ensure it will be in the glowing objects when called
         scene.getObjectByName('handRight').add(muzzleFlash)
     }

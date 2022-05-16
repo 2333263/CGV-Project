@@ -1,43 +1,36 @@
 <!DOCTYPE html>
 <html lang=”en”>
-<head>    
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPS game</title>
-    <style type="text/css">
-     html,body{
-         padding: 0;
-         margin: 0;
-         width: 100vw;
-         height: 100vh;
-         box-sizing: content-box;
-
-     }
-    </style>
-</head>
-<body id="body" >
-    <script type="importmap">
-        {
-            "imports": {
-                "stats" : "./node_modules/stats.js/src/Stats.js",
-                "three": "/CGV-Project/Dependencies/three.module.js",
-                "three-to-cannon": "./node_modules/three-to-cannon/dist/three-to-cannon.modern.js",
-                "cannon-es": "./node_modules/cannon-es/dist/cannon-es.js",
-                "postprocessing": "./node_modules/postprocessing/build/postprocessing.mjs"
-
-                
+    <!-- HEADER INIT -->
+    <head>    
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FPS game</title>
+        <style type="text/css">
+            html,body{
+                padding: 0;
+                margin: 0;
+                width: 100vw;
+                height: 100vh;
+                box-sizing: content-box;
             }
-        }
-    </script> 
-    <script type="module" src="./js/LeaderBoard.js"></script>
-    <script type="module" src="js/main.js">
-        //
-       // import {HUD} from "./js/HUD.js"
-        //var hud=new HUD(20,30,5,0);
-        //hud.draw()
-        //document.body.appendChild(hud.getCanvas())
-    </script>
-    
-</body>
+        </style>
+    </head>
+    <!-- BODY INIT -->
+    <body id="body" >
+        <script type="importmap">
+            {
+                "imports": {
+                    "stats" : "./node_modules/stats.js/src/Stats.js",
+                    "three": "/CGV-Project/Dependencies/three.module.js",
+                    "three-to-cannon": "./node_modules/three-to-cannon/dist/three-to-cannon.modern.js",
+                    "cannon-es": "./node_modules/cannon-es/dist/cannon-es.js",
+                    "postprocessing": "./node_modules/postprocessing/build/postprocessing.mjs"
+                }
+            }
+        </script>
+        <!-- SCRIPT INIT --> 
+        <script type="module" src="./js/LeaderBoard.js"></script>
+        <script type="module" src="js/main.js"></script>
+    </body>
 </html>
