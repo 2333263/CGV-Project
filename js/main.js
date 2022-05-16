@@ -311,7 +311,7 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	//TargetPos = targetStillPos
 
 	//Send positions to addTargets func
-	console.log(TargetPos, TargetQuat)
+	//console.log(TargetPos, TargetQuat) //TESTING
 	addTargets(TargetPos, TargetQuat);
 
 	//Make total amo proportional to no targets 

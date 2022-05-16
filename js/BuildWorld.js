@@ -31,6 +31,9 @@ var glowing = [];
 var targetsMoving = [];
 var targetsStill = [];
 
+
+
+
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
 var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
@@ -39,9 +42,9 @@ wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
-    level1body: { url: '../Objects/Level_1/Level_1.gltf' },
-    level2body: { url: '../Objects/Level_1/Level_2.gltf' },
-    level3body: { url: '../Objects/Level_1/Level_3.gltf' }
+    level1body: { url: '../Objects/Level_1/Level_1.glb' },
+    level2body: { url: '../Objects/Level_1/Level_2.glb' },
+    level3body: { url: '../Objects/Level_1/Level_3.glb' }
 };
 
 class BuildWorld {
@@ -59,6 +62,8 @@ class BuildWorld {
 
     static loadLevel(scene, world, level = 1, callback) {
         var url;
+        const toRemove = [];
+
         //Select which level to load with switch 
         switch (level) {
             case 1:
@@ -82,7 +87,7 @@ class BuildWorld {
 
             //Add scene to object
             root.name = 'Level_Root'
-            scene.add(root);
+            
 
             root.traverse(function (child) {
 
@@ -122,12 +127,14 @@ class BuildWorld {
                 }
                 else if (name.substring(0, 6) === 'Target') {
                     //Add targets to respective arrays
-                    child.visible = false;
                     if (name.substring(6, 10) === 'Move') {
                         targetsMoving.push(child);
                     } else {
                         targetsStill.push(child);
                     }
+
+                    //Remove target ref from scene
+                    toRemove.push(child);
                 }
                 else if (name.substring(0, 6) === 'Mirror') {
                     //Add Mirror
@@ -141,14 +148,14 @@ class BuildWorld {
                     mirror.quaternion.copy(child.quaternion)
                     mirror.rotateX(-Math.PI / 2)
                     
-                    child.visible = false
                     scene.add(mirror)
 
+                    //Remove mirror red from scene
+                    toRemove.push(child)
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
                     //Add the invisible hitboxes
-                    child.visible = false
-
+                    toRemove.push(child)
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 4) === 'Wall') {
@@ -166,9 +173,6 @@ class BuildWorld {
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
                     //Add spotlights to the street lights
-
-                    //Make the points invisible
-                    child.visible = false
 
                     //Create light
                     const streetLight = new THREE.SpotLight('#FFFFE0')
@@ -210,6 +214,9 @@ class BuildWorld {
                     //Add light to scene
                     scene.add(streetLight)
 
+                    //Remove light ref from scene
+                    toRemove.push(child)
+
                     //Only make glass glow if the light is present
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
@@ -241,7 +248,7 @@ class BuildWorld {
 
                 else if (name.substring(0, 5) === 'Crate') {
                     //child.visible = false;
-                    
+                    // toRemove.push(child)
                     // child.receiveShadow = false;
                     // child.castShadow = false;
                 }
@@ -325,6 +332,12 @@ class BuildWorld {
             });
 
 
+            for (const i of toRemove){
+                root.remove(i)
+            }
+
+            //Add group to scene
+            scene.add(root);
 
 
 
