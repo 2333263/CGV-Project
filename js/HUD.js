@@ -135,6 +135,8 @@ class HUD {
                 graphics.translate(X_RIGHT - 20, Y_TOP + 30);
                 drawTarget();
                 graphics.restore();
+                word="Press M to return to Main Menu"
+                graphics.fillText(word, -20, 80)
             }
         };
 

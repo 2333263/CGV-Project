@@ -222,6 +222,13 @@ class BuildWorld {
                     child.material = newMat
                 }
 
+                else if (name.substring(0, 5) === 'Crate') {
+                    //child.visible = false;
+                    
+                    // child.receiveShadow = false;
+                    // child.castShadow = false;
+                }
+
                 else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     boxCollision.push(child)
@@ -230,13 +237,14 @@ class BuildWorld {
                     textureTemp.repeat.set(9, 9)
                     const normal = loader.load('/CGV-Project/Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
-                    normal.repeat.set(9, 9)
+                    normal.repeat.set(11, 11)
 
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
                         normalMap: normal,
                         shininess: 0
                     })
+                    child.castShadow = false;
                     child.material = newMat
                 }
 
@@ -519,7 +527,7 @@ class BuildWorld {
 
     /**
      * Function get all the stationary targets' positions
-     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     * @returns {Array.<THREE.Object3D>} The positions of the targets
      */
     static getTargetsStill() {
         return targetsStill
@@ -527,7 +535,7 @@ class BuildWorld {
 
     /**
      * Function get all the moving targets' positions
-     * @returns {Array.<THREE.Vector3>} The positions of the targets
+     * @returns {Array.<THREE.Object3D>} The positions of the targets
      */
     static getTargetsMoving() {
         return targetsMoving
