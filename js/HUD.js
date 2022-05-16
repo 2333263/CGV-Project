@@ -127,6 +127,8 @@ class HUD {
                 graphics.fillText(word, -20, 0)
                 word="Click anywhere to resume"
                 graphics.fillText(word, -20, 40)
+                word="Press M to return to Main Menu"
+                graphics.fillText(word, -20, 80)
             }
 
 

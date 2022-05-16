@@ -346,7 +346,8 @@ playerBody.canJump = false;
 
 
 function animate() {
-	stats.begin() //For monitoring
+	stats.begin()
+	console.log(hud.startTime) //For monitoring
 	if (menu==true){//if were in the menu
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
@@ -506,6 +507,8 @@ function addTargets(position) { // places targets
 
 }
 function init() { //initialise for a reset of level
+	hud.setStartTime()
+	hudTexture.needsUpdate=true
 	removeTargets();
 	addTargets(TargetPos);
 	hud.gamestate = 0;
@@ -518,7 +521,7 @@ function init() { //initialise for a reset of level
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
-	hud.setStartTime()
+	
 
 }
 function removeTargets() { //remove all targets 
@@ -610,6 +613,12 @@ document.addEventListener("keydown", (e) => {
 	} else {
 		if (e.key == "r") {
 			init();
+		}
+		if(e.key=="m"){
+			init()
+			menu=true
+			scene.remove(playerModel)
+			scene.remove(controls.getObject())
 		}
 	}
 });
