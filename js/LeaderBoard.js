@@ -16,10 +16,10 @@ class leaderBoard{
         //Init
         this.document=document
         this.LeaderBoard={
-            "J":99,
-            "L":45,
-            "B":1,
-            "D":8
+            "J":98.75,
+            "L":45.21,
+            "B":43.22,
+            "D":54.99
         };
 
         //Sort items on the leaderboard
