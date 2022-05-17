@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
 //Shader imports
-import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
+import { WaterRefractionShader } from '../node_modules/three/examples/jsm/shaders/WaterRefractionShader.js';
 
 //Custom Classes
 import Stats from "stats";
@@ -42,6 +43,26 @@ document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
 const timestep = 1 / 60;
+
+// Refractor object test
+const refractorGeo = new THREE.PlaneGeometry(3,3);
+
+// const refractor = new Refractor(refractorGeo,{
+// 	shader: WaterRefractionShader
+// });
+
+const refractorMat = new THREE.MeshPhysicalMaterial({
+	roughness: 0.1,   
+	transmission: 1,  
+	thickness: 3,
+	reflectivity : 0.5
+})
+
+const frostedGlass = new THREE.Mesh(refractorGeo, refractorMat)
+frostedGlass.position.set( 3, 1, 0 );
+
+scene.add(frostedGlass);
+
 
 //Canon world Init
 const world = new CANNON.World({

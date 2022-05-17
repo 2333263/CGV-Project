@@ -157,6 +157,15 @@ class BuildWorld {
                 else if (name.substring(0, 11) === 'WindowGlass') {
                     //Make glass specular
                     child.material.specular = new THREE.Color('#31A5E7')
+
+                    /*
+                    Translucent material
+                    const material1 = new THREE.MeshPhysicalMaterial({
+                        roughness: 0,
+                        transmission: 1,
+                        thickness: 2
+                    });
+                     */
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
                     //Add spotlights to the street lights
