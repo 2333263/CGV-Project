@@ -42,8 +42,12 @@ renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
+
+//Raycast must not hit lines
+raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
 
+/*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
 
@@ -62,7 +66,7 @@ const frostedGlass = new THREE.Mesh(refractorGeo, refractorMat)
 frostedGlass.position.set( 3, 1, 0 );
 
 scene.add(frostedGlass);
-
+*/
 
 //Canon world Init
 const world = new CANNON.World({
@@ -273,6 +277,9 @@ var MenuPlane = new THREE.Mesh(menuGeom, MenuMat);
 MenuPlane.material.depthWrite = false;
 menuScene.add(MenuPlane);
 
+//Mesh of the end of the gun (for use in bullet trails)
+var gunEnd
+
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 BuildWorld.loadLevel(scene, world, 1, function () {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -345,6 +352,9 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	//Adjust player body attributes to match hud
 	playerBody.noBullets = hud.currammo
 	playerBody.canJump = false;
+
+	//Assign mesh to gunEnd
+	gunEnd = BuildWorld.getMuzzleFlashMesh()
 
 	//Run game
 	animate();
@@ -552,6 +562,10 @@ document.addEventListener("mouseup", (e) => {
 	scene.getObjectByName('muzzleFlash').visible = false;
 });
 
+//array of bullet trails
+const lines = []
+
+
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
@@ -579,6 +593,35 @@ document.addEventListener("mousedown", (e) => {
 				if (playerBody.noBullets == 0) {
 					removeTargets();
 				}
+
+				//Bullet trail stuff WIP	
+				var i = 0
+				while (Torso.children.includes(intersects[i].object) && lines.includes(intersects[i].object)) {
+					i++;
+				}
+				const gunEndPos = new THREE.Vector3();
+				gunEnd.getWorldPosition(gunEndPos);
+
+				const points = []
+                points.push(gunEndPos)
+				points.push(intersects[i].point.clone())
+				const geometry = new THREE.BufferGeometry().setFromPoints(points)
+				const line = new THREE.LineSegments(
+                    geometry,
+                    new THREE.LineBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.75,
+						linewidth: 10
+                        // depthTest: false,
+                        // depthWrite: false
+                    })
+                )
+				
+				lines.push(line)
+                //line.frustumCulled = false
+                scene.add(line)
+
 			}
 			if (hud.gamestate == -1) { //Game failed
 				init();

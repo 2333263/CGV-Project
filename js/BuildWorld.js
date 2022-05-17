@@ -31,7 +31,8 @@ var glowing = [];
 var targetsMoving = [];
 var targetsStill = [];
 
-
+//Muzzle Flash object
+var muzzleFlash
 
 
 //Wire fences must be kept same size for optimisation
@@ -505,7 +506,7 @@ class BuildWorld {
         });
 
         const muzzelFlashGeo = new THREE.ConeGeometry(0.3, 0.7, 16)
-        const muzzleFlash = new THREE.Mesh(muzzelFlashGeo, new THREE.MeshPhongMaterial({
+        muzzleFlash = new THREE.Mesh(muzzelFlashGeo, new THREE.MeshPhongMaterial({
             color: new THREE.Color('#FFA500'),
             emissiveMap: emissiveMapTex,
             emissive: new THREE.Color('#FFA500'),
@@ -568,6 +569,13 @@ class BuildWorld {
         return targetsMoving
     }
 
+    /**
+     * Function to get the muzzle flash
+     * @returns {THREE.Mesh} The muzzle flash mesh
+     */
+    static getMuzzleFlashMesh(){
+        return muzzleFlash;
+    }
 }
 
 
