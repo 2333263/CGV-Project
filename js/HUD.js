@@ -122,7 +122,7 @@ class HUD {
                 drawTime(this.startTime);
                 graphics.restore();
                 graphics.save();
-                graphics.translate(X_LEFT + 115, Y_BOTTOM - 18);
+                graphics.translate(X_LEFT + 130, Y_BOTTOM - 18);
                 graphics.scale(0.6, 0.6);
                 drawBullet();
                 graphics.translate(25, 0);

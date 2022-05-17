@@ -315,7 +315,7 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	addTargets(TargetPos, TargetQuat);
 
 	//Make total amo proportional to no targets 
-	totalammo = parseInt(TargetArr.length * 1.5) 
+	totalammo = parseInt(TargetArr.length * 1.8) 
 
 	//Create hud with target information
 
