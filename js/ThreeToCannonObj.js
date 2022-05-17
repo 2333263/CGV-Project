@@ -3,10 +3,7 @@ import * as CANNON from 'cannon-es';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 
 class threeToCannonObj{
-    constructor(){
-        
-    }
-
+    constructor(){}
     /**
      * Convert a THREE.Mesh to a CANNON.Body
      * @param {THREE.Mesh} threeOBJ The object to be converted
@@ -14,9 +11,9 @@ class threeToCannonObj{
      * @returns {CANNON.Body} The finished body with collisions
      */
     static getCannonMesh (threeOBJ, meshType = 'HULL'){
+
         //Optional param of item type
         var result = null;
-
         switch(meshType){
             case 'CYLINDER':
                 result = threeToCannon(threeOBJ, {type: ShapeType.CYLINDER});
@@ -41,8 +38,10 @@ class threeToCannonObj{
             material: planeMaterial
         })
         objCollisionBody.addShape(result.shape, offsetObj, quaternionObj)
+
+        //Return
         return objCollisionBody
     }
 }
-
+//Final Export
 export {threeToCannonObj};

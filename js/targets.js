@@ -15,20 +15,18 @@ class Targets{
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
         this.CrossMat=new THREE.MeshBasicMaterial({
             map: loader.load("../Objects/Textures/Targets/crosstarget.png")
-          
-        })
+        });
         this.TickMat=new THREE.MeshBasicMaterial({
             map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
-
-        })
+        });
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
-        /*
+        /*######################### DEPRECATED ###########################
         this.cylinder.translateX(tX)
         this.cylinder.translateY(tY)
         this.cylinder.translateZ(tZ)
+        this.cylinder.rotation.x=Math.PI/2
+        this.cylinder.rotation.y=Math.PI/2
         */
-        // this.cylinder.rotation.x=Math.PI/2
-        // this.cylinder.rotation.y=Math.PI/2
         this.cylinder.position.copy(position)
         this.cylinder.quaternion.copy(quaternion)
         this.isHit=false;
@@ -48,4 +46,5 @@ class Targets{
     }
     }
 }
+//Final Export
 export {Targets}

@@ -1,9 +1,5 @@
 import * as THREE from 'three';
 import * as POSTPROCESSING from "postprocessing";
-// import { EffectComposer } from '../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
-// import { RenderPass } from '../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
-//import { UnrealBloomPass } from "../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js"
-
 
 var BlendFunction = {
     SKIP: 0,
@@ -26,7 +22,8 @@ var BlendFunction = {
     SOFT_LIGHT: 17,
     SUBTRACT: 18
   };
-/*
+
+/* ################################# DEPRECATED ######################################
 //USING BUILT IN THREE.JS POST PROCESSING
 const composer = new EffectComposer(renderer);
 
@@ -45,10 +42,7 @@ searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
 const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
 
 class POSTPROCESSINGPASSES {
-    constructor() {
-
-    }
-
+    constructor() {}
     /**
      * Apply preset Post Processing effects to the scene
      * @param {THREE.WebGLRenderer} renderer The renderer to be used
@@ -58,29 +52,19 @@ class POSTPROCESSINGPASSES {
      * @returns {POSTPROCESSING.EffectComposer} The composer with post processing applied
      */
     static doPasses(renderer, camera, scene, mainLight) {
+
+        //Const Init
         const composer = new POSTPROCESSING.EffectComposer(renderer);
         composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
 
-
         //New Bloom Effect
-        const bloomEffect = new POSTPROCESSING.BloomEffect({
-            luminanceThreshold: 0.45,
-            intensity: 0.6
-
-        })
-        const bloomPass = new POSTPROCESSING.EffectPass(
-            camera,
-            bloomEffect
-        );
-
+        const bloomEffect = new POSTPROCESSING.BloomEffect({luminanceThreshold: 0.45,intensity: 0.6});
+        //Bloom Pass
+        const bloomPass = new POSTPROCESSING.EffectPass(camera,bloomEffect);
 
         //Add some chromatic aberration for visual effect
-        const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({ blendFunction: 13, offset: new THREE.Vector2(1e-4, 5e-5) })
-        const chromaticAberationPass = new POSTPROCESSING.EffectPass(
-            camera,
-            //
-            chromaticAberrationEffect
-        );
+        const chromaticAberrationEffect = new POSTPROCESSING.ChromaticAberrationEffect({ blendFunction: 13, offset: new THREE.Vector2(1e-4, 5e-5) });
+        const chromaticAberationPass = new POSTPROCESSING.EffectPass(camera,chromaticAberrationEffect);
 
         //Sun material (changed color og volumetric lighting)
         const sunMaterial = new THREE.MeshBasicMaterial({
@@ -113,33 +97,27 @@ class POSTPROCESSINGPASSES {
                 exposure: 0.54,
                 samples: 30,
                 clampMax: 1.0
-            })
+            });
         const godRayPass = new POSTPROCESSING.EffectPass(
             camera,
             smaaEffect,
             godRayEffect
-        )
+        );
 
-
-
-
+        //Colour Depth Init Const
         const colorDepthEffect = new POSTPROCESSING.ColorDepthEffect({ bits: 16 });
         const colorDepthPass = new POSTPROCESSING.EffectPass(camera, smaaEffect, colorDepthEffect)
 
-
         //Add to different passes composer
-        
         composer.addPass(godRayPass);
         composer.addPass(bloomPass);
-        //composer.addPass(chromaticAberationPass)
 
-
-        //composer.addPass(colorDepthPass);
+        //Return
         return composer;
     }
-    static selectiveBloomPass(composer, camera, scene, glowing) {
-        
 
+    //Selective bloom pass
+    static selectiveBloomPass(composer, camera, scene, glowing) {
         const selectiveBloomEffect = new POSTPROCESSING.SelectiveBloomEffect(
             scene, camera, 
             {
@@ -147,7 +125,7 @@ class POSTPROCESSINGPASSES {
             intensity: 4
         })
 
-        
+        //TODO: Comments maybe?
         const selection = selectiveBloomEffect.selection;
         for (var selectedObject of glowing){
             //console.log(glowing)
@@ -168,18 +146,14 @@ class POSTPROCESSINGPASSES {
             selectiveBloomEffect
         )
 
-        //selectiveBloomPass.renderToScreen = true;
-
-
         const depthEff = new POSTPROCESSING.DepthEffect()
         const depthPass = new POSTPROCESSING.EffectPass(
             camera,
-            //smaaEffect,
             depthEff
         )
         composer.addPass(selectiveBloomPass)
-        //composer.addPass(depthPass)
         return composer
     }
 }
+//Final Export
 export { POSTPROCESSINGPASSES };

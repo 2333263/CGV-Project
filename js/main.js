@@ -4,111 +4,105 @@ import * as CANNON from 'cannon-es';
 //Shader imports
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
 
-
 //Custom Classes
 import Stats from "stats";
 import { PointerLockControls } from '../js/PointerLockControls.js';
-import { HUD } from "../js/HUD.js"
+import { HUD } from "../js/HUD.js";
 import { Targets } from '../js/targets.js';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import { BuildWorld } from '../js/BuildWorld.js'
-import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js'
-import { leaderBoard } from '../js/LeaderBoard.js';
-import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+//import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js'; (unused currently)
+import { BuildWorld } from '../js/BuildWorld.js';
+import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
+//import { leaderBoard } from '../js/LeaderBoard.js'; (unused currently)
+import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 
-const width = window.innerWidth + 20
-const height = window.innerHeight + 20
+//View Init
+const width = window.innerWidth + 20;
+const height = window.innerHeight + 20;
 var scene = new THREE.Scene();
-const aspectRatio = width / height
+const aspectRatio = width / height;
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
-const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30)
+const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30);
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
-var menu = true
+var menu = true;
 const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
-var Clock = new THREE.Clock(true)
+var Clock = new THREE.Clock(true);
 const renderer = new THREE.WebGLRenderer();
-renderer.toneMapping = THREE.CineonToneMapping
-renderer.antialias = true
+renderer.toneMapping = THREE.CineonToneMapping;
+renderer.antialias = true;
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
-renderer.setClearColor(0xADD8E6, 1)
+renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
-const initposition = new CANNON.Vec3(0, 5, 4)
+const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
-const timestep = 1 / 60
+const timestep = 1 / 60;
 
+//Canon world Init
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
 });
 
+//Plane material Init from Canon
 const planeMaterial = new CANNON.Material({
 	friction: 10,
 	restitution: 0
-})
+});
 
+//Controls Init
+const controls = new PointerLockControls(camera, document.body);
+const orbitControls = new OrbitControls(Menucamera, renderer.domElement);
+Menucamera.position.set(0, 30, 30);
+orbitControls.target.set(30.5453, 0, -32.0482);
+orbitControls.autoRotate = true;
+orbitControls.dispose();
+orbitControls.update();
 
-
-
-
-
-
-
-
-const controls = new PointerLockControls(camera, document.body); //links controls to the camera
-const orbitControls = new OrbitControls(Menucamera, renderer.domElement)
-Menucamera.position.set(0, 30, 30)
-orbitControls.target.set(30.5453, 0, -32.0482)
-orbitControls.autoRotate = true
-orbitControls.dispose()
-orbitControls.update()
+//Music Init
 let musicPlaying = false;
 let backgroundmusic;
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
+
+//Audio Loader
 function touchStarted() {
-	//audioLoader.resume();
 	musicPlaying = true;
-	//backgroundMusic();
-	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
-	listener.setMasterVolume=1
+	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+	listener.setMasterVolume=1;
 	controls.getObject().add(listener);
 
-	//audio loader
 	//create, load and play background music
-
 	const backgroundSound = new THREE.Audio(listener);
 
 	//load sound file
 	audioLoader.load("js/GameMusic.mp3", function (buffer) {
-
 		backgroundSound.setBuffer(buffer);
 		backgroundSound.setLoop(true);
 		backgroundSound.setVolume(0.4);
 		backgroundSound.play();
-
 	});
 
-}
+};
+
+//Gunshot sound Init
 function gunshotSound() {
-	const listener = new THREE.AudioListener(); //a virtual listenr of all audio effects in scene
+	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
 	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
 	audioLoader.load("js/rifle.mp3", function (buffer) {
-
 		gunsound.setBuffer(buffer);
 		gunsound.setLoop(false);
 		gunsound.setVolume(0.1);
 		gunsound.play();
 	});
-}
+};
 
-
+/**#############DEPRECATED###########
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
 /*
 const alphaIndex = 10
@@ -128,19 +122,15 @@ const toonMaterial = new THREE.MeshToonMaterial({
 })
 
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
-*/
+**/
 
+//Skybox Init
+let pathStrings = 
+ 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
+	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
+	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
 
-
-
-
-
-
-
-
-let pathStrings = ["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
-	"../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
-	"../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg",]
+//This function maps over the array of images, skybox related
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
 	const materialArray = skyboxImagepaths.map(image => {
@@ -148,39 +138,37 @@ function createMaterialArray() {
 		return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
 	});
 	return materialArray;
-} // this function maps over the array of images 
+}
 
-//returns a Three.js material
-const materialArray = createMaterialArray()
+//Returns a Three.js material
+const materialArray = createMaterialArray();
 
-//Smaller skybox that follows the player
+//Smaller skybox that follows the player (thanks-jamin)
 const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
 const skybox = new THREE.Mesh(skybxGeo, materialArray);
 scene.add(skybox);
 
+//Let there be light
 const light = new THREE.HemisphereLight("white", "white", 0.5);
-scene.add(light)
+scene.add(light);
 
+//Camera and Position Init
 camera.position.z = 9; //initialise camera position
 camera.position.y = 9;
 pipcamera.position.set(0, 30, 0); // place top down camera at a height above the world 
 pipcamera.rotateX(-Math.PI / 2) //rotate so that it is top down
-
 const initcam = controls.getObject().quaternion // save camera rotation to be used in init function
 
 
-
-// }
-
-var Torso = new THREE.Object3D()
 //Player model done in THREE so no need for callback (gun model is irrelevant to following code)
+var Torso = new THREE.Object3D();
 var playerModel = BuildWorld.buildPlayer();
-Torso = playerModel.getObjectByName("torso")
+Torso = playerModel.getObjectByName("torso");
 playerModel.traverse(function (child) {
 	child.castShadow = true;
-})
+});
 
-
+//Hitbox Init
 const playerShape = new CANNON.Sphere(1.5);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
@@ -190,61 +178,55 @@ const playerBody = new CANNON.Body({ //player hitbox represented by sphere for e
 	material: planeMaterial //to add friction 
 });
 
-
-
+//Canon vector ting
 const contNorm = new CANNON.Vec3()
 const upAxis = new CANNON.Vec3(0, 1, 0);
 playerBody.addEventListener('collide', (event) => {
 	const { contact } = event
 	if (contact.bi.id == playerBody.id) {
-		contact.ni.negate(contNorm)
-	} else {
-		contNorm.copy(contact.ni)
+		contact.ni.negate(contNorm);
+	} 
+	else {
+		contNorm.copy(contact.ni);
 	}
 	if (contNorm.dot(upAxis) > 0.5) {
-		playerBody.canJump = true
+		playerBody.canJump = true;
 	}
-})
+});
 
+//I swear if I need to put another semi-colon in here for y'all im going to break your hands
 playerBody.linearDamping = 0.9;
-
 world.addBody(playerBody); //adds player body to the world
-
-
-
 
 //Generate main directional lighting for the world
 const mainLight = new THREE.DirectionalLight(0xffe3b1);
+//Evil brackets
 {
 	mainLight.castShadow = true;
-	//mainLight.shadow.radius = 3;
 	mainLight.shadow.bias = 0.0000125 * 2;
 	//TODO Add variable shadowMap size
 	mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024 * 5;
 	mainLight.position.set(1.5, 2.75, 1.5);
 	mainLight.position.multiplyScalar(50);
-	var temp = 40
+	var temp = 40;
 	mainLight.shadow.camera.top = 50;
 	mainLight.shadow.camera.bottom = -50;
 	mainLight.shadow.camera.left = -20;
 	mainLight.shadow.camera.right = 105;
 	mainLight.shadow.camera.near = 0;
 	mainLight.shadow.camera.far = 1000;
-	//scene.add( new THREE.CameraHelper( mainLight.shadow.camera ) );
-}
-scene.add(mainLight)
+};
+scene.add(mainLight);
 
-//----------------------------------------------------------------
 //Stats for fps
 var stats = new Stats();
-stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild(stats.dom)
-//----------------------------------------------------------------
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom);
 
 //Add blender objects to scene and collisions to world
 //Use callback to ensure level is loaded
 var composer;
-var composerMenu
+var composerMenu;
 
 //Init target arrays
 const TargetArr = [];
@@ -257,25 +239,20 @@ var totalammo;
 var hud;
 var hudTexture;
 
+//Menu Init
+var menuScene = new THREE.Scene();
+var homeScreen = new MainMenu();
+homeScreen.draw();
+var MenuTexture = new THREE.Texture(homeScreen.getMenu());
+MenuTexture.needsUpdate = true;
+var MenuMat = new THREE.MeshBasicMaterial({ map: MenuTexture });
+MenuMat.transparent = true;
+var menuGeom = new THREE.BoxGeometry(width, height, 0);
+var MenuPlane = new THREE.Mesh(menuGeom, MenuMat);
+MenuPlane.material.depthWrite = false;
+menuScene.add(MenuPlane);
 
-
-
-var menuScene = new THREE.Scene()
-var homeScreen = new MainMenu()
-homeScreen.draw()
-var MenuTexture = new THREE.Texture(homeScreen.getMenu())
-MenuTexture.needsUpdate = true
-var MenuMat = new THREE.MeshBasicMaterial({ map: MenuTexture })
-MenuMat.transparent = true
-var menuGeom = new THREE.BoxGeometry(width, height, 0)
-var MenuPlane = new THREE.Mesh(menuGeom, MenuMat)
-MenuPlane.material.depthWrite = false
-menuScene.add(MenuPlane)
-
-
-
-
-//(THREE.Scene, CANNON.World, Level Number)
+//WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 BuildWorld.loadLevel(scene, world, 1, function () {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
@@ -300,6 +277,7 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
 
+	//For loop :)
 	for (const tarMesh of targetArrayMeshStill) {
 		const x = tarMesh.position.x
 		const y = tarMesh.position.y
@@ -349,12 +327,10 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 
 	//Run game
 	animate();
-})
-
+});
 
 //To unload current world
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)
-
 
 /**
  * Function that runs the game
@@ -378,10 +354,10 @@ function animate() {
 
 		MenuTexture.needsUpdate = true//update main menu
 		renderer.render(menuScene, HudCamera)//render the main menu
-	} else {
+	} 
+	else {
 		//direcLight.translateX(-0.01)
 		if (controls.isLocked) {
-
 			hud.isPaused(false);
 			if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
@@ -391,6 +367,7 @@ function animate() {
 
 			var tempVec = new THREE.Vector3();
 			controls.getObject().getWorldDirection(tempVec)
+
 			//Get angle player is facing through arctan
 			var theta = Math.atan2(tempVec.x, tempVec.z);
 			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
@@ -400,7 +377,6 @@ function animate() {
 			playerModel.rotation.set(0, theta, 0)
 
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
-			//playerModel.getObjectByName('armLeftPivot').rotation.set(thetaArm+Math.PI, 0, -Math.PI/4)
 			playerModel.translateZ(-0.30)
 
 			dt = Clock.getDelta()
@@ -415,24 +391,19 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			moveTargets()
 			world.step(timestep, dt);
-
 		}
 		else {
 			hud.isPaused(true);
 			hud.draw();
 			hudTexture.needsUpdate = true;
-
 		}
 		renderWorld()
 	}
-	//
-
 	stats.end() //For monitoring
 	requestAnimationFrame(animate);
-
 };
 
-
+//Render func
 function renderWorld() {
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
@@ -451,27 +422,26 @@ function renderWorld() {
 	BuildWorld.turnOnLightShadow()
 	renderer.setViewport(port);
 	renderer.render(sceneHUD, HudCamera)
-}
+};
 
-
-
-function mapTargets() { // rotates targets for appearence on the map camera
-
+//Rotates targets for appearance on the map camera
+function mapTargets() { 
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
 		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
 	}
+};
 
-
-}
-function worldTargets() { //remove the map targets from the scene
+//Remove the map targets from the scene
+function worldTargets() {
 	while (mapTargetArr.length != 0) {
-		scene.remove(mapTargetArr.pop())
+		scene.remove(mapTargetArr.pop());
 	}
-}
+};
 
+//Moves the targets in the scene
 function moveTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
 		if (TargetArr[i].moves == true) {
@@ -504,28 +474,24 @@ function moveTargets() {
 			}
 		}
 	}
-}
-
+};
 
 /**
  * Function to add the targets to the scene
  * @param {THREE.Vector3} position 
  * @param {THREE.Quaternion} quaternion 
  */
-function addTargets(position, quaternion) { // places targets
-
+function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
 		var target = new Targets(i, position[i], quaternion[i], new THREE.Vector3(position[i].x + 5, position[i].y, position[i].z));
-		target.moves = false
-		TargetArr.push(target)
-		scene.add(target.getCylinder())
-
-
+		target.moves = false;
+		TargetArr.push(target);
+		scene.add(target.getCylinder());
 	}
+};
 
-}
-function init() { //initialise for a reset of level
-	///hud.Paused=false;
+//Init for level reset
+function init() {
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();
@@ -540,35 +506,38 @@ function init() { //initialise for a reset of level
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
+};
 
-
-}
-function removeTargets() { //remove all targets 
+//Remove all targets from scene
+function removeTargets() {
 	while (TargetArr.length != 0) {
 		scene.remove(TargetArr.pop().getCylinder())
 	}
-}
+};
 
+//Event listener for lock
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
-})
+});
+
+//Event listener for unlock
 controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
-})
+});
 
+//Mouse-up event listener
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
 	scene.getObjectByName('muzzleFlash').visible = false;
-})
+});
+
+//Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
 		if (musicPlaying == false) {
 			touchStarted()
 		}
-		else { }
-
 		if (controls.isLocked == true) {
-
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				gunshotSound()
@@ -585,26 +554,20 @@ document.addEventListener("mousedown", (e) => {
 						hud.increaseTarget();
 					}
 				}
-
 				//renderer.readRenderTargetPixels(scene, camera)
 				if (playerBody.noBullets == 0) {
 					removeTargets();
 				}
 			}
-
-			if (hud.gamestate == -1) // game fail
-			{
-
+			if (hud.gamestate == -1) { //Game failed
 				init();
-
-
 			}
 			else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
 				removeTargets();
-
 				init();
 			}
-		} else {
+		} 
+		else {
 			if (menu == true) {
 				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
 				if (ButtonClicked == 0) {
@@ -614,18 +577,19 @@ document.addEventListener("mousedown", (e) => {
 					controls.lock();
 					menu = false
 				}
-			} else {
+			} 
+			else {
 				controls.lock();
 				menu = false
 			}
-
 		}
 	}
-})
+});
 
+//Keys pressed container
 const pressedKeys = {};
 
-
+//Keydown event listener
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked) {
 		pressedKeys[e.key] = true;
@@ -642,14 +606,18 @@ document.addEventListener("keydown", (e) => {
 		}
 	}
 });
+
+//Keyup event listener
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
 });
 
+//Target hit logic
 function HitTarget(name) {
 	TargetArr[parseInt(name)].hit();
-}
+};
 
+//Movement logic
 function move() {
 	playerBody.linearDamping = 0.9
 	playerBody.angularDamping = 0.9
@@ -657,7 +625,6 @@ function move() {
 	var delta = dt * 1000
 	delta *= 0.1
 	if (controls.isLocked) {
-
 		if (pressedKeys['w']) {
 			tempVec.z = -0.4 * delta
 		}
@@ -676,14 +643,11 @@ function move() {
 			}
 			playerBody.canJump = false
 		}
-
 	}
-
 	tempVec.applyQuaternion(controls.getObject().quaternion);
 	playerBody.velocity.x += tempVec.x
 	playerBody.velocity.z += tempVec.z
 	controls.getObject().position.copy(playerBody.position);
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
-
-}
+};
