@@ -266,6 +266,12 @@ var totalammo;
 var hud;
 var hudTexture;
 
+//array of bullet trails
+var lines = [];
+
+//Array of clouds for dynamic skybox
+var clouds = [];
+
 //Menu Init
 var menuScene = new THREE.Scene();
 var homeScreen = new MainMenu();
@@ -284,6 +290,10 @@ var gunEnd
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 BuildWorld.loadLevel(scene, world, 1, function () {
+	afterLoad();
+});
+
+function afterLoad(){
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -358,9 +368,13 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	//Assign mesh to gunEnd
 	gunEnd = BuildWorld.getMuzzleFlashMesh()
 
+	//Assign clouds
+	clouds = BuildWorld.getClouds();
+	console.log(clouds)
+
 	//Run game
 	animate();
-});
+}
 
 //To unload current world
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)
@@ -411,6 +425,11 @@ function animate() {
 
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
 			playerModel.translateZ(-0.30)
+
+			if (lines.length>0){
+				handleTrails();
+			}
+
 
 			dt = Clock.getDelta()
 			if (hud.gamestate == 0)
@@ -525,6 +544,9 @@ function addTargets(position, quaternion) {
 
 //Init for level reset
 function init() {
+	for (const line of lines){
+		scene.remove(line[0])
+	}
 	hud.setStartTime()
 	hudTexture.needsUpdate = true
 	removeTargets();
@@ -564,8 +586,7 @@ document.addEventListener("mouseup", (e) => {
 	scene.getObjectByName('muzzleFlash').visible = false;
 });
 
-//array of bullet trails
-const lines = []
+
 
 
 //Mouse-down event listener
@@ -613,16 +634,21 @@ document.addEventListener("mousedown", (e) => {
                     new THREE.LineBasicMaterial({
                         color: 0xffffff,
                         transparent: true,
-                        opacity: 0.75,
-						linewidth: 10
+                        opacity: 1,
+						linewidth: 2
                         // depthTest: false,
                         // depthWrite: false
                     })
                 )
 				
-				lines.push(line)
-                //line.frustumCulled = false
-                scene.add(line)
+				let d = new Date();
+            	let sec=d.getSeconds()+d.getMilliseconds()/1000;
+            	let min =d.getMinutes()+sec/60;
+            	let creationTimeTrail = d.getHours()+min/60;
+				creationTimeTrail *= 60*60;
+				// [Line, age of line]
+				lines.push([line, creationTimeTrail])
+				scene.add(line)
 
 			}
 			if (hud.gamestate == -1) { //Game failed
@@ -717,3 +743,24 @@ function move() {
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 };
+
+function handleTrails(){
+	let trailTime = 1
+	let d = new Date();
+    let sec=d.getSeconds()+d.getMilliseconds()/1000;
+    let min =d.getMinutes()+sec/60;
+    let currentTimeSec = d.getHours()+min/60;
+	currentTimeSec *= 60*60;
+
+	for (const i of lines){
+		
+		i[0].material.opacity = 1/((currentTimeSec - i[1])*trailTime*5)
+	}
+
+	if (currentTimeSec - lines[0][1] >= trailTime){
+		scene.remove(lines[0][0]);
+		lines.shift()
+	}
+	//console.log(lines[0][1] - currentTimeSec);
+	
+}
