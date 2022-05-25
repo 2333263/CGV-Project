@@ -1,12 +1,10 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
-//Shader imports
-import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
-import { WaterRefractionShader } from '../node_modules/three/examples/jsm/shaders/WaterRefractionShader.js';
 
 //Custom Classes
 import Stats from "stats";
+import { SPARK } from '../js/Spark.js'; 
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
 import { Targets } from '../js/targets.js';
@@ -267,6 +265,9 @@ var hudTexture;
 //array of bullet trails
 var lines = [];
 
+//array of bullet sparks
+var sparks = [];
+
 //Array of clouds for dynamic skybox
 var clouds = [];
 
@@ -286,11 +287,13 @@ menuScene.add(MenuPlane);
 //Mesh of the end of the gun (for use in bullet trails)
 var gunEnd
 
-//WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
-BuildWorld.loadLevel(scene, world, 1, function () {
+//Load level 1
+var currentWorld = 1;
+BuildWorld.loadLevel(scene, world, currentWorld, function () {
 	afterLoad();
 });
 
+//WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 function afterLoad(){
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
@@ -375,7 +378,7 @@ function afterLoad(){
 }
 
 //To unload current world
-//loadLevelWithCollision.unloadCurrentLevel(scene, world)
+//BuildWorld.unloadCurrentLevel(scene, world)
 
 /**
  * Function that runs the game
@@ -426,6 +429,9 @@ function animate() {
 
 			if (lines.length>0){
 				handleTrails();
+			}
+			if (sparks.length>0){
+				handleSparks();
 			}
 
 
@@ -615,7 +621,7 @@ document.addEventListener("mousedown", (e) => {
 					removeTargets();
 				}
 
-				//Bullet trail stuff WIP	
+				//Bullet trail stuff	
 				var i = 0
 				while (Torso.children.includes(intersects[i].object) && lines.includes(intersects[i].object)) {
 					i++;
@@ -642,18 +648,23 @@ document.addEventListener("mousedown", (e) => {
 				let d = new Date();
             	let sec=d.getSeconds()+d.getMilliseconds()/1000;
             	let min =d.getMinutes()+sec/60;
-            	let creationTimeTrail = d.getHours()+min/60;
-				creationTimeTrail *= 60*60;
+            	let creationTime = d.getHours()+min/60;
+				creationTime *= 60*60;
 				// [Line, age of line]
-				lines.push([line, creationTimeTrail])
-				scene.add(line)
-
+				lines.push([line, creationTime])
+				scene.add(line);
+				const spark = new SPARK(intersects[i].point.clone(), creationTime, scene);
+				sparks.push(spark);
+  
 			}
 			if (hud.gamestate == -1) { //Game failed
+				
 				init();
 			}
 			else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
+				
 				removeTargets();
+				//BuildWorld.unloadCurrentLevel(scene, world)
 				init();
 			}
 		} 
@@ -743,11 +754,11 @@ function move() {
 };
 
 function handleTrails(){
-	let trailTime = 1
-	let d = new Date();
-    let sec=d.getSeconds()+d.getMilliseconds()/1000;
-    let min =d.getMinutes()+sec/60;
-    let currentTimeSec = d.getHours()+min/60;
+	var trailTime = 1
+	var d = new Date();
+    var sec=d.getSeconds()+d.getMilliseconds()/1000;
+    var min =d.getMinutes()+sec/60;
+    var currentTimeSec = d.getHours()+min/60;
 	currentTimeSec *= 60*60;
 
 	for (const i of lines){
@@ -761,4 +772,23 @@ function handleTrails(){
 	}
 	//console.log(lines[0][1] - currentTimeSec);
 	
+}
+
+function handleSparks(){
+	var sparklife = 0.2 //Distance spark will travel
+	var d = new Date();
+    var sec=d.getSeconds()+d.getMilliseconds()/1000;
+    var min =d.getMinutes()+sec/60;
+    var currentTimeSec = d.getHours()+min/60;
+	currentTimeSec*=60*60;
+
+	for (const i of sparks){
+		i.updatePos(currentTimeSec);
+	}
+
+	if (currentTimeSec - sparks[0].getCreateTime() >= sparklife){
+		sparks[0].delete();
+		var temp = sparks.shift();
+	}
+
 }

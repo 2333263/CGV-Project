@@ -138,8 +138,7 @@ class POSTPROCESSINGPASSES {
         const blendMode = selectiveBloomEffect.blendMode
         blendMode.setBlendFunction(BlendFunction.SCREEN);
         selectiveBloomEffect.blendMode = blendMode;
-
-        selectiveBloomEffect
+        
         const selectiveBloomPass = new POSTPROCESSING.EffectPass(
             camera,
             //smaaEffect,

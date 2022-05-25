@@ -391,19 +391,25 @@ class BuildWorld {
         scene.remove(scene.getObjectByName('Level_Root'))
 
         //Unload CANNON collisions of different types
-        for (const obj of hullCollisionCANNON) {
-            console.log('Unloading CANNON Body')
-            world.removeBody(obj)
-            hullCollisionCANNON.pop(obj)
+        let hullLenth = hullCollisionCANNON.length-1
+        for (var i = hullLenth; i >= 0; i--) {
+            console.log('Unloading HULL Body')
+            const temp = hullCollisionCANNON.pop()
+            world.removeBody(temp)
+            
         }
+        //deprecated, dont use barrels
         for (const obj of barrelCollisionCANNON) {
             world.removeBody(obj)
             barrelCollisionCANNON.pop(obj)
         }
 
-        for (const obj of boxCollisionCANNON) {
-            world.removeBody(obj)
-            boxCollisionCANNON.pop(obj)
+        let boxLength = boxCollisionCANNON.length-1
+        for (var i = boxLength; i >= 0; i--) {
+            console.log('Unloading Box Body')
+            const temp = boxCollisionCANNON.pop()
+            world.removeBody(temp)
+            
         }
     }
 
