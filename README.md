@@ -27,3 +27,5 @@ Arcade style leaderboard stored on wits servers (database)
 - 2 more levels
 - 1 evening
 - 1 in eclipse, weird effects
+- Change character hitbox?
+- Fix jumping
