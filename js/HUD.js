@@ -225,11 +225,16 @@ class HUD {
 
         //Draws the time indicator
         function drawTime(startTime){
+          
             graphics.fillStyle = "rgb(25,25,25)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = ""+ getTimeElappsedSec(startTime);
+            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.lineWidth=1.2*scaleFitNative;
+            graphics.strokeText(word, -40-word.length*5, Y_TOP + 30);
             graphics.fillText(word, -40-word.length*5, Y_TOP + 30);
+         
         }
 
         //Returns the elapsed time of the given run
@@ -322,6 +327,9 @@ class HUD {
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = currammo + " / " + totalammo;
+            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.lineWidth=1.2*scaleFitNative;
+            graphics.strokeText(word, X_LEFT + 10, Y_BOTTOM - 10);
             graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10);
         }
 
@@ -331,6 +339,9 @@ class HUD {
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = currHits + " / " + totaltarget;
+            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.lineWidth=1.2*scaleFitNative;
+            graphics.strokeText(word,  X_RIGHT-110, Y_TOP + 30);
             graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);
         }
 
