@@ -14,3 +14,12 @@ Arcade style leaderboard stored on wits servers (database)
 - Shooting
 - Basic World
 - Working targets (with hit detection - hitscan)
+
+
+## Final Goals:
+-Improve ui
+-Dynamic sky box
+-Refraction (transparency)
+-Particle effects
+-Mention in code where scene graph vs subroutine
+-World moves in some way
