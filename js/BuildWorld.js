@@ -333,7 +333,7 @@ class BuildWorld {
                     const newMat = new THREE.MeshPhongMaterial({
                         color: child.material.color,
                         transparent: true,
-                        opacity: 0.7,
+                        opacity: 0.8,
                         emissive: new THREE.Color('#FFFFFF'),
                         emissiveIntensity: 0.5
                     })
