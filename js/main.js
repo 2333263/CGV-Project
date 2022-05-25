@@ -150,11 +150,13 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 **/
 
 //Skybox Init
-let pathStrings = 
- 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
-	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
-	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
-
+//let pathStrings = 
+// 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
+//	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
+//	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
+let pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",
+			"../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",
+			"../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",]
 //This function maps over the array of images, skybox related
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
