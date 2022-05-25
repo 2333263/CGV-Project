@@ -265,7 +265,10 @@ var hud;
 var hudTexture;
 
 //array of bullet trails
-var lines = []
+var lines = [];
+
+//Array of clouds for dynamic skybox
+var clouds = [];
 
 //Menu Init
 var menuScene = new THREE.Scene();
@@ -285,6 +288,10 @@ var gunEnd
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 BuildWorld.loadLevel(scene, world, 1, function () {
+	afterLoad();
+});
+
+function afterLoad(){
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -359,9 +366,13 @@ BuildWorld.loadLevel(scene, world, 1, function () {
 	//Assign mesh to gunEnd
 	gunEnd = BuildWorld.getMuzzleFlashMesh()
 
+	//Assign clouds
+	clouds = BuildWorld.getClouds();
+	console.log(clouds)
+
 	//Run game
 	animate();
-});
+}
 
 //To unload current world
 //loadLevelWithCollision.unloadCurrentLevel(scene, world)

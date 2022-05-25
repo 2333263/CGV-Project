@@ -34,6 +34,9 @@ var targetsStill = [];
 //Muzzle Flash object
 var muzzleFlash
 
+//Array of clouds to send to main
+var clouds = [];
+
 
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
@@ -300,7 +303,6 @@ class BuildWorld {
                     boxCollision.push(child);
 
                     //Replace textures
-                    child.castShadow = false;
                     const sizex = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) * child.scale.x
                     const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
                     const sizeWidth = Math.sqrt(Math.pow(sizex, 2) + Math.pow(sizey, 2)) / 2
@@ -323,6 +325,20 @@ class BuildWorld {
                     })
                     child.material = newMat
 
+                }
+
+                else if(name.substring(0, 5) === 'Cloud'){
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                    const newMat = new THREE.MeshPhongMaterial({
+                        color: child.material.color,
+                        transparent: true,
+                        opacity: 0.7,
+                        emissive: new THREE.Color('#FFFFFF'),
+                        emissiveIntensity: 0.5
+                    })
+                    child.material = newMat
+                    clouds.push(child);
                 }
 
 
@@ -575,6 +591,14 @@ class BuildWorld {
      */
     static getMuzzleFlashMesh(){
         return muzzleFlash;
+    }
+
+    /**
+     * Function to get the array of clouds
+     * @returns {Array.<THREE.Mesh>} The muzzle flash mesh
+     */
+    static getClouds(){
+        return clouds;
     }
 }
 
