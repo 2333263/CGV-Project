@@ -385,7 +385,7 @@ function afterLoad(){
 function animate() {
 	stats.begin()
 	//console.log(hud.startTime) //For monitoring
-	if (menu == true) {//if were in the menu
+	if (menu == true) {//if we're in the menu
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
 		homeScreen.draw()//draw the main menu
@@ -411,6 +411,20 @@ function animate() {
 
 			//Make skybox follow player to make the distance to the skybox look infinite
 			skybox.position.copy(playerBody.position)
+
+			//make clouds move
+			let cloud1=clouds[0]
+			cloud1.position.x+=1
+			for(let i=0;i<clouds.length;i=i+2)
+			{
+				clouds[i].position.x+=0.09
+				clouds[i].position.z+=0.05
+			}
+			for(let i=1;i<clouds.length;i=i+2)
+			{
+				clouds[i].position.x+=0.05
+				clouds[i].position.z+=0.09
+			}
 
 			var tempVec = new THREE.Vector3();
 			controls.getObject().getWorldDirection(tempVec)
