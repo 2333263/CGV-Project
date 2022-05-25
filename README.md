@@ -14,3 +14,18 @@ Arcade style leaderboard stored on wits servers (database)
 - Shooting
 - Basic World
 - Working targets (with hit detection - hitscan)
+
+
+## Final Goals:
+- Improve ui
+- Dynamic sky box
+- Refraction (transparency)
+- Particle effects (for bullet shooting)
+- Mention in code where scene graph vs subroutine
+- World moves in some way
+- Text based leaderboard
+- 2 more levels
+- 1 evening
+- 1 in eclipse, weird effects
+- Change character hitbox?
+- Fix jumping
