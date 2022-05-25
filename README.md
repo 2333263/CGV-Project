@@ -17,9 +17,10 @@ Arcade style leaderboard stored on wits servers (database)
 
 
 ## Final Goals:
--Improve ui
--Dynamic sky box
--Refraction (transparency)
--Particle effects
--Mention in code where scene graph vs subroutine
--World moves in some way
+- Improve ui
+- Dynamic sky box
+- Refraction (transparency)
+- Particle effects (for bullet shooting)
+- Mention in code where scene graph vs subroutine
+- World moves in some way
+- Text based leaderboard
