@@ -135,23 +135,25 @@ class MainMenu{
         //Draw Back Button
         this.drawBackButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            this.graphics.fillRect(X_LEFT,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
+            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
+            this.graphics.fillRect(X_LEFT,Y_BOTTOM-150*scale/100,300*scale/100,500*scale/100)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+            var size = (1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)*scaleFitNative;
             this.graphics.font = String(size)+"px Courier";
             var word = "BACK";
-            this.graphics.fillText(word,X_LEFT+20*scaleFitNative,Y_BOTTOM-30*scaleFitNative)
+            this.graphics.fillText(word,X_LEFT+X_RIGHT*1/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
         }
 
         //Draws Next Button
         this.drawNextButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            this.graphics.fillRect(X_RIGHT-180*scaleFitNative,Y_BOTTOM-90*scaleFitNative,180*scaleFitNative,90*scaleFitNative)
+            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
+            this.graphics.fillRect(X_RIGHT-300*scale/100,Y_BOTTOM-150*scale/100,300*scale/100,2000*scale/100)
             this.graphics.fillStyle = 'rgb(0,0,0)';
             var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
             this.graphics.font = String(size)+"px Courier";
             var word = "NEXT";
-            this.graphics.fillText(word,X_RIGHT-150*scaleFitNative,Y_BOTTOM-30*scaleFitNative)
+            this.graphics.fillText(word,X_RIGHT-X_RIGHT*16/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
         }
 
 
@@ -159,6 +161,7 @@ class MainMenu{
         this.Clicked=function(posX,posY) {
             var centerX=(width/2)
             var centerY=height/2
+            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
             //converts click coords to canvas coords
             posX=(posX-centerX)
             posY=(posY-centerY)
@@ -183,11 +186,11 @@ class MainMenu{
                     }
                 break;
                 case(1)://if theyre on the leaderboard
-                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
+                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
                         console.log("BACK")
                         this.page=0
                         return(4)
-                    }else if(posX>=X_RIGHT-150*scaleFitNative &&posY>=Y_BOTTOM-120*scaleFitNative){//if they click next
+                    }else if(posX>X_RIGHT-320*scale/100 &&posY>=Y_BOTTOM-200*scale/100){//if they click next
                         console.log("next")
                     }    
                     break;
@@ -195,7 +198,7 @@ class MainMenu{
                     this.page=0
                     break;
                 case(3)://if theyre on credits
-                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-120*scaleFitNative){//if they click the back button
+                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
                         console.log("BACK")
                         this.page=0
                         return(4)
