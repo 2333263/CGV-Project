@@ -417,7 +417,7 @@ function animate() {
 
 			//make clouds move
 			let cloud1=clouds[0]
-			cloud1.position.x+=1
+			console.log(clouds.length)
 			for(let i=0;i<clouds.length;i=i+2)
 			{
 				clouds[i].position.x+=0.09
