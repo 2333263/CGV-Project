@@ -4,7 +4,7 @@ import * as CANNON from 'cannon-es';
 
 //Custom Classes
 import Stats from "stats";
-import { SPARK } from '../js/Spark.js'; 
+import { SPARK } from '../js/Spark.js';
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
 import { Targets } from '../js/targets.js';
@@ -96,7 +96,7 @@ const audioLoader = new THREE.AudioLoader();
 function touchStarted() {
 	musicPlaying = true;
 	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-	listener.setMasterVolume=1;
+	listener.setMasterVolume = 1;
 	controls.getObject().add(listener);
 
 	//create, load and play background music
@@ -152,9 +152,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 // 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
-let pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",
-			"../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",
-			"../Objects/Textures/Skybox/blueskyimg.png","../Objects/Textures/Skybox/blueskyimg.png",]
+let pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",]
 //This function maps over the array of images, skybox related
 function createMaterialArray() {
 	const skyboxImagepaths = pathStrings;
@@ -210,7 +210,7 @@ playerBody.addEventListener('collide', (event) => {
 	const { contact } = event
 	if (contact.bi.id == playerBody.id) {
 		contact.ni.negate(contNorm);
-	} 
+	}
 	else {
 		contNorm.copy(contact.ni);
 	}
@@ -254,10 +254,10 @@ var composer;
 var composerMenu;
 
 //Init target arrays
-const TargetArr = [];
-const mapTargetArr = [];
-const TargetPos = [];
-const TargetQuat = [];
+var TargetArr = [];
+var mapTargetArr = [];
+var TargetPos = [];
+var TargetQuat = [];
 
 //Init hud attributes
 var totalammo;
@@ -296,7 +296,7 @@ BuildWorld.loadLevel(scene, world, currentWorld, function () {
 });
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
-function afterLoad(){
+function afterLoad() {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -320,6 +320,12 @@ function afterLoad(){
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
 
+	//Clean target arrays (for reloading)
+	removeTargets()
+	TargetPos = [];
+	TargetQuat = [];
+	TargetArr = [];
+	mapTargetArr = [];
 	//For loop :)
 	for (const tarMesh of targetArrayMeshStill) {
 		const x = tarMesh.position.x
@@ -327,7 +333,7 @@ function afterLoad(){
 		const z = tarMesh.position.z
 		const targetPosition = tarMesh.position;
 		TargetPos.push(targetPosition);
-		const targetQuaterion =  tarMesh.quaternion;
+		const targetQuaterion = tarMesh.quaternion;
 		TargetQuat.push(targetQuaterion);
 	}
 	//TargetPos = targetStillPos
@@ -337,7 +343,7 @@ function afterLoad(){
 	addTargets(TargetPos, TargetQuat);
 
 	//Make total amo proportional to no targets 
-	totalammo = parseInt(TargetArr.length * 1.5) 
+	totalammo = parseInt(TargetArr.length * 1.5)
 
 	//Create hud with target information
 
@@ -345,7 +351,7 @@ function afterLoad(){
 	hud = new HUD(totalammo, totalammo, TargetArr.length, 0);
 
 	//returns the canvas object to use as a texture
-	hudTexture = new THREE.Texture(hud.getCanvas()) 
+	hudTexture = new THREE.Texture(hud.getCanvas())
 	hudTexture.needsUpdate = true;
 
 	//Create hud mesh
@@ -368,12 +374,13 @@ function afterLoad(){
 	playerBody.noBullets = hud.currammo
 	playerBody.canJump = false;
 
-	//Assign mesh to gunEnd
+	//Assign mesh to gunEnd after cleaning object
+	gunEnd = null;
 	gunEnd = BuildWorld.getMuzzleFlashMesh()
 
-	//Assign clouds
+	//Assign clouds after cleaning array
+	clouds = []
 	clouds = BuildWorld.getClouds();
-	console.log(clouds)
 
 	//Run game
 	animate();
@@ -382,6 +389,8 @@ function afterLoad(){
 //To unload current world
 //BuildWorld.unloadCurrentLevel(scene, world)
 
+//Used to stop animation for level loads
+var animationID;
 /**
  * Function that runs the game
  */
@@ -404,7 +413,7 @@ function animate() {
 
 		MenuTexture.needsUpdate = true//update main menu
 		renderer.render(menuScene, HudCamera)//render the main menu
-	} 
+	}
 	else {
 		//direcLight.translateX(-0.01)
 		if (controls.isLocked) {
@@ -416,17 +425,15 @@ function animate() {
 			skybox.position.copy(playerBody.position)
 
 			//make clouds move
-			let cloud1=clouds[0]
-			console.log(clouds.length)
-			for(let i=0;i<clouds.length;i=i+2)
-			{
-				clouds[i].position.x+=0.09
-				clouds[i].position.z+=0.05
+			let cloud1 = clouds[0]
+			//console.log(clouds.length)
+			for (let i = 0; i < clouds.length; i = i + 2) {
+				clouds[i].position.x += 0.09
+				clouds[i].position.z += 0.05
 			}
-			for(let i=1;i<clouds.length;i=i+2)
-			{
-				clouds[i].position.x+=0.05
-				clouds[i].position.z+=0.09
+			for (let i = 1; i < clouds.length; i = i + 2) {
+				clouds[i].position.x += 0.05
+				clouds[i].position.z += 0.09
 			}
 
 			var tempVec = new THREE.Vector3();
@@ -443,10 +450,10 @@ function animate() {
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
 			playerModel.translateZ(-0.30)
 
-			if (lines.length>0){
+			if (lines.length > 0) {
 				handleTrails();
 			}
-			if (sparks.length>0){
+			if (sparks.length > 0) {
 				handleSparks();
 			}
 
@@ -472,7 +479,7 @@ function animate() {
 		renderWorld()
 	}
 	stats.end() //For monitoring
-	requestAnimationFrame(animate);
+	animationID = requestAnimationFrame(animate);
 };
 
 //Render func
@@ -497,7 +504,7 @@ function renderWorld() {
 };
 
 //Rotates targets for appearance on the map camera
-function mapTargets() { 
+function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
@@ -564,7 +571,7 @@ function addTargets(position, quaternion) {
 
 //Init for level reset
 function init() {
-	for (const line of lines){
+	for (const line of lines) {
 		scene.remove(line[0])
 	}
 	hud.setStartTime()
@@ -646,44 +653,53 @@ document.addEventListener("mousedown", (e) => {
 				gunEnd.getWorldPosition(gunEndPos);
 
 				const points = []
-                points.push(gunEndPos)
+				points.push(gunEndPos)
 				points.push(intersects[i].point.clone())
 				const geometry = new THREE.BufferGeometry().setFromPoints(points)
 				const line = new THREE.LineSegments(
-                    geometry,
-                    new THREE.LineBasicMaterial({
-                        color: 0xffffff,
-                        transparent: true,
-                        opacity: 1,
+					geometry,
+					new THREE.LineBasicMaterial({
+						color: 0xffffff,
+						transparent: true,
+						opacity: 1,
 						linewidth: 2
-                        // depthTest: false,
-                        // depthWrite: false
-                    })
-                )
-				
+						// depthTest: false,
+						// depthWrite: false
+					})
+				)
+
 				let d = new Date();
-            	let sec=d.getSeconds()+d.getMilliseconds()/1000;
-            	let min =d.getMinutes()+sec/60;
-            	let creationTime = d.getHours()+min/60;
-				creationTime *= 60*60;
+				let sec = d.getSeconds() + d.getMilliseconds() / 1000;
+				let min = d.getMinutes() + sec / 60;
+				let creationTime = d.getHours() + min / 60;
+				creationTime *= 60 * 60;
 				// [Line, age of line]
 				lines.push([line, creationTime])
 				scene.add(line);
 				const spark = new SPARK(intersects[i].point.clone(), creationTime, scene);
 				sparks.push(spark);
-  
+
 			}
 			if (hud.gamestate == -1) { //Game failed
-				
+
 				init();
 			}
 			else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
-				
+
 				removeTargets();
-				//BuildWorld.unloadCurrentLevel(scene, world)
-				init();
+				//Check that there is a next level to load, otherwise init
+				if (currentWorld < 3) {
+					//Code to swap levels
+					BuildWorld.unloadCurrentLevel(scene, world)
+					cancelAnimationFrame(animationID);
+					currentWorld++
+					BuildWorld.loadLevel(scene, world, currentWorld, function () {
+						afterLoad();
+					});
+				}
+				init(); // Important for playe reset
 			}
-		} 
+		}
 		else {
 			if (menu == true) {
 				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
@@ -694,7 +710,7 @@ document.addEventListener("mousedown", (e) => {
 					controls.lock();
 					menu = false
 				}
-			} 
+			}
 			else {
 				controls.lock();
 				menu = false
@@ -769,40 +785,40 @@ function move() {
 	pipcamera.position.z = (playerBody.position.z);
 };
 
-function handleTrails(){
+function handleTrails() {
 	var trailTime = 1
 	var d = new Date();
-    var sec=d.getSeconds()+d.getMilliseconds()/1000;
-    var min =d.getMinutes()+sec/60;
-    var currentTimeSec = d.getHours()+min/60;
-	currentTimeSec *= 60*60;
+	var sec = d.getSeconds() + d.getMilliseconds() / 1000;
+	var min = d.getMinutes() + sec / 60;
+	var currentTimeSec = d.getHours() + min / 60;
+	currentTimeSec *= 60 * 60;
 
-	for (const i of lines){
-		
-		i[0].material.opacity = 1/((currentTimeSec - i[1])*trailTime*5)
+	for (const i of lines) {
+
+		i[0].material.opacity = 1 / ((currentTimeSec - i[1]) * trailTime * 5)
 	}
 
-	if (currentTimeSec - lines[0][1] >= trailTime){
+	if (currentTimeSec - lines[0][1] >= trailTime) {
 		scene.remove(lines[0][0]);
 		lines.shift()
 	}
 	//console.log(lines[0][1] - currentTimeSec);
-	
+
 }
 
-function handleSparks(){
+function handleSparks() {
 	var sparklife = 0.2 //Distance spark will travel
 	var d = new Date();
-    var sec=d.getSeconds()+d.getMilliseconds()/1000;
-    var min =d.getMinutes()+sec/60;
-    var currentTimeSec = d.getHours()+min/60;
-	currentTimeSec*=60*60;
+	var sec = d.getSeconds() + d.getMilliseconds() / 1000;
+	var min = d.getMinutes() + sec / 60;
+	var currentTimeSec = d.getHours() + min / 60;
+	currentTimeSec *= 60 * 60;
 
-	for (const i of sparks){
+	for (const i of sparks) {
 		i.updatePos(currentTimeSec);
 	}
 
-	if (currentTimeSec - sparks[0].getCreateTime() >= sparklife){
+	if (currentTimeSec - sparks[0].getCreateTime() >= sparklife) {
 		sparks[0].delete();
 		var temp = sparks.shift();
 	}

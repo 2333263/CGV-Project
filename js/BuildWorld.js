@@ -91,7 +91,7 @@ class BuildWorld {
 
             //Add scene to object
             root.name = 'Level_Root'
-            
+
 
             root.traverse(function (child) {
 
@@ -138,7 +138,7 @@ class BuildWorld {
                     mirror.position.copy(child.position)
                     mirror.quaternion.copy(child.quaternion)
                     mirror.rotateX(-Math.PI / 2)
-                    
+
                     scene.add(mirror)
 
                     //Remove mirror red from scene
@@ -327,7 +327,7 @@ class BuildWorld {
 
                 }
 
-                else if(name.substring(0, 5) === 'Cloud'){
+                else if (name.substring(0, 5) === 'Cloud') {
                     child.castShadow = false;
                     child.receiveShadow = false;
                     const newMat = new THREE.MeshPhongMaterial({
@@ -345,7 +345,7 @@ class BuildWorld {
             });
 
 
-            for (const i of toRemove){
+            for (const i of toRemove) {
                 root.remove(i)
             }
 
@@ -391,12 +391,11 @@ class BuildWorld {
         scene.remove(scene.getObjectByName('Level_Root'))
 
         //Unload CANNON collisions of different types
-        let hullLenth = hullCollisionCANNON.length-1
+        let hullLenth = hullCollisionCANNON.length - 1
         for (var i = hullLenth; i >= 0; i--) {
-            console.log('Unloading HULL Body')
             const temp = hullCollisionCANNON.pop()
             world.removeBody(temp)
-            
+
         }
         //deprecated, dont use barrels
         for (const obj of barrelCollisionCANNON) {
@@ -404,13 +403,38 @@ class BuildWorld {
             barrelCollisionCANNON.pop(obj)
         }
 
-        let boxLength = boxCollisionCANNON.length-1
+        let boxLength = boxCollisionCANNON.length - 1
         for (var i = boxLength; i >= 0; i--) {
-            console.log('Unloading Box Body')
             const temp = boxCollisionCANNON.pop()
             world.removeBody(temp)
-            
+
         }
+
+        //re-init arrays
+
+        //Arrays of collision objects
+         hullCollision = [];
+         hullCollisionCANNON = [];
+         barrelCollision = [];
+         barrelCollisionCANNON = [];
+         boxCollision = [];
+         boxCollisionCANNON = [];
+
+        //Array of street lights (spotlights)
+         streetLights = [];
+
+        //Array of glowing objects
+         glowing = [];
+
+        //Array of targets
+         targetsMoving = [];
+         targetsStill = [];
+
+        //Muzzle Flash object
+         muzzleFlash
+
+        //Array of clouds to send to main
+         clouds = [];
     }
 
     /**
@@ -595,7 +619,7 @@ class BuildWorld {
      * Function to get the muzzle flash
      * @returns {THREE.Mesh} The muzzle flash mesh
      */
-    static getMuzzleFlashMesh(){
+    static getMuzzleFlashMesh() {
         return muzzleFlash;
     }
 
@@ -603,7 +627,7 @@ class BuildWorld {
      * Function to get the array of clouds
      * @returns {Array.<THREE.Mesh>} The muzzle flash mesh
      */
-    static getClouds(){
+    static getClouds() {
         return clouds;
     }
 }
