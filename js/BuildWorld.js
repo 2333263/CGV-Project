@@ -338,7 +338,7 @@ class BuildWorld {
                         emissiveIntensity: 0.5
                     })
                     child.material = newMat
-                    clouds.push(child);
+                    clouds.push(child.rotateX(180));
                 }
 
 
