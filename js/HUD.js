@@ -152,7 +152,7 @@ class HUD {
                         graphics.font = String(size)+"px monospace";
                         var top=this.leaderBoard.getTop10();
                         graphics.fillStyle = "rgb(255,255,255)";
-                        graphics.fillText("Top "+top.length, X_LEFT+200, Y_TOP+50*scaleFitNative);
+                        graphics.fillText("Top "+(top.length+1), X_LEFT+200, Y_TOP+50*scaleFitNative);
                         for (var i=0 ;i<top.length; i++){
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;

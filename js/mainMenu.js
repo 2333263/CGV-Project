@@ -19,7 +19,7 @@ class MainMenu{
         this.canvas.width = width;
         this.canvas.height = height;
         this.page=0
-
+        this.leaderBoardPage=0
         //Variables Init
         this.callMenu=true;
         this.graphics = this.canvas.getContext("2d");
@@ -40,7 +40,7 @@ class MainMenu{
                    this.drawMainMenu();
                    break;
                 case 1://leaderboard
-                    this.drawLeaderboard();
+                    this.drawLeaderboard(this.leaderBoardPage);
                     break;
                 case 2://options
                     break;
@@ -89,7 +89,7 @@ class MainMenu{
         }
 
         //Draws the leaderboard on the screen
-        this.drawLeaderboard=function(){
+        this.drawLeaderboard=function(pageNum){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
             this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
@@ -99,9 +99,11 @@ class MainMenu{
             this.graphics.fillStyle = "rgb(0,0,0)"
             this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
             var bottom=Y_TOP+60*scaleFitNative
-            for (var i=0 ;i<all.length; i++){
+            for (var i=pageNum*20 ;i<((pageNum+1)*20)-1; i++){
+                if(all[i]!==undefined){
                 this.graphics.fillText(all[i],  X_LEFT+200, bottom+60*scaleFitNative)
                 bottom=bottom+60*scaleFitNative
+                }
             }
             this.drawBackButton()
             this.drawNextButton()
@@ -138,7 +140,7 @@ class MainMenu{
             var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
             this.graphics.fillRect(X_LEFT,Y_BOTTOM-150*scale/100,300*scale/100,500*scale/100)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = (1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)*scaleFitNative;
+            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100
             this.graphics.font = String(size)+"px Courier";
             var word = "BACK";
             this.graphics.fillText(word,X_LEFT+X_RIGHT*1/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
@@ -188,10 +190,17 @@ class MainMenu{
                 case(1)://if theyre on the leaderboard
                     if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
                         console.log("BACK")
-                        this.page=0
+                        lb.requested=false;
+                        if(this.leaderBoardPage!=0){
+                            this.leaderBoardPage--;
+                        }else{
+                            this.page=0
+                        }
                         return(4)
                     }else if(posX>X_RIGHT-320*scale/100 &&posY>=Y_BOTTOM-200*scale/100){//if they click next
                         console.log("next")
+                        lb.requested=false;
+                        this.leaderBoardPage++;
                     }    
                     break;
                 case(2)://if theyre on options

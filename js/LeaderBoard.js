@@ -10,105 +10,168 @@ http.onreadystatechange=function(){
 */
 
 
-class leaderBoard{
-    constructor(){
-        this.document=document
-        this.LeaderBoard={
-            "J":99,
-            "L":45,
-            "B":1,
-            "D":8
+class leaderBoard {
+    constructor() {
+        this.document = document
+        this.requested = false;
+        this.LeaderBoard = {
         }
-        this.Sort=function(){
-            var items=Object.keys(this.LeaderBoard).map(
-                (key)=>{return[key,this.LeaderBoard[key]]}
+        this.top10
+        this.position
+        this.Sort = function () {
+            var items = Object.keys(this.LeaderBoard).map(
+                (key) => { return [key, this.LeaderBoard[key]] }
             )
-                items.sort((first,second)=>{return first[1]-second[1]})
-                var keys = items.map(
-                    (e) => { return e[0] });
-                
-               return keys
-            }
-        this.keys=this.Sort()
+            items.sort((first, second) => { return first[1] - second[1] })
+            var keys = items.map(
+                (e) => { return e[0] });
 
-        this.getBoard=function () {
-            var keys=this.Sort()
-            var temp=""
-            for (var i=0;i<keys.length;i++){
-                
-                temp+=String(keys[i])+":"+this.LeaderBoard[keys[i]];
-                if(i!=keys.length-1) temp+=","
-            }
-            return(temp)
+            return keys
         }
-        this.getTop10= function (){
-            this.keys=this.Sort()
-            var top=[]
-            var max= Math.min(10,this.keys.length);
-             for (var i=0;i<max;i++){
-               var temp=(i+1)+")"+"  "+String(this.keys[i])+addSpaces(String(this.keys[i]),10)+this.LeaderBoard[this.keys[i]];
-                top.push(temp)
-                             
-             }
-          
-             return (top)
-        }
-        this.getAll=function(){
-            this.keys=this.Sort()
-            var all=[]
-             for (var i=0;i<this.keys.length;i++){
-               var temp=(i+1)+")"+"  "+String(this.keys[i])+addSpaces(String(this.keys[i]),10)+this.LeaderBoard[this.keys[i]];
-                all.push(temp)
-                             
-             }
-          
-             return (all)
-        }
+        this.keys = this.Sort()
 
-        
-        
-        this.addItem=function(key,value){
-            this.LeaderBoard[String(key).trim()]=value
-        }
+        this.getBoard = function () {
 
-       /* this.addTextField=function(){
-            
-            var board=document.createElement('board')
-            board.type = 'text';
-            board.style.position = 'fixed';
-            board.style.backgroundColour="rgba(0,0,0,0)"
-            board.style.left = (90) + 'px';
-            board.style.top = (90) + 'px';
-            board.style['width']='50px'
-            board.style['height']='50px'
-            board.value="HELLLOEEEEEEEEEEEEE"
-            board.id="Board"
-            console.log(board)
-            document.body.appendChild(board)
-            board.focus()
-            
-            
-        }*/
-        function  addSpaces(word,spaces) {
-            var temp=""
-            for(var i=word.length;i<spaces;i++){
-                temp+=" "
+            var keys = this.Sort()
+            var temp = ""
+            for (var i = 0; i < keys.length; i++) {
+
+                temp += String(keys[i]) + ":" + this.LeaderBoard[keys[i]];
+                if (i != keys.length - 1) temp += ","
             }
             return (temp)
-            
         }
-
-        this.getPlayer=function(name,time){
-            for(var i=0;i<this.keys.length;i++){
-               if(this.keys[i].toLowerCase()===name.toLowerCase()&& this.LeaderBoard[this.keys[i]]==time){
-                    return(i+1)
+        this.getTop10 = function () {
+            if (this.requested == false) {
+                var http = new XMLHttpRequest()
+                http.parent=this
+                const url = "http://155.93.144.117/cgv/extract10.php"
+                http.open("GET", url, true)
+                http.send();
+                http.onreadystatechange = function () {
+                    this.parent.top10={};
+                    if (this.readyState == 4 && this.status == 200) {
+                        var temp = JSON.parse(http.responseText)
+                        for (var i = 0; i < temp.length; i++) {
+                            this.parent.top10[temp[i].name]=temp[i].time/100;
+                        }
+                    }
                 }
             }
-            return(999999)
+            var i=0
+            var top=[]
+            for (var key in this.top10) {
+                var temp = (i + 1) + ")" + "  " + String(key) + addSpaces(String(key), 10) + this.top10[key];
+                top.push(temp)
+                i++;
+            }
+
+            return (top)
         }
+        this.getAll = function () {
+            if (this.requested == false) {
+                var http = new XMLHttpRequest()
+                http.parent=this
+                const url = "http://155.93.144.117/cgv/extract.php"
+                http.open("GET", url, true)
+                http.send();
+                http.onreadystatechange = function () {
+                    this.parent.LeaderBoard={};
+                    if (this.readyState == 4 && this.status == 200) {
+                        var temp = JSON.parse(http.responseText)
+                        for (var i = 0; i < temp.length; i++) {
+                            this.parent.LeaderBoard[temp[i].name]=temp[i].time/100;
+                        }
+                    }
+                }
+                this.requested=true;
+            }
+            var all = []
+            var i=0;
+            for (var key in this.LeaderBoard) {
+                var temp = (i + 1) + ")" + "  " + String(key) + addSpaces(String(key), 10) + this.LeaderBoard[key];
+                i++;
+                all.push(temp)
+
+            }
+
+            return (all)
         }
+
+       
+
+        this.addItem = function (key, value) {
+            if (this.requested == false) {
+                var http = new XMLHttpRequest()
+                var url = "http://155.93.144.117/cgv/insert.php?NAME="+key+"&TIME="+value*100
+                http.open("GET", url, true)
+                http.send();
+                http.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var temp =http.responseText
+                        if (temp=="[]"){
+                            return;
+                        }
+                        
+                    }
+                }
+            }
+
+            this.LeaderBoard[String(key).trim()] = value
+        }
+
+        /* this.addTextField=function(){
+             
+             var board=document.createElement('board')
+             board.type = 'text';
+             board.style.position = 'fixed';
+             board.style.backgroundColour="rgba(0,0,0,0)"
+             board.style.left = (90) + 'px';
+             board.style.top = (90) + 'px';
+             board.style['width']='50px'
+             board.style['height']='50px'
+             board.value="HELLLOEEEEEEEEEEEEE"
+             board.id="Board"
+             console.log(board)
+             document.body.appendChild(board)
+             board.focus()
+             
+             
+         }*/
+        function addSpaces(word, spaces) {
+            var temp = ""
+            for (var i = word.length; i < spaces; i++) {
+                temp += " "
+            }
+            return (temp)
+
+        }
+
+        this.getPlayer = function (name, time) {
+            if (this.requested == false) {
+                var http = new XMLHttpRequest()
+                http.parent=this
+                const url = "http://155.93.144.117/cgv/extractpos.php?Time="+time*100
+                http.open("GET", url, true)
+                http.send();
+                http.onreadystatechange = function () {
+                    this.parent.position=0;
+                    if (this.readyState == 4 && this.status == 200) {
+                        var temp = JSON.parse(http.responseText)
+                        console.log(temp)
+                        this.parent.position=temp[0].POSITION;
+                    }
+                }
+                this.requested = true;
+            }
+            
+                    return (this.position)
+                
+            
+        }
+    }
 }
-export{leaderBoard}
+export { leaderBoard }
 
 
 
