@@ -8,16 +8,15 @@ http.onreadystatechange=function(){
     }
 }
 */
-
+import {Entry} from "./lbObject.js"
 
 class leaderBoard {
     constructor() {
         this.document = document
         this.requested = false;
-        this.LeaderBoard = {
-        }
-        this.top10
-        this.position
+        this.LeaderBoard = []
+        this.top10=[]
+        this.position=[]
         this.Sort = function () {
             var items = Object.keys(this.LeaderBoard).map(
                 (key) => { return [key, this.LeaderBoard[key]] }
@@ -49,21 +48,20 @@ class leaderBoard {
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
-                    this.parent.top10={};
+                    this.parent.top10=[];
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
                         for (var i = 0; i < temp.length; i++) {
-                            this.parent.top10[temp[i].name]=temp[i].time/100;
+                            this.parent.top10.push(new Entry(temp[i].name,temp[i].time/100))
                         }
                     }
                 }
             }
-            var i=0
             var top=[]
-            for (var key in this.top10) {
-                var temp = (i + 1) + ")" + "  " + String(key) + addSpaces(String(key), 10) + this.top10[key];
+            for (var i=0;i<this.top10.length;i++) {
+                var temp = (i + 1) + ")" + "  " + this.top10[i].name+ addSpaces(this.top10[i].name, 10) + this.top10[i].time;
                 top.push(temp)
-                i++;
+
             }
 
             return (top)
@@ -76,21 +74,20 @@ class leaderBoard {
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
-                    this.parent.LeaderBoard={};
+                    this.parent.LeaderBoard=[];
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
+                        console.log(temp)
                         for (var i = 0; i < temp.length; i++) {
-                            this.parent.LeaderBoard[temp[i].name]=temp[i].time/100;
+                            this.parent.LeaderBoard.push(new Entry(temp[i].name,temp[i].time/100));
                         }
                     }
                 }
                 this.requested=true;
             }
             var all = []
-            var i=0;
-            for (var key in this.LeaderBoard) {
-                var temp = (i + 1) + ")" + "  " + String(key) + addSpaces(String(key), 10) + this.LeaderBoard[key];
-                i++;
+            for (var i=0;i<this.LeaderBoard.length;i++) {
+                var temp = (i + 1) + ")" + "  " + String(this.LeaderBoard[i].name) + addSpaces(this.LeaderBoard[i].name, 10) + this.LeaderBoard[i].time;
                 all.push(temp)
 
             }
@@ -117,7 +114,7 @@ class leaderBoard {
                 }
             }
 
-            this.LeaderBoard[String(key).trim()] = value
+            this.LeaderBoard.push(new Entry(key,value))
         }
 
         /* this.addTextField=function(){
