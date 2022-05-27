@@ -94,12 +94,13 @@ class MainMenu{
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
             this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             var size=60*scaleFitNative
+            var amount=Math.floor(height/size)-1
             this.graphics.font = String(size)+"px monospace"
             var all=lb.getAll()
             this.graphics.fillStyle = "rgb(0,0,0)"
             this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
             var bottom=Y_TOP+60*scaleFitNative
-            for (var i=pageNum*20 ;i<((pageNum+1)*20)-1; i++){
+            for (var i=pageNum*amount ;i<((pageNum+1)*amount); i++){
                 if(all[i]!==undefined){
                 this.graphics.fillText(all[i],  X_LEFT+200, bottom+60*scaleFitNative)
                 bottom=bottom+60*scaleFitNative

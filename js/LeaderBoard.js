@@ -77,7 +77,7 @@ class leaderBoard {
                     this.parent.LeaderBoard=[];
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
-                        console.log(temp)
+                        //console.log(temp)
                         for (var i = 0; i < temp.length; i++) {
                             this.parent.LeaderBoard.push(new Entry(temp[i].name,temp[i].time/100));
                         }
@@ -155,7 +155,7 @@ class leaderBoard {
                     this.parent.position=0;
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
-                        console.log(temp)
+                        //console.log(temp)
                         this.parent.position=temp[0].POSITION;
                     }
                 }
