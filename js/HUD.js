@@ -171,7 +171,7 @@ class HUD {
                         word = "Level complete! Please enter your name and press enter";
                         this.gamestate = 1; //win
                         graphics.fillStyle = "rgb(0,255,0)";
-                        graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200, Y_TOP+250)
+                        graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200*scaleFitNative, Y_TOP+250*scaleFitNative)
                     }
                 }
                 else {
@@ -180,9 +180,9 @@ class HUD {
                     graphics.fillStyle = "rgb(255,0,0)";
                 }
                 var instruct="Click anywhere to restart.";
-                graphics.fillText(word, X_LEFT+200, Y_TOP+450);
+                graphics.fillText(word, X_LEFT+200*scaleFitNative, Y_TOP+450*scaleFitNative);
                 if(this.gamestate!=1){
-                    graphics.fillText(instruct, X_LEFT+200,Y_TOP+350);
+                    graphics.fillText(instruct, X_LEFT+200*scaleFitNative,Y_TOP+350*scaleFitNative);
                 }
                 return true;
             }
