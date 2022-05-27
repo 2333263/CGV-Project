@@ -90,9 +90,10 @@ class SPARK{
         this.delete = function(){
             for(const spark of this.particles){
                 //Delete and dispose
-                scene.remove(spark)
                 spark.geometry.dispose();
                 spark.material.dispose();
+                scene.remove(spark)
+                
             }
         }
         
