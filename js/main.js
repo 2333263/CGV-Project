@@ -14,6 +14,7 @@ import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
 //import { leaderBoard } from '../js/LeaderBoard.js'; (unused currently)
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
+//import { dynamicSky } from '/js/dynamicSky.js';
 
 //View Init
 const width = window.innerWidth + 20;
@@ -152,26 +153,41 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 // 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
-let pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+const skybox=new THREE.Mesh();
+function drawSkyBox(level)
+{
+	console.log("Drawing skybox")
+	let pathStrings
+	if(level==1){
+	pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
 	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",]
+	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
+	}
+	if(level==2){
+		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
+		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
+		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
+	}
+	
 //This function maps over the array of images, skybox related
-function createMaterialArray() {
-	const skyboxImagepaths = pathStrings;
-	const materialArray = skyboxImagepaths.map(image => {
-		let texture = new THREE.TextureLoader().load(image);
-		return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
-	});
-	return materialArray;
-}
+	function createMaterialArray() {
+		const skyboxImagepaths = pathStrings;
+		const materialArray = skyboxImagepaths.map(image => {
+			let texture = new THREE.TextureLoader().load(image);
+			return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+		});
+		return materialArray;
+	}
 
-//Returns a Three.js material
-const materialArray = createMaterialArray();
+	//Returns a Three.js material
+	const materialArray = createMaterialArray();
 
-//Smaller skybox that follows the player (thanks-jamin)
-const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
-const skybox = new THREE.Mesh(skybxGeo, materialArray);
-scene.add(skybox);
+	//Smaller skybox that follows the player (thanks-jamin)
+	const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
+	const skybox = new THREE.Mesh(skybxGeo, materialArray);
+	scene.add(skybox);
+	}
+
 
 //Let there be light
 const light = new THREE.HemisphereLight("white", "white", 0.5);
@@ -307,6 +323,11 @@ function afterLoad() {
 	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
 
+	//creates object for calling methods related to dynamic skybox...to be implemented later
+
+	
+	
+
 
 	//Set up the main composer for the scene using preset post processing
 	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
@@ -381,6 +402,15 @@ function afterLoad() {
 	//Assign clouds after cleaning array
 	clouds = []
 	clouds = BuildWorld.getClouds();
+
+	//calls the method to draw the level's skybox (day)
+	if(currentWorld==1){
+		drawSkyBox(1)
+	}
+	//calls the method to draw the level's skybox (night)
+	if(currentWorld==2){
+		drawSkyBox(2)
+	}
 
 	//Run game
 	animate();
