@@ -638,17 +638,12 @@ document.addEventListener("mouseup", (e) => {
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
-		//if (backgroundmusic.playing == false) {
-	//		backgroundmusic.init(backgroundmusic.backgroundSound)
-//		}
 		if (controls.isLocked == true) {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
-				//gunShotSound.shot(gunShotSound.sound,gunShotSound.volume)
 				if(homeScreen.soundEffects){
 					gunshotSound()
 				}
-				//gunShotSound.play();
 				scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
 				raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 				const intersects = raycaster.intersectObjects(scene.children);
@@ -747,7 +742,6 @@ const pressedKeys = {};
 
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
-	console.log(e.key)
 	if (controls.isLocked) {
 		pressedKeys[e.key] = true;
 	} else {
@@ -811,7 +805,7 @@ function move() {
 		if (pressedKeys["ArrowRight"]) {
 			tempVec.x = 0.4 * delta
 		}
-		if (pressedKeys['ArrowRight']) {
+		if (pressedKeys['ArrowDown']) {
 			tempVec.z = 0.4 * delta
 		}
 		if (pressedKeys["Control"]) {
