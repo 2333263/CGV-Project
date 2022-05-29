@@ -150,14 +150,14 @@ class HUD {
                     if(this.entered==true){
                         var size=60*scaleFitNative;
                         graphics.font = String(size)+"px monospace";
-                        var top=this.leaderBoard.getTop10();
+                        var top=this.leaderBoard.getNearest10(this.timetaken);
                         graphics.fillStyle = "rgb(255,255,255)";
                         graphics.fillText("Top "+(top.length), X_LEFT+200, Y_TOP+50*scaleFitNative);
                         for (var i=0 ;i<top.length; i++){
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;
                         }
-                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
                         bottom+=60*scaleFitNative;
                     }   
                     else{

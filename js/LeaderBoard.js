@@ -16,6 +16,7 @@ class leaderBoard {
         this.requested = false;
         this.LeaderBoard = []
         this.top10=[]
+        this.curr10=[]
         this.position=[]
         this.Sort = function () {
             var items = Object.keys(this.LeaderBoard).map(
@@ -44,7 +45,7 @@ class leaderBoard {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 http.parent=this
-                const url = "http://155.93.144.117/cgv/extract10.php"
+                const url = "http://155.93.144.117/cgv/extract10.php";
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
@@ -65,6 +66,37 @@ class leaderBoard {
             }
 
             return (top)
+        }
+        this.getNearest10 = function (time) {
+            if (this.requested == false) {
+                var http = new XMLHttpRequest()
+                http.parent=this
+                const url = "http://155.93.144.117/cgv/extractNearest10.php?Time="+(time*100)
+              
+                http.open("GET", url, true)
+                http.send();
+                http.onreadystatechange = function () {
+                    this.parent.curr10=[];
+                    if (this.readyState == 4 && this.status == 200) {
+                        var temp = JSON.parse(http.responseText)
+                      
+                        for (var i = 0; i < temp.length; i++) {
+                            this.parent.curr10.push(new Entry(temp[i].name,temp[i].time/100))
+                           // console.log(this.parent.curr10)
+                        }
+                    }
+                }
+            }
+            console.log(this.parent.curr10)
+            var startpos= this.getPos(this.parent.curr10[0].time);
+            var close=[]
+            for (var i=0;i<this.parent.curr10.length;i++) {
+                var temp = (startpos+i) + ")" + "  " + this.parent.curr10[i].name+ addSpaces(this.parent.curr10[i].name, 10) + this.parent.curr10[i].time;
+                close.push(temp)
+                console.log(temp)
+            }
+
+            return (close)
         }
         this.getAll = function () {
             if (this.requested == false) {
@@ -144,7 +176,7 @@ class leaderBoard {
 
         }
 
-        this.getPlayer = function (name, time) {
+        this.getPos = function ( time) {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 http.parent=this

@@ -11,9 +11,10 @@ import { Targets } from '../js/targets.js';
 //import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js'; (unused currently)
 import { BuildWorld } from '../js/BuildWorld.js';
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
-//import { leaderBoard } from '../js/LeaderBoard.js'; (unused currently)
+import { leaderBoard } from '../js/LeaderBoard.js'; //(unused currently)
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
+
 //import { dynamicSky } from '/js/dynamicSky.js';
 
 //View Init
@@ -313,6 +314,7 @@ BuildWorld.loadLevel(scene, world, currentWorld, function () {
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 function afterLoad() {
+	
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
