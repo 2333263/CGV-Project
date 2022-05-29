@@ -157,7 +157,9 @@ class HUD {
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;
                         }
-                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
+                       // this.leaderBoard.requested=false;
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
+                        this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
                     }   
                     else{
