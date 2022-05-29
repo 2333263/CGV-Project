@@ -96,7 +96,8 @@ class MainMenu{
             var size=60*scaleFitNative
             var amount=Math.floor(height/size)-1
             this.graphics.font = String(size)+"px monospace"
-            var all=lb.getNearest10(100000)
+            
+            var all=lb.getAll()
             this.graphics.fillStyle = "rgb(0,0,0)"
             this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
             var bottom=Y_TOP+60*scaleFitNative

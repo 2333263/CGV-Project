@@ -18,6 +18,7 @@ class leaderBoard {
         this.top10=[]
         this.curr10=[]
         this.position=[]
+        this.startpos=0
         this.Sort = function () {
             var items = Object.keys(this.LeaderBoard).map(
                 (key) => { return [key, this.LeaderBoard[key]] }
@@ -71,29 +72,34 @@ class leaderBoard {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 http.parent=this
+                
                 const url = "http://155.93.144.117/cgv/extractNearest10.php?Time="+(time*100)
               
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
                     this.parent.curr10=[];
+                    this.parent.startpos=0
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
                       
                         for (var i = 0; i < temp.length; i++) {
                             this.parent.curr10.push(new Entry(temp[i].name,temp[i].time/100))
-                           // console.log(this.parent.curr10)
+                            console.log(this.parent.curr10)
                         }
+                        this.parent.startpos= this.parent.getPos(this.parent.curr10[0].time);
+                       
+                        
                     }
                 }
             }
-            console.log(this.parent.curr10)
-            var startpos= this.getPos(this.parent.curr10[0].time);
+         
+             
             var close=[]
-            for (var i=0;i<this.parent.curr10.length;i++) {
-                var temp = (startpos+i) + ")" + "  " + this.parent.curr10[i].name+ addSpaces(this.parent.curr10[i].name, 10) + this.parent.curr10[i].time;
+            for (var i=0;i<this.curr10.length;i++) {
+                var temp = (this.startpos+i) + ")" + "  " + this.curr10[i].name+ addSpaces(this.curr10[i].name, 10) + this.curr10[i].time;
                 close.push(temp)
-                console.log(temp)
+              
             }
 
             return (close)
@@ -187,7 +193,7 @@ class leaderBoard {
                     this.parent.position=0;
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = JSON.parse(http.responseText)
-                        //console.log(temp)
+                        console.log(temp)
                         this.parent.position=temp[0].POSITION;
                     }
                 }
