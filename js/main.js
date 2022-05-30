@@ -450,11 +450,12 @@ function afterLoad() {
 	//calls the method to draw the level's skybox (day)
 	if(currentWorld==1){
 		drawSkyBox(1)
-		scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
+		//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 	}
-	//calls the method to draw the level's skybox (night)
+	//calls the method to draw the level's skybox (evening)
 	if(currentWorld==2){
 		drawSkyBox(2)
+		console.log("changes made for level 2")
 		scene.remove(mainLight);
 		scene.remove(light);
 		stormSky();
@@ -555,12 +556,10 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash
-			if(currentWorld==1){   //change to 2
+			if(currentWorld==2){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
-					console.log("flash a")
 					if(flash.power <100){
 						
-					console.log("flash b")
 						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
 					flash.power= 50+Math.random()*500;
@@ -877,7 +876,7 @@ function move() {
 			if (playerBody.canJump == true) {
 				playerBody.velocity.y = 15
 			}
-			playerBody.canJump = true          //change back jump to false
+			playerBody.canJump = false          //change back jump to false
 		}
 	}else{
 		if (pressedKeys["ArrowUp"]) {
