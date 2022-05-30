@@ -632,7 +632,10 @@ controls.addEventListener('unlocked', () => {
 //Mouse-up event listener
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
+	try{
 	scene.getObjectByName('muzzleFlash').visible = false;
+	}catch (error){
+	}
 });
 
 

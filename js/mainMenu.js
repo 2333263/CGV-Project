@@ -111,8 +111,16 @@ class MainMenu{
                 bottom=bottom+60*scaleFitNative
                 }
             }
+            this.graphics.save()
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
             this.drawBackButton()
+            this.graphics.restore()
+            this.graphics.save()
+            this.graphics.translate(X_RIGHT-180*scaleFitNative,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
             this.drawNextButton()
+            this.graphics.restore()
         }
 
         //Draws the credit screen
@@ -137,31 +145,37 @@ class MainMenu{
                 this.graphics.fillText(credits[i].replace("H.",""),  X_LEFT+200, bottom+35*scaleFitNative)
                 bottom=bottom+35*scaleFitNative
             }
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(1*scaleFitNative,1*scaleFitNative)
             this.drawBackButton()  
+            this.graphics.restore()
         }
 
         //Draw Back Button
         this.drawBackButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
-            this.graphics.fillRect(X_LEFT,Y_BOTTOM-150*scale/100,300*scale/100,500*scale/100)
+            this.graphics.fillRect(0,0,180,80)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100
-            this.graphics.font = String(size)+"px Courier";
+            this.graphics.font = "60px Courier";
             var word = "BACK";
-            this.graphics.fillText(word,X_LEFT+X_RIGHT*1/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
         }
 
         //Draws Next Button
         this.drawNextButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
-            this.graphics.fillRect(X_RIGHT-300*scale/100,Y_BOTTOM-150*scale/100,300*scale/100,2000*scale/100)
+            this.graphics.fillRect(0,0,180,80)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
-            this.graphics.font = String(size)+"px Courier";
+            this.graphics.font = "60px Courier";
             var word = "NEXT";
-            this.graphics.fillText(word,X_RIGHT-X_RIGHT*16/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
         }
 
 
@@ -179,23 +193,19 @@ class MainMenu{
                         if(posY<=Y_TOP*20/100 && posY>=(Y_TOP*20/100)+(Y_TOP*20/100)){//if they click in the same Y position as the play button, return 0
                             return(0)
                         }else if(posY<=Y_TOP*-10/100 && posY>=(Y_TOP*-10/100)+(Y_TOP*20/100)){//if they click in the same position as the leader board return 1
-                            console.log("LeaderBoard");
                             this.page=1
                             return (1) 
                         }else if(posY<=Y_TOP*-40/100 && posY>=(Y_TOP*-40/100)+(Y_TOP*20/100)){//if they click in the same Y position as the options button return 2
-                            console.log("options")
                             this.page=2 //for now this is 0, we need to change it to 2 when we add a page for it
                             return(2)
                         }else if(posY<=Y_TOP*-70/100 && posY>=(Y_TOP*-70/100)+(Y_TOP*20/100)){ //if they click in the same Y position as the credits button return 3
-                            console.log("credits")
                             this.page=3
                             return(3)
                         }
                     }
                 break;
                 case(1)://if theyre on the leaderboard
-                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
-                        console.log("BACK")
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//if they click the back button
                         lb.requested=false;
                         if(this.leaderBoardPage!=0){
                             this.leaderBoardPage--;
@@ -203,14 +213,13 @@ class MainMenu{
                             this.page=0
                         }
                         return(4)
-                    }else if(posX>X_RIGHT-320*scale/100 &&posY>=Y_BOTTOM-200*scale/100){//if they click next
-                        console.log("next")
+                    }else if(posX>=X_RIGHT-210*scaleFitNative &&posY>=Y_BOTTOM-80){//if they click next
                         lb.requested=false;
                         this.leaderBoardPage++;
                     }    
                     break;
                 case(2)://if theyre on options
-                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//press the back button
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//press the back button
                         this.page=0
                     }else if(posX>=X_LEFT+50+900*0.75 && posX<=X_LEFT+50+900*0.75+250*0.75){//toggle button left side is clicked
                         if(posY>=Y_TOP+250-70*0.75 && posY<=Y_TOP+250-70*0.75+100*0.75){//left side music
@@ -233,8 +242,7 @@ class MainMenu{
                     }
                     break;
                 case(3)://if theyre on credits
-                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
-                        console.log("BACK")
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//if they click the back button
                         this.page=0
                         return(4)
                     }
@@ -251,7 +259,11 @@ class MainMenu{
             this.toggleMusicButton(this.Music)
             this.toggleSoundEffects(this.soundEffects);
             this.toggleControls(this.controls)
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative);
             this.drawBackButton()
+            this.graphics.restore()
         }
 
         this.toggleMusicButton=function(on){
