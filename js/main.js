@@ -16,7 +16,7 @@ import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitCo
 import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
 //import { dynamicSky } from '/js/dynamicSky.js';
-import { musicHandler } from './MusicHandler.js';
+
 //import { stormClouds } from '/js/dynamicSky.js';
 
 //View Init
