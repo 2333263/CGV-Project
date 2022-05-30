@@ -3,6 +3,7 @@ import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
 
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
@@ -98,7 +99,7 @@ class BuildWorld {
                 //Traverse through all objects to get the collision
 
                 //Change Material for lighting purposes
-                if (child instanceof THREE.Mesh && !(child.name.substring(0, 4) === 'Sign' || child.name.substring(0, 6) === 'Mirror')) {
+                if (child instanceof THREE.Mesh && !(child.name.substring(0, 4) === 'Sign' || child.name.substring(0, 6) === 'Mirror' || child.name.substring(0, 6) === 'Refrac')) {
                     const colourTemp = new THREE.Color(child.material.color)
                     const newMat = new THREE.MeshPhongMaterial({
                         color: colourTemp,
@@ -120,7 +121,10 @@ class BuildWorld {
                     //Add targets to respective arrays
                     if (name.substring(6, 10) === 'Move') {
                         targetsMoving.push(child);
-                    } else {
+                    } else if (name.substring(6, 10) === 'Path'){
+                        //Don't add target paths to scene
+                        child.visible = false
+                    }else {
                         targetsStill.push(child);
                     }
 
@@ -139,9 +143,32 @@ class BuildWorld {
                     mirror.quaternion.copy(child.quaternion)
                     mirror.rotateX(-Math.PI / 2)
 
-                    scene.add(mirror)
+                    root.add(mirror)
 
-                    //Remove mirror red from scene
+                    //Remove mirror from scene
+                    toRemove.push(child)
+                }
+
+                else if (name.substring(0, 6) === 'Refrac') {
+                    //Add Refractor
+                    // const sizeX = child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x
+                    // const sizeZ = child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z
+                    const RefracGeo = new THREE.PlaneGeometry(6, 7.5);
+                    const RefracMat = new THREE.MeshPhysicalMaterial({
+                        roughness: 0.05,   
+                        transmission: 0.9,  
+                        thickness: 3,
+                        reflectivity : 0.5
+                    })
+                    
+                    const refractor = new THREE.Mesh(RefracGeo, RefracMat)
+                    refractor.position.copy(child.position)
+                    refractor.quaternion.copy(child.quaternion)
+                    refractor.rotateX(-Math.PI / 2)
+
+                    root.add(refractor)
+
+                    //Remove Refractor from scene
                     toRemove.push(child)
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
@@ -203,7 +230,7 @@ class BuildWorld {
                         child.children[0].position.z + child.position.z
                     );
 
-                    scene.add(target)
+                    root.add(target)
 
 
                     streetLight.target = target
@@ -212,7 +239,7 @@ class BuildWorld {
                     streetLights.push(streetLight)
 
                     //Add light to scene
-                    scene.add(streetLight)
+                    root.add(streetLight)
 
                     //Remove light ref from scene
                     toRemove.push(child)

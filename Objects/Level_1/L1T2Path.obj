@@ -1,0 +1,11 @@
+# Blender v3.1.2 OBJ File: 'Level_1.blend'
+# www.blender.org
+mtllib L1T2Path.mtl
+v 57.635681 11.526587 -37.369183
+v 57.635681 11.526587 -47.761650
+g TargetPath.003
+cstype bspline
+deg 1
+curv 0.0 1.0 -1 -2
+parm u 0.000000 0.333333 0.666667 1.000000
+end
