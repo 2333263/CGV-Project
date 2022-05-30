@@ -252,9 +252,12 @@ class MainMenu{
 
         this.drawOptions=function(){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            this.graphics.fillStyle="rgba(255,255,255,0.6)"
+            this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             var size = 2/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
             this.graphics.font = String(size)+"px Courier";
             var word = "OPTIONS";
+            this.graphics.fillStyle="black"
             this.graphics.fillText(word,-300*scaleFitNative,Y_TOP+90*scaleFitNative);
             this.toggleMusicButton(this.Music)
             this.toggleSoundEffects(this.soundEffects);
