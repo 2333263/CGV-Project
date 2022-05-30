@@ -42,7 +42,7 @@ renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
-
+var gameWon=false
 //Raycast must not hit lines
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
@@ -285,6 +285,32 @@ var MenuPlane = new THREE.Mesh(menuGeom, MenuMat);
 MenuPlane.material.depthWrite = false;
 menuScene.add(MenuPlane);
 
+//initilize hud with random variables
+hud = new HUD(1, 1, 0, 5);
+
+	//returns the canvas object to use as a texture
+	hudTexture = new THREE.Texture(hud.getCanvas())
+	hudTexture.needsUpdate = true;
+
+	//Create hud mesh
+	var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
+	hudMat.transparent = true
+	var HudGeom = new THREE.BoxGeometry(width, height, 0)
+	var HudPlane = new THREE.Mesh(HudGeom, hudMat)
+
+	//Change hud attrubuts to not interfere with main renderer/scene
+	HudPlane.material.depthWrite = false;
+	HudPlane.castShadow = false
+	HudPlane.onBeforeRender = function (renderer) {
+		renderer.clearDepth();
+	}
+
+	//Add hud to separate hud scene
+	sceneHUD.add(HudPlane)
+
+
+
+
 //Mesh of the end of the gun (for use in bullet trails)
 var gunEnd
 
@@ -353,27 +379,9 @@ function afterLoad() {
 	//Create hud with target information
 
 	//initialises the hud
-	hud = new HUD(totalammo, totalammo, TargetArr.length, 0);
-
-	//returns the canvas object to use as a texture
-	hudTexture = new THREE.Texture(hud.getCanvas())
-	hudTexture.needsUpdate = true;
-
-	//Create hud mesh
-	var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
-	hudMat.transparent = true
-	var HudGeom = new THREE.BoxGeometry(width, height, 0)
-	var HudPlane = new THREE.Mesh(HudGeom, hudMat)
-
-	//Change hud attrubuts to not interfere with main renderer/scene
-	HudPlane.material.depthWrite = false;
-	HudPlane.castShadow = false
-	HudPlane.onBeforeRender = function (renderer) {
-		renderer.clearDepth();
-	}
-
-	//Add hud to separate hud scene
-	sceneHUD.add(HudPlane)
+	hud.setBullets(totalammo,totalammo)
+	hud.setTargets(0,TargetArr.length)
+	
 
 	//Adjust player body attributes to match hud
 	playerBody.noBullets = hud.currammo
@@ -436,8 +444,9 @@ function animate() {
 	else {
 		//direcLight.translateX(-0.01)
 		if (controls.isLocked) {
+			checkState()
 			hud.isPaused(false);
-			if (playerModel.position.y < -25) { init(); } // if player out of bounds, reset level
+			if (playerModel.position.y < -25) { init(true); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
 
 			//Make skybox follow player to make the distance to the skybox look infinite
@@ -485,14 +494,16 @@ function animate() {
 			pos.y += 0.7
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
-			hud.draw();
+			hud.draw(currentWorld);
+			
 			hudTexture.needsUpdate = true;
 			moveTargets()
 			world.step(timestep, dt);
 		}
 		else {
 			hud.isPaused(true);
-			hud.draw();
+			checkState()
+			hud.draw(currentWorld);
 			hudTexture.needsUpdate = true;
 		}
 		renderWorld()
@@ -566,7 +577,6 @@ function moveTargets() {
 				TargetArr[i].getCylinder().translateZ(-0.01)
 			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
 				TargetArr[i].getCylinder().translateZ(-0.01)
-init
 			} else {
 				TargetArr[i].getCylinder().translateZ(0.01)
 				TargetArr[i].moveZ = true
@@ -590,11 +600,20 @@ function addTargets(position, quaternion) {
 };
 
 //Init for level reset
-function init() {
+function init(reset) {
 	for (const line of lines) {
 		scene.remove(line[0])
 	}
+	if(reset){
 	hud.setStartTime()
+	BuildWorld.unloadCurrentLevel(scene, world)
+		cancelAnimationFrame(animationID);
+		currentWorld=1
+		BuildWorld.loadLevel(scene, world, currentWorld, function () {
+		afterLoad();
+		});
+	
+	}
 	hudTexture.needsUpdate = true
 	removeTargets();
 	addTargets(TargetPos, TargetQuat);
@@ -702,27 +721,15 @@ document.addEventListener("mousedown", (e) => {
 				scene.add(line);
 				const spark = new SPARK(intersects[i].point.clone(), creationTime, scene);
 				sparks.push(spark);
-
-			}
-			if (hud.gamestate == -1) { //Game failed
-
-				init();
-			}
-			else if (hud.gamestate == 1 && hud.entered == true) { //game win (only one level so just resets)
-
-				removeTargets();
-				//Check that there is a next level to load, otherwise init
-				if (currentWorld < 3) {
-					//Code to swap levels
-					BuildWorld.unloadCurrentLevel(scene, world)
-					cancelAnimationFrame(animationID);
-					currentWorld++
-					BuildWorld.loadLevel(scene, world, currentWorld, function () {
-						afterLoad();
-					});
+				
+				if(gameWon==true){
+					console.log("ran")
+					gameWon=false
+					init(true);
 				}
-				init(); // Important for playe reset
+
 			}
+			
 		}
 		else {
 			if (menu == true) {
@@ -742,6 +749,33 @@ document.addEventListener("mousedown", (e) => {
 		}
 	}
 });
+function checkState(){
+	if (hud.gamestate == -1) { //Game failed
+		init(true);
+	}
+	else if (hud.gamestate == 1) { //game win (only one level so just resets)
+		removeTargets();
+		//Check that there is a next level to load, otherwise init
+		if (currentWorld < 2) {
+			//Code to swap levels
+			BuildWorld.unloadCurrentLevel(scene, world)
+			cancelAnimationFrame(animationID);
+			currentWorld++
+			BuildWorld.loadLevel(scene, world, currentWorld, function () {
+				afterLoad();
+			});
+			init(false);
+		}else if(hud.entered == true){
+			gameWon=true;
+			
+		}
+		 // Important for playe reset
+	}
+}
+
+
+
+
 
 //Keys pressed container
 const pressedKeys = {};
@@ -753,10 +787,10 @@ document.addEventListener("keydown", (e) => {
 	} else {
 		if (e.key == "r") {
 
-			init();
+			init(true);
 		}
 		if (e.key == "m") {
-			init()
+			init(true)
 			menu = true
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())

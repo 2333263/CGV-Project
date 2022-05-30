@@ -85,7 +85,8 @@ class HUD {
         };
 
         //Draw function of HUD, responsible for handling all the elements of the HUD
-        this.draw = function () {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+        this.draw = function (level) 
+            {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             if(this.Paused){
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
@@ -103,12 +104,12 @@ class HUD {
                 graphics.fillText(word, -20, 80);
                 return;
             }
-            if (!this.checkgameState()) {
+            if (!this.checkgameState(level)) {
                 graphics.save();
                 drawCrossHair();
                 graphics.restore();
                 graphics.save();
-                bulletCount(this.currammo, this.totalammo);
+                this.bulletCount(this.currammo, this.totalammo);
                 graphics.restore();
                 graphics.save();
                 drawTime(this.startTime);
@@ -123,7 +124,7 @@ class HUD {
                 drawBullet();
                 graphics.restore();
                 graphics.save();
-                targetCount(this.currtargets, this.totaltarget);
+                this.targetCount(this.currtargets, this.totaltarget);
                 graphics.restore();
                 graphics.save();
                 graphics.translate(X_RIGHT - 20, Y_TOP + 30);
@@ -133,7 +134,7 @@ class HUD {
         };
 
         //Checks the gamestate and returns either a true or false value
-        this.checkgameState=function() {
+        this.checkgameState=function(level) {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
@@ -142,6 +143,7 @@ class HUD {
                 var word = "";
                 var bottom=Y_TOP+50;
                 if ( this.currtargets == this.totaltarget) { 
+                    if(level==2){
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
@@ -175,6 +177,9 @@ class HUD {
                         graphics.fillStyle = "rgb(0,255,0)";
                         graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200*scaleFitNative, Y_TOP+250*scaleFitNative)
                     }
+                }else{
+                    this.gamestate=1
+                }
                 }
                 else {
                     word = "Level failed. You ran out of ammunition.";
@@ -211,7 +216,10 @@ class HUD {
                 this.Paused=false;
             }
         };
-
+        this.clear=function(){
+            graphics.fillStyle="rgba(0,0,0,0.6)";
+                fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
+        }
         //Draws the crosshair
         function drawCrossHair() {
             graphics.save();
@@ -324,7 +332,7 @@ class HUD {
         }
 
         //Draws the current bullet count indicator text
-        function bulletCount(currammo, totalammo) {
+        this.bulletCount=function(currammo, totalammo) {
             graphics.fillStyle = "rgb(255,255,255)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
@@ -336,7 +344,7 @@ class HUD {
         }
 
         //Draws the current target count indicator text
-        function targetCount(currHits, totaltarget) {
+        this.targetCount=function(currHits, totaltarget) {
             graphics.fillStyle = "rgb(255,255,255)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
@@ -346,7 +354,14 @@ class HUD {
             graphics.strokeText(word,  X_RIGHT-110, Y_TOP + 30);
             graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);
         }
-
+        this.setBullets=function(currBullets,totalBullets){
+            this.currammo=currBullets
+            this.totalammo=totalBullets
+        }
+        this.setTargets=function(currTargets,totalTargets){
+            this.currtargets=currTargets;
+            this.totaltarget=totalTargets;
+        }
         //Draws the bullet indicator shape
         function drawBullet() {
             graphics.save();
