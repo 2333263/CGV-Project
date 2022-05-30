@@ -20,13 +20,6 @@ class Targets{
             map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
         });
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
-        /*######################### DEPRECATED ###########################
-        this.cylinder.translateX(tX)
-        this.cylinder.translateY(tY)
-        this.cylinder.translateZ(tZ)
-        this.cylinder.rotation.x=Math.PI/2
-        this.cylinder.rotation.y=Math.PI/2
-        */
         this.cylinder.position.copy(position)
         this.cylinder.quaternion.copy(quaternion)
         this.isHit=false;
@@ -43,7 +36,6 @@ class Targets{
     }
 
     this.moveTarget=function(time,size){
-        //time*=0.001
         const ptime=time*0.01
         const ndx=this.cylinder.id
         const u=ptime+ndx/size
@@ -60,7 +52,6 @@ class Targets{
         this.cylinder.position.lerpVectors(pos,nextPos,0.5)
         this.cylinder.rotateX(Math.PI/2)
         this.cylinder.rotateZ(Math.PI/2)
-       // this.cylinder.quaternion.copy(tempQuat)
         
     }
 
@@ -89,7 +80,6 @@ class Targets{
                     this.curveObject = new THREE.Line(geometry, material);
                     material.depthTest=false;
                     this.curveObject.renderOrder=1
-                    //this.curveObject.scale.set(100,100,100)
                     scene.add(this.curveObject)
                 }
     

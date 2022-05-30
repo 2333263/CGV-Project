@@ -143,7 +143,7 @@ class HUD {
                 var word = "";
                 var bottom=Y_TOP+50;
                 if ( this.currtargets == this.totaltarget) { 
-                    if(level==2){
+                    if(level==2){//change this to 3 when level is added
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
