@@ -602,6 +602,8 @@ function init() {
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
 	playerBody.canJump = false
+	playerBody.prevVel=0;
+	playerBody.counter=0;
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
@@ -777,6 +779,16 @@ function move() {
 	var delta = dt * 1000
 	delta *= 0.1
 	if (controls.isLocked) {
+		if(Math.floor(playerBody.prevVel)==Math.floor(playerBody.velocity.y)){
+			if(playerBody.counter==10){
+			playerBody.canJump=true;
+			}else{
+				playerBody.counter++;
+			}
+		}else{
+			playerBody.counter=0;
+		}
+		playerBody.prevVel=playerBody.velocity.y;
 		if(homeScreen.controls){
 		if (pressedKeys['w']) {
 			tempVec.z = -0.4 * delta
