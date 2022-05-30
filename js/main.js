@@ -15,6 +15,8 @@ import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 //import { dynamicSky } from '/js/dynamicSky.js';
+import { musicHandler } from './MusicHandler.js';
+//import { stormClouds } from '/js/dynamicSky.js';
 
 //View Init
 const width = window.innerWidth + 20;
@@ -46,6 +48,10 @@ const raycaster = new THREE.Raycaster();
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
 
+//flash Init
+let flash = new THREE.PointLight();
+//cloud init
+let cloudMeshArr = new Array;
 /*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
@@ -164,6 +170,11 @@ function drawSkyBox(level)
 	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
 	}
 	if(level==2){
+		pathStrings = ["../Objects/Textures/Skybox/dark-blue-sky.jpg","../Objects/Textures/Skybox/dark-blue-sky.jpg",
+		"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
+		"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
+	}
+	if(level==3){
 		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
 		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
 		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
@@ -187,6 +198,40 @@ function drawSkyBox(level)
 	const skybox = new THREE.Mesh(skybxGeo, materialArray);
 	scene.add(skybox);
 	}
+
+//storm clouds
+function stormSky(){
+	let loader = new THREE.TextureLoader();
+	let cloudGeo= new THREE.PlaneBufferGeometry();
+	let cloudMaterial = new THREE.MeshLambertMaterial();
+    loader.load("../Objects/Textures/Skybox/cloud/cloudTex.png", function(texture){
+
+        //cloudGeo = new THREE.PlaneBufferGeometry(400,400);
+		cloudGeo = new THREE.PlaneBufferGeometry(200,200);
+        cloudMaterial = new THREE.MeshPhongMaterial({
+            map: texture,
+            transparent: true
+        });
+
+        for(let p=0; p<1; p++) {
+            let cloud = new THREE.Mesh(cloudGeo,cloudMaterial);
+			//centre :30.5453, 0, -32.0482
+            cloud.position.set(Math.random()*30 -0,   100,  Math.random()*-32 + 0.0);
+            cloud.rotation.x = 1.16;
+            cloud.rotation.y = -0.12;
+            cloud.rotation.z = Math.random()*360;
+            cloud.material.opacity = 0.6;
+            scene.add(cloud);
+			cloudMeshArr.push(cloud);
+        }
+    });
+
+	//lightning flash
+	flash = new THREE.PointLight(0x062d89, 30, 500 ,2);
+	flash.position.set(30,110,-30);
+	
+	scene.add(flash);
+}
 
 
 //Let there be light
@@ -258,7 +303,6 @@ const mainLight = new THREE.DirectionalLight(0xffe3b1);
 	mainLight.shadow.camera.far = 1000;
 };
 scene.add(mainLight);
-
 //Stats for fps
 var stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -406,10 +450,14 @@ function afterLoad() {
 	//calls the method to draw the level's skybox (day)
 	if(currentWorld==1){
 		drawSkyBox(1)
+		scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 	}
 	//calls the method to draw the level's skybox (night)
 	if(currentWorld==2){
 		drawSkyBox(2)
+		scene.remove(mainLight);
+		scene.remove(light);
+		stormSky();
 	}
 
 	//Run game
@@ -455,7 +503,6 @@ function animate() {
 			skybox.position.copy(playerBody.position)
 
 			//make clouds move
-			let cloud1 = clouds[0]
 			//console.log(clouds.length)
 			for (let i = 0; i < clouds.length; i = i + 2) {
 				clouds[i].position.x += 0.09
@@ -500,6 +547,20 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			moveTargets()
 			world.step(timestep, dt);
+
+			//lightning flash
+			if(currentWorld==1){   //change to 2
+				if(Math.random() >0.98 || flash.power > 100){
+					console.log("flash a")
+					if(flash.power <100){
+						
+					console.log("flash b")
+						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
+					}
+					flash.power= 50+Math.random()*500;
+				}
+				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
+			}
 		}
 		else {
 			hud.isPaused(true);
@@ -804,7 +865,7 @@ function move() {
 			if (playerBody.canJump == true) {
 				playerBody.velocity.y = 15
 			}
-			playerBody.canJump = false
+			playerBody.canJump = true          //change back jump to false
 		}
 	}
 	tempVec.applyQuaternion(controls.getObject().quaternion);
