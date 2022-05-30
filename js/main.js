@@ -310,7 +310,6 @@ hud = new HUD(1, 1, 0, 5);
 
 
 
-
 //Mesh of the end of the gun (for use in bullet trails)
 var gunEnd
 
@@ -350,7 +349,7 @@ function afterLoad() {
 
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
-
+	const targetArrayMeshMove=BuildWorld.getTargetsMoving()
 	//Clean target arrays (for reloading)
 	removeTargets()
 	TargetPos = [];
@@ -367,12 +366,21 @@ function afterLoad() {
 		const targetQuaterion = tarMesh.quaternion;
 		TargetQuat.push(targetQuaterion);
 	}
+	for (const tarMesh of targetArrayMeshMove){
+		const x = tarMesh.position.x
+		const y = tarMesh.position.y
+		const z = tarMesh.position.z
+		const targetPosition = tarMesh.position;
+		TargetPos.push(targetPosition);
+		const targetQuaterion = tarMesh.quaternion;
+		TargetQuat.push(targetQuaterion);
+	}
 	//TargetPos = targetStillPos
 
 	//Send positions to addTargets func
 	//console.log(TargetPos, TargetQuat) //TESTING
 	addTargets(TargetPos, TargetQuat);
-
+	enableMoving()
 	//Make total amo proportional to no targets 
 	totalammo = parseInt(TargetArr.length * 1.5)
 
@@ -495,9 +503,8 @@ function animate() {
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
 			hud.draw(currentWorld);
-			
+			MoveTargets(dt)
 			hudTexture.needsUpdate = true;
-			moveTargets()
 			world.step(timestep, dt);
 		}
 		else {
@@ -537,7 +544,7 @@ function renderWorld() {
 //Rotates targets for appearance on the map camera
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
-		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material)
+		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material,currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
 		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
@@ -552,38 +559,6 @@ function worldTargets() {
 };
 
 //Moves the targets in the scene
-function moveTargets() {
-	for (var i = 0; i < TargetArr.length; i++) {
-		if (TargetArr[i].moves == true) {
-			var tempPos = new THREE.Vector3()
-			tempPos.copy(TargetArr[i].getCylinder().position)
-			tempPos.x = tempPos.x.toFixed(2)
-			tempPos.y = tempPos.y.toFixed(2)
-			tempPos.z = tempPos.z.toFixed(2)
-			var tempEnd = new THREE.Vector3()
-			tempEnd.copy(TargetArr[i].endPoint)
-			tempEnd.x = tempEnd.x.toFixed(2)
-			tempEnd.y = tempEnd.y.toFixed(2)
-			tempEnd.z = tempEnd.z.toFixed(2)
-			var tempStart = new THREE.Vector3()
-			tempStart.copy(TargetArr[i].startPoint)
-			tempStart.x = tempStart.x.toFixed(2)
-			tempStart.y = tempStart.y.toFixed(2)
-			tempStart.z = tempStart.z.toFixed(2)
-			if (!tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
-				TargetArr[i].getCylinder().translateZ(0.01)
-			} else if (tempPos.equals(tempEnd) && TargetArr[i].moveZ == true) {
-				TargetArr[i].moveZ = false
-				TargetArr[i].getCylinder().translateZ(-0.01)
-			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
-				TargetArr[i].getCylinder().translateZ(-0.01)
-			} else {
-				TargetArr[i].getCylinder().translateZ(0.01)
-				TargetArr[i].moveZ = true
-			}
-		}
-	}
-};
 
 /**
  * Function to add the targets to the scene
@@ -592,10 +567,9 @@ function moveTargets() {
  */
 function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i], quaternion[i], new THREE.Vector3(position[i].x + 5, position[i].y, position[i].z));
-		target.moves = false;
+		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene);
 		TargetArr.push(target);
-		scene.add(target.getCylinder());
+		scene.add(target.getCylinder()); 
 	}
 };
 
@@ -723,7 +697,6 @@ document.addEventListener("mousedown", (e) => {
 				sparks.push(spark);
 				
 				if(gameWon==true){
-					console.log("ran")
 					gameWon=false
 					init(true);
 				}
@@ -756,7 +729,7 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 2) {
+		if (currentWorld < 2) {//change this to 3 when level 3 is added
 			//Code to swap levels
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
@@ -892,7 +865,7 @@ function handleTrails() {
 		scene.remove(lines[0][0]);
 		lines.shift()
 	}
-	//console.log(lines[0][1] - currentTimeSec);
+
 
 }
 
@@ -913,4 +886,30 @@ function handleSparks() {
 		var temp = sparks.shift();
 	}
 
+}
+
+function MoveTargets(){
+	var d = new Date();
+	var sec = d.getSeconds() + d.getMilliseconds() / 1000;
+	var min = d.getMinutes() + sec / 60;
+	var time = d.getHours() + min / 60;
+	time *= 60 * 60;
+	for (var i=0;i<TargetArr.length;i++){
+		if(TargetArr[i].moves==true){
+			TargetArr[i].moveTarget(time,TargetArr.length)
+		}
+	}
+}
+
+function enableMoving(){
+	if(currentWorld==1){
+		for (var i=0;i<Level1.length;i++){
+			TargetArr[TargetArr.length-i-1].enableMove(i,Level1[i])
+		}
+	}else if(currentWorld==2){
+		for (var i=0;i<Level2.length;i++){
+			TargetArr[TargetArr.length-i-1].enableMove(i,Level2[i])
+		}	
+	}
+	
 }
