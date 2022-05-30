@@ -150,14 +150,16 @@ class HUD {
                     if(this.entered==true){
                         var size=60*scaleFitNative;
                         graphics.font = String(size)+"px monospace";
-                        var top=this.leaderBoard.getTop10();
+                        var top=this.leaderBoard.getNearest10(this.timetaken);
                         graphics.fillStyle = "rgb(255,255,255)";
-                        graphics.fillText("Top "+(top.length+1), X_LEFT+200, Y_TOP+50*scaleFitNative);
+                        graphics.fillText("Top "+(top.length), X_LEFT+200, Y_TOP+50*scaleFitNative);
                         for (var i=0 ;i<top.length; i++){
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;
                         }
-                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPlayer(this.name,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200,bottom+60*scaleFitNative);
+                       // this.leaderBoard.requested=false;
+                        graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
+                        this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
                     }   
                     else{
@@ -171,7 +173,7 @@ class HUD {
                         word = "Level complete! Please enter your name and press enter";
                         this.gamestate = 1; //win
                         graphics.fillStyle = "rgb(0,255,0)";
-                        graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200, Y_TOP+250)
+                        graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200*scaleFitNative, Y_TOP+250*scaleFitNative)
                     }
                 }
                 else {
@@ -180,9 +182,9 @@ class HUD {
                     graphics.fillStyle = "rgb(255,0,0)";
                 }
                 var instruct="Click anywhere to restart.";
-                graphics.fillText(word, X_LEFT+200, Y_TOP+450);
+                graphics.fillText(word, X_LEFT+200*scaleFitNative, Y_TOP+450*scaleFitNative);
                 if(this.gamestate!=1){
-                    graphics.fillText(instruct, X_LEFT+200,Y_TOP+350);
+                    graphics.fillText(instruct, X_LEFT+200*scaleFitNative,Y_TOP+350*scaleFitNative);
                 }
                 return true;
             }
@@ -226,11 +228,11 @@ class HUD {
         //Draws the time indicator
         function drawTime(startTime){
           
-            graphics.fillStyle = "rgb(25,25,25)";
+            graphics.fillStyle = "rgb(255,255,255)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = ""+ getTimeElappsedSec(startTime);
-            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
             graphics.strokeText(word, -40-word.length*5, Y_TOP + 30);
             graphics.fillText(word, -40-word.length*5, Y_TOP + 30);
@@ -323,11 +325,11 @@ class HUD {
 
         //Draws the current bullet count indicator text
         function bulletCount(currammo, totalammo) {
-            graphics.fillStyle = "rgb(25,25,25)";
+            graphics.fillStyle = "rgb(255,255,255)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = currammo + " / " + totalammo;
-            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
             graphics.strokeText(word, X_LEFT + 10, Y_BOTTOM - 10);
             graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10);
@@ -335,11 +337,11 @@ class HUD {
 
         //Draws the current target count indicator text
         function targetCount(currHits, totaltarget) {
-            graphics.fillStyle = "rgb(25,25,25)";
+            graphics.fillStyle = "rgb(255,255,255)";
             var size=30*scaleFitNative;
             graphics.font = String(size)+"px Arial";
             var word = currHits + " / " + totaltarget;
-            graphics.strokeStyle ="rgb(255,255,255)";
+            graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
             graphics.strokeText(word,  X_RIGHT-110, Y_TOP + 30);
             graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);

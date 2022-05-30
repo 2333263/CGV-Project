@@ -23,7 +23,9 @@ class MainMenu{
         //Variables Init
         this.callMenu=true;
         this.graphics = this.canvas.getContext("2d");
-        
+        this.Music=true;
+        this.soundEffects=true;
+        this.controls=true;
         //Apply limits, courtesy of Richard Klein
         applyLimits(this.graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         this.graphics.lineWidth = pixelSize;
@@ -43,6 +45,7 @@ class MainMenu{
                     this.drawLeaderboard(this.leaderBoardPage);
                     break;
                 case 2://options
+                    this.drawOptions();
                     break;
                 case 3://credits
                     this.drawCredits();
@@ -50,6 +53,7 @@ class MainMenu{
                 
            }
         }
+        
         
         //Draws MainMenu
         this.drawMainMenu=function(){
@@ -94,19 +98,29 @@ class MainMenu{
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
             this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             var size=60*scaleFitNative
+            var amount=Math.floor(height/size)-1
             this.graphics.font = String(size)+"px monospace"
+            
             var all=lb.getAll()
             this.graphics.fillStyle = "rgb(0,0,0)"
             this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
             var bottom=Y_TOP+60*scaleFitNative
-            for (var i=pageNum*20 ;i<((pageNum+1)*20)-1; i++){
+            for (var i=pageNum*amount ;i<((pageNum+1)*amount); i++){
                 if(all[i]!==undefined){
                 this.graphics.fillText(all[i],  X_LEFT+200, bottom+60*scaleFitNative)
                 bottom=bottom+60*scaleFitNative
                 }
             }
+            this.graphics.save()
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
             this.drawBackButton()
+            this.graphics.restore()
+            this.graphics.save()
+            this.graphics.translate(X_RIGHT-180*scaleFitNative,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
             this.drawNextButton()
+            this.graphics.restore()
         }
 
         //Draws the credit screen
@@ -131,31 +145,37 @@ class MainMenu{
                 this.graphics.fillText(credits[i].replace("H.",""),  X_LEFT+200, bottom+35*scaleFitNative)
                 bottom=bottom+35*scaleFitNative
             }
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(1*scaleFitNative,1*scaleFitNative)
             this.drawBackButton()  
+            this.graphics.restore()
         }
 
         //Draw Back Button
         this.drawBackButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
-            this.graphics.fillRect(X_LEFT,Y_BOTTOM-150*scale/100,300*scale/100,500*scale/100)
+            this.graphics.fillRect(0,0,180,80)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100
-            this.graphics.font = String(size)+"px Courier";
+            this.graphics.font = "60px Courier";
             var word = "BACK";
-            this.graphics.fillText(word,X_LEFT+X_RIGHT*1/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
         }
 
         //Draws Next Button
         this.drawNextButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
-            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
-            this.graphics.fillRect(X_RIGHT-300*scale/100,Y_BOTTOM-150*scale/100,300*scale/100,2000*scale/100)
+            this.graphics.fillRect(0,0,180,80)
             this.graphics.fillStyle = 'rgb(0,0,0)';
-            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
-            this.graphics.font = String(size)+"px Courier";
+            this.graphics.font = "60px Courier";
             var word = "NEXT";
-            this.graphics.fillText(word,X_RIGHT-X_RIGHT*16/100,Y_BOTTOM-Y_BOTTOM*(6*scaleFitNative)/100)
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
         }
 
 
@@ -173,23 +193,19 @@ class MainMenu{
                         if(posY<=Y_TOP*20/100 && posY>=(Y_TOP*20/100)+(Y_TOP*20/100)){//if they click in the same Y position as the play button, return 0
                             return(0)
                         }else if(posY<=Y_TOP*-10/100 && posY>=(Y_TOP*-10/100)+(Y_TOP*20/100)){//if they click in the same position as the leader board return 1
-                            console.log("LeaderBoard");
                             this.page=1
                             return (1) 
                         }else if(posY<=Y_TOP*-40/100 && posY>=(Y_TOP*-40/100)+(Y_TOP*20/100)){//if they click in the same Y position as the options button return 2
-                            console.log("options")
-                            this.page=0 //for now this is 0, we need to change it to 2 when we add a page for it
+                            this.page=2 //for now this is 0, we need to change it to 2 when we add a page for it
                             return(2)
                         }else if(posY<=Y_TOP*-70/100 && posY>=(Y_TOP*-70/100)+(Y_TOP*20/100)){ //if they click in the same Y position as the credits button return 3
-                            console.log("credits")
                             this.page=3
                             return(3)
                         }
                     }
                 break;
                 case(1)://if theyre on the leaderboard
-                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
-                        console.log("BACK")
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//if they click the back button
                         lb.requested=false;
                         if(this.leaderBoardPage!=0){
                             this.leaderBoardPage--;
@@ -197,24 +213,162 @@ class MainMenu{
                             this.page=0
                         }
                         return(4)
-                    }else if(posX>X_RIGHT-320*scale/100 &&posY>=Y_BOTTOM-200*scale/100){//if they click next
-                        console.log("next")
+                    }else if(posX>=X_RIGHT-210*scaleFitNative &&posY>=Y_BOTTOM-80){//if they click next
                         lb.requested=false;
                         this.leaderBoardPage++;
                     }    
                     break;
                 case(2)://if theyre on options
-                    this.page=0
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//press the back button
+                        this.page=0
+                    }else if(posX>=X_LEFT+50+900*0.75 && posX<=X_LEFT+50+900*0.75+250*0.75){//toggle button left side is clicked
+                        if(posY>=Y_TOP+250-70*0.75 && posY<=Y_TOP+250-70*0.75+100*0.75){//left side music
+                            this.Music=true;   
+                        }else if(posY>=Y_TOP+500-70*0.75 && posY<=Y_TOP+500-70*0.75+100*0.75){//left side sound
+                            this.soundEffects=true;
+                        }else if(posY>=Y_TOP+750-70*0.75 && posY<=Y_TOP+750-70*0.75+100*0.75){//left side controls
+                            this.controls=true;
+                        }
+
+                    }else if(posX>=X_LEFT+50+900*0.75+250*0.75 && posX<=X_LEFT+50+900*0.75+500*0.75){//right side toggle button is clicked
+                        if(posY>=Y_TOP+250-70*0.75 && posY<=Y_TOP+250-70*0.75+100*0.75){//right side music
+                            this.Music=false;
+                            
+                        }else if(posY>=Y_TOP+500-70*0.75 && posY<=Y_TOP+500-70*0.75+100*0.75){//right side sound
+                            this.soundEffects=false;
+                        }else if(posY>=Y_TOP+750-70*0.75 && posY<=Y_TOP+750-70*0.75+100*0.75){//right side controls
+                            this.controls=false
+                        }
+                    }
                     break;
                 case(3)://if theyre on credits
-                    if(posX<=X_LEFT+300*scale/100 && posY>=Y_BOTTOM-200*scale/100){//if they click the back button
-                        console.log("BACK")
+                    if(posX<=X_LEFT+180*scaleFitNative && posY>=Y_BOTTOM-80){//if they click the back button
                         this.page=0
                         return(4)
                     }
                     break;
             }
         }
+
+        this.drawOptions=function(){
+            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            this.graphics.fillStyle="rgba(255,255,255,0.6)"
+            this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            var size = 2/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+            this.graphics.font = String(size)+"px Courier";
+            var word = "OPTIONS";
+            this.graphics.fillStyle="black"
+            this.graphics.fillText(word,-300*scaleFitNative,Y_TOP+90*scaleFitNative);
+            this.toggleMusicButton(this.Music)
+            this.toggleSoundEffects(this.soundEffects);
+            this.toggleControls(this.controls)
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative);
+            this.drawBackButton()
+            this.graphics.restore()
+        }
+
+        this.toggleMusicButton=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+250);
+            var word="Music:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleButton(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+        this.toggleSoundEffects=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+500);
+            var word="Sound Effects:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleButton(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+        this.toggleControls=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+750);
+            var word="Controls:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleControls(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+
+
+
+
+        this.drawToggleButton=function(on){
+            this.graphics.save()
+            this.graphics.fillStyle="black";
+            this.graphics.fillRect(0,0,500,100)
+            if(on){
+            this.graphics.save();
+            this.graphics.fillStyle="rgb(90,90,90)";
+            this.graphics.scale(0.5,1);
+            this.graphics.fillRect(0,0,500,100);
+            this.graphics.restore();
+            }else{
+            this.graphics.save();
+            this.graphics.fillStyle="rgb(90,90,90)";
+            this.graphics.scale(0.5,1);
+            this.graphics.translate(500,0)
+            this.graphics.fillRect(0,0,500,100);
+            this.graphics.restore();
+            }
+            this.graphics.fillStyle="white";
+            var word="ON"
+            var size=60
+            this.graphics.font=String(size)+"px Courier"
+            this.graphics.fillText(word,25,65)
+            var word="OFF"
+            this.graphics.fillText(word,350,65)
+            this.graphics.restore();
+        }
+
+        this.drawToggleControls=function(on){
+            this.graphics.save()
+            this.graphics.fillStyle="black";
+            this.graphics.fillRect(0,0,500,100)
+            if(on){
+                this.graphics.save();
+                this.graphics.fillStyle="rgb(90,90,90)";
+                this.graphics.scale(0.5,1);
+                this.graphics.fillRect(0,0,500,100);
+                this.graphics.restore();
+                }else{
+                this.graphics.save();
+                this.graphics.fillStyle="rgb(90,90,90)";
+                this.graphics.scale(0.5,1);
+                this.graphics.translate(500,0)
+                this.graphics.fillRect(0,0,500,100);
+                this.graphics.restore();
+                }
+            this.graphics.fillStyle="white";
+            var word="AWDS"
+            var size=60
+            this.graphics.font=String(size)+"px Courier"
+            this.graphics.fillText(word,25,65)
+            var word="ARROWS"
+            this.graphics.fillText(word,265,65)
+            this.graphics.restore();
+        }
+
+
 
         //Apply Limits function, courtesy of Richard Klein
         function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {

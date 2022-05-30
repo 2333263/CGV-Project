@@ -11,9 +11,11 @@ import { Targets } from '../js/targets.js';
 //import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js'; (unused currently)
 import { BuildWorld } from '../js/BuildWorld.js';
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
-//import { leaderBoard } from '../js/LeaderBoard.js'; (unused currently)
+import { leaderBoard } from '../js/LeaderBoard.js'; //(unused currently)
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
+import { musicHandler } from './MusicHandler.js';
+//import { dynamicSky } from '/js/dynamicSky.js';
 
 //View Init
 const width = window.innerWidth + 20;
@@ -87,30 +89,12 @@ orbitControls.dispose();
 orbitControls.update();
 
 //Music Init
-let musicPlaying = false;
-let backgroundmusic;
+var backgroundmusic=new musicHandler(controls.getObject())
+backgroundmusic.init(backgroundmusic.backgroundSound);
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
 
 //Audio Loader
-function touchStarted() {
-	musicPlaying = true;
-	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-	listener.setMasterVolume = 1;
-	controls.getObject().add(listener);
-
-	//create, load and play background music
-	const backgroundSound = new THREE.Audio(listener);
-
-	//load sound file
-	audioLoader.load("js/GameMusic.mp3", function (buffer) {
-		backgroundSound.setBuffer(buffer);
-		backgroundSound.setLoop(true);
-		backgroundSound.setVolume(0.4);
-		backgroundSound.play();
-	});
-
-};
 
 //Gunshot sound Init
 function gunshotSound() {
@@ -152,26 +136,41 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 // 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
 //	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
-let pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+const skybox=new THREE.Mesh();
+function drawSkyBox(level)
+{
+	console.log("Drawing skybox")
+	let pathStrings
+	if(level==1){
+	pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
 	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",]
+	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
+	}
+	if(level==2){
+		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
+		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
+		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
+	}
+	
 //This function maps over the array of images, skybox related
-function createMaterialArray() {
-	const skyboxImagepaths = pathStrings;
-	const materialArray = skyboxImagepaths.map(image => {
-		let texture = new THREE.TextureLoader().load(image);
-		return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
-	});
-	return materialArray;
-}
+	function createMaterialArray() {
+		const skyboxImagepaths = pathStrings;
+		const materialArray = skyboxImagepaths.map(image => {
+			let texture = new THREE.TextureLoader().load(image);
+			return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+		});
+		return materialArray;
+	}
 
-//Returns a Three.js material
-const materialArray = createMaterialArray();
+	//Returns a Three.js material
+	const materialArray = createMaterialArray();
 
-//Smaller skybox that follows the player (thanks-jamin)
-const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
-const skybox = new THREE.Mesh(skybxGeo, materialArray);
-scene.add(skybox);
+	//Smaller skybox that follows the player (thanks-jamin)
+	const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
+	const skybox = new THREE.Mesh(skybxGeo, materialArray);
+	scene.add(skybox);
+	}
+
 
 //Let there be light
 const light = new THREE.HemisphereLight("white", "white", 0.5);
@@ -297,6 +296,7 @@ BuildWorld.loadLevel(scene, world, currentWorld, function () {
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 function afterLoad() {
+	
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -306,6 +306,11 @@ function afterLoad() {
 
 	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
+
+	//creates object for calling methods related to dynamic skybox...to be implemented later
+
+	
+	
 
 
 	//Set up the main composer for the scene using preset post processing
@@ -382,6 +387,15 @@ function afterLoad() {
 	clouds = []
 	clouds = BuildWorld.getClouds();
 
+	//calls the method to draw the level's skybox (day)
+	if(currentWorld==1){
+		drawSkyBox(1)
+	}
+	//calls the method to draw the level's skybox (night)
+	if(currentWorld==2){
+		drawSkyBox(2)
+	}
+
 	//Run game
 	animate();
 }
@@ -413,6 +427,11 @@ function animate() {
 
 		MenuTexture.needsUpdate = true//update main menu
 		renderer.render(menuScene, HudCamera)//render the main menu
+		if(homeScreen.Music==true){
+			backgroundmusic.play()
+		}else{
+			backgroundmusic.pause()
+		}
 	}
 	else {
 		//direcLight.translateX(-0.01)
@@ -477,6 +496,7 @@ function animate() {
 			hudTexture.needsUpdate = true;
 		}
 		renderWorld()
+		
 	}
 	stats.end() //For monitoring
 	animationID = requestAnimationFrame(animate);
@@ -546,7 +566,7 @@ function moveTargets() {
 				TargetArr[i].getCylinder().translateZ(-0.01)
 			} else if (TargetArr[i].moveZ == false && !tempPos.equals(tempStart)) {
 				TargetArr[i].getCylinder().translateZ(-0.01)
-
+init
 			} else {
 				TargetArr[i].getCylinder().translateZ(0.01)
 				TargetArr[i].moveZ = true
@@ -582,6 +602,8 @@ function init() {
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
 	playerBody.canJump = false
+	playerBody.prevVel=0;
+	playerBody.counter=0;
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
@@ -610,7 +632,10 @@ controls.addEventListener('unlocked', () => {
 //Mouse-up event listener
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
+	try{
 	scene.getObjectByName('muzzleFlash').visible = false;
+	}catch (error){
+	}
 });
 
 
@@ -619,13 +644,12 @@ document.addEventListener("mouseup", (e) => {
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
-		if (musicPlaying == false) {
-			touchStarted()
-		}
 		if (controls.isLocked == true) {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
-				gunshotSound()
+				if(homeScreen.soundEffects){
+					gunshotSound()
+				}
 				scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
 				raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 				const intersects = raycaster.intersectObjects(scene.children);
@@ -758,6 +782,17 @@ function move() {
 	var delta = dt * 1000
 	delta *= 0.1
 	if (controls.isLocked) {
+		if(Math.floor(playerBody.prevVel)==Math.floor(playerBody.velocity.y)){
+			if(playerBody.counter==10){
+			playerBody.canJump=true;
+			}else{
+				playerBody.counter++;
+			}
+		}else{
+			playerBody.counter=0;
+		}
+		playerBody.prevVel=playerBody.velocity.y;
+		if(homeScreen.controls){
 		if (pressedKeys['w']) {
 			tempVec.z = -0.4 * delta
 		}
@@ -776,6 +811,27 @@ function move() {
 			}
 			playerBody.canJump = false
 		}
+	}else{
+		if (pressedKeys["ArrowUp"]) {
+			tempVec.z = -0.4 * delta
+		}
+		if (pressedKeys['ArrowLeft']) {
+			tempVec.x = -0.4 * delta
+		}
+		if (pressedKeys["ArrowRight"]) {
+			tempVec.x = 0.4 * delta
+		}
+		if (pressedKeys['ArrowDown']) {
+			tempVec.z = 0.4 * delta
+		}
+		if (pressedKeys["Control"]) {
+			if (playerBody.canJump == true) {
+				playerBody.velocity.y = 15
+			}
+			playerBody.canJump = false
+		}
+	}
+		
 	}
 	tempVec.applyQuaternion(controls.getObject().quaternion);
 	playerBody.velocity.x += tempVec.x
