@@ -87,6 +87,8 @@ const planeMaterial = new CANNON.Material({
 
 //Controls Init
 const controls = new PointerLockControls(camera, document.body);
+controls.minPolarAngle=0.1
+controls.maxPolarAngle=Math.PI-0.1
 const orbitControls = new OrbitControls(Menucamera, renderer.domElement);
 Menucamera.position.set(0, 30, 30);
 orbitControls.target.set(30.5453, 0, -32.0482);
@@ -527,8 +529,7 @@ function animate() {
 			var theta = Math.atan2(tempVec.x, tempVec.z);
 			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
 			var thetaArm = Math.atan2(xz, tempVec.y);
-
-			playerModel.translateY(0.3)
+			playerModel.translateY(0.3)//-2
 			playerModel.rotation.set(0, theta, 0)
 
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
@@ -547,6 +548,7 @@ function animate() {
 				move();
 			var pos = new THREE.Vector3()
 			pos.copy(playerBody.position)
+			//0.7
 			pos.y += 1.2
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
