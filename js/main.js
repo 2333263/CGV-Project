@@ -53,6 +53,8 @@ const timestep = 1 / 60;
 let flash = new THREE.PointLight();
 //cloud init
 let cloudMeshArr = new Array;
+const rainGeo = new THREE.BufferGeometry()
+let rain = new THREE.Points();
 /*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
@@ -87,6 +89,8 @@ const planeMaterial = new CANNON.Material({
 
 //Controls Init
 const controls = new PointerLockControls(camera, document.body);
+controls.minPolarAngle=0.1
+controls.maxPolarAngle=Math.PI-0.1
 const orbitControls = new OrbitControls(Menucamera, renderer.domElement);
 Menucamera.position.set(0, 30, 30);
 orbitControls.target.set(30.5453, 0, -32.0482);
@@ -214,6 +218,58 @@ function stormSky(){
 	flash.position.set(30,110,-30);
 	
 	scene.add(flash);
+
+	//rain drops------------
+/*
+	let rainCount=500;
+	let points = []
+	//rainGeo = new THREE.BufferGeometry(); declared in init
+	let rainDrop = new THREE.Vector3(); 
+	for(let i=0;i<rainCount;i++) {
+		rainDrop = new THREE.Vector3(
+			Math.random() * 200 -200+30,
+			Math.random() * 200 ,
+			Math.random() * 200 - 200-32
+		);
+		rainDrop.velocity ={};
+		rainDrop.velocity =0;
+		console.log(rainDrop);
+		points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
+	}
+	console.log(points);
+	let positions = new Float32Array.from(points); //convert list to Float32Array
+	console.log(positions);
+	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
+
+	let rainCount=500;
+	let points = new Float32Array(500*3);
+
+	//rainGeo = new THREE.BufferGeometry(); declared in init
+	//let rainDrop = new THREE.Vector3(); 
+	for(let i=0;i<rainCount;i=i+3) {
+		points[i] = Math.random() * 200 -200+30;
+		points[i+1]=Math.random() * 200 ;
+		points[i+2]=Math.random() * 200 - 200-32;
+		
+		//rainDrop.velocity ={};
+		//rainDrop.velocity =0;
+		//console.log(rainDrop);
+		//points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
+	}
+	//console.log(points);
+	//let positions = new Float32Array.from(points); //convert list to Float32Array
+	//console.log(positions);
+	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( points, 3 ) );
+
+
+
+	let rainMaterial = new THREE.PointsMaterial({
+		color: 0xaaaaaa,
+		size: 0.1,
+		transparent: true
+	  });
+	let rain = new THREE.Points(rainGeo,rainMaterial);
+	scene.add(rain);
 }
 
 
@@ -236,9 +292,9 @@ Torso = playerModel.getObjectByName("torso");
 playerModel.traverse(function (child) {
 	child.castShadow = true;
 });
-
+//1.5
 //Hitbox Init
-const playerShape = new CANNON.Sphere(1.5);
+const playerShape = new CANNON.Sphere(1);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
 	shape: playerShape,
@@ -433,7 +489,7 @@ function afterLoad() {
 	//initialises the hud
 	hud.setBullets(totalammo,totalammo)
 	hud.setTargets(0,TargetArr.length)
-	
+	hud.changeLevel(currentWorld)
 
 	//Adjust player body attributes to match hud
 	playerBody.noBullets = hud.currammo
@@ -448,6 +504,7 @@ function afterLoad() {
 	clouds = BuildWorld.getClouds();
 
 	//calls the method to draw the level's skybox (day)
+
 	switch(currentWorld){
 		case 1:
 			drawSkyBox(1)
@@ -464,6 +521,7 @@ function afterLoad() {
 			break;
 		case 3:
 			break;
+
 	}
 	
 
@@ -533,8 +591,7 @@ function animate() {
 			var theta = Math.atan2(tempVec.x, tempVec.z);
 			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
 			var thetaArm = Math.atan2(xz, tempVec.y);
-
-			playerModel.translateY(-0.2)
+			playerModel.translateY(0.3)//-2
 			playerModel.rotation.set(0, theta, 0)
 
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
@@ -553,7 +610,8 @@ function animate() {
 				move();
 			var pos = new THREE.Vector3()
 			pos.copy(playerBody.position)
-			pos.y += 0.7
+			//0.7
+			pos.y += 1.2
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
 			hud.draw(currentWorld);
@@ -561,8 +619,8 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
 
-			//lightning flash
-			if(currentWorld==2){   //change to 2
+			//lightning flash and rain movement
+			if(currentWorld==1){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
 						
@@ -571,6 +629,32 @@ function animate() {
 					flash.power= 50+Math.random()*500;
 				}
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
+			//rain drop animation
+
+			/*for (const position of rainGeo) {
+				position.velocity -=0.1 +Math.random() *0.1;
+				position.y+=position.velocity;
+				if(position.y <-200){
+					position.y=200;
+					position.veclocity =0;
+				}
+			  }*/
+			
+			for(let i =0; i<500; i++){
+				const y = rainGeo.attributes.position.getY(i);
+				rainGeo.attributes.position.setY(y-1);
+				
+				/*if(positions.y<0){
+				y=200;
+
+				}*/
+			}
+			
+			rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
+			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
+			rain.rotation.y+=0.002;
+			
+			
 			}
 		}
 		else {
@@ -802,6 +886,7 @@ function checkState(){
 			currentWorld++
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
+				
 			});
 			init(false);
 		}else if(hud.entered == true){

@@ -29,3 +29,16 @@ Arcade style leaderboard stored on wits servers (database)
 - 1 in eclipse, weird effects
 - Change character hitbox?
 - Fix jumping
+
+
+## current final goals:
+- shrink sphere hitbox/change it to be better to fix rolling and jumping issues (currently shrunk)
+- remove clouds from level 2 and 3
+- add comments showing whats subroutine vs scene graph
+- potetnially more world changes (hit target, srhink gate to get to next part of level)
+- change bloom in lvl2
+- in level 2 turn street lights on and also change crosshair to white with black outline (white outline has been added)
+- turn level 1 streelights off
+- Loading screen
+- documentation
+

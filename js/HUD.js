@@ -24,6 +24,7 @@ class HUD {
         this.Paused=false;
         this.name="";
         this.leaderBoard=new leaderBoard();
+        this.level=1
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
         //XY Scalings
@@ -106,7 +107,7 @@ class HUD {
             }
             if (!this.checkgameState(level)) {
                 graphics.save();
-                drawCrossHair();
+                drawCrossHair(this.level);
                 graphics.restore();
                 graphics.save();
                 this.bulletCount(this.currammo, this.totalammo);
@@ -220,13 +221,29 @@ class HUD {
             graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
         }
+        this.changeLevel=function(level){
+            this.level=level
+        }
         //Draws the crosshair
-        function drawCrossHair() {
+        function drawCrossHair(level) {
             graphics.save();
             graphics.fillStyle="black";
             for (var i = 0; i < 4; i++) {
+                if(level>1){
+                graphics.rotate(Math.PI / 2);
+                var size=graphics.lineWidth
+                graphics.lineWidth=size*2
+                graphics.strokeStyle="black"
+                drawLine(0, 2, 0, 15);
+                graphics.lineWidth=size
+                graphics.strokeStyle="white"
+                drawLine(0, 2, 0, 15);
+                graphics.strokeStyle="black"
+
+                }else{
                 graphics.rotate(Math.PI / 2);
                 drawLine(0, 2, 0, 15);
+                }
             }
             graphics.restore();
             graphics.fillStyle="black";
