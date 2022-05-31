@@ -32,11 +32,12 @@ Arcade style leaderboard stored on wits servers (database)
 
 
 ## current final goals:
--shrink sphere hitbox/change it to be better to fix rolling and jumping issues
--remove clouds from level 2 and 3
--add comments showing whats subroutine vs scene graph
--potetnially more world changes (hit target, srhink gate to get to next part of level)
--change bloom in lvl2
--in level 2 turn street lights on and also change crosshair to white with black outline
+- shrink sphere hitbox/change it to be better to fix rolling and jumping issues
+- remove clouds from level 2 and 3
+- add comments showing whats subroutine vs scene graph
+- potetnially more world changes (hit target, srhink gate to get to next part of level)
+- change bloom in lvl2
+- in level 2 turn street lights on and also change crosshair to white with black outline
 - turn level 1 streelights off
+- Loading screen
 
