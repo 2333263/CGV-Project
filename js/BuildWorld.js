@@ -248,14 +248,16 @@ class BuildWorld {
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
 
-                    glowing.push(child)
-                    const newMat = new THREE.MeshPhongMaterial({
+                    if (level != 1){
+                        glowing.push(child)
+                        const newMat = new THREE.MeshPhongMaterial({
                         color: child.material.color,
                         emissiveMap: emissiveMapTex,
                         emissive: child.material.color,
                         emissiveIntensity: 1
                     })
                     child.material = newMat
+                    }
                 }
                 else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign' || name.substring(0, 11) === 'Pathoutline') {
                     //Stop these from cast shadows

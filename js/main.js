@@ -448,18 +448,24 @@ function afterLoad() {
 	clouds = BuildWorld.getClouds();
 
 	//calls the method to draw the level's skybox (day)
-	if(currentWorld==1){
-		drawSkyBox(1)
-		//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
+	switch(currentWorld){
+		case 1:
+			drawSkyBox(1)
+			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
+			break;
+		case 2:
+			//calls the method to draw the level's skybox (evening)
+			drawSkyBox(2)
+			console.log("changes made for level 2")
+			scene.remove(mainLight);
+			light.intensity = 0.03
+			scene.remove(light);
+			stormSky();
+			break;
+		case 3:
+			break;
 	}
-	//calls the method to draw the level's skybox (evening)
-	if(currentWorld==2){
-		drawSkyBox(2)
-		console.log("changes made for level 2")
-		scene.remove(mainLight);
-		scene.remove(light);
-		stormSky();
-	}
+	
 
 	//Run game
 	animate();

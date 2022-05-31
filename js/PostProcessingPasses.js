@@ -49,9 +49,10 @@ class POSTPROCESSINGPASSES {
      * @param {THREE.PerspectiveCamera} camera The camera to be used
      * @param {THREE.Scene} scene The scene to be used
      * @param {THREE.DirectionalLight | THREE.PointLight} mainLight The light to be used
+     * @param {boolean} godRaysOn Whether or not to add volumetric lighting
      * @returns {POSTPROCESSING.EffectComposer} The composer with post processing applied
      */
-    static doPasses(renderer, camera, scene, mainLight) {
+    static doPasses(renderer, camera, scene, mainLight, godRaysOn = true) {
 
         //Const Init
         const composer = new POSTPROCESSING.EffectComposer(renderer);
@@ -117,7 +118,7 @@ class POSTPROCESSINGPASSES {
     }
 
     //Selective bloom pass
-    static selectiveBloomPass(composer, camera, scene, glowing) {
+    static selectiveBloomPass(composer, camera, scene, glowing, ) {
         const selectiveBloomEffect = new POSTPROCESSING.SelectiveBloomEffect(
             scene, camera, 
             {
