@@ -244,10 +244,10 @@ class BuildWorld {
                     //Remove light ref from scene
                     toRemove.push(child)
 
-                    //Only make glass glow if the light is present
+                    
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
-
+                    //Don't make glass glow in level 1
                     if (level != 1){
                         glowing.push(child)
                         const newMat = new THREE.MeshPhongMaterial({

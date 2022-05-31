@@ -638,7 +638,7 @@ function animate() {
 					position.y=200;
 					position.veclocity =0;
 				}
-			  }*/
+			  }
 			
 			for(let i =0; i<500; i++){
 				const y = rainGeo.attributes.position.getY(i);
@@ -647,13 +647,13 @@ function animate() {
 				/*if(positions.y<0){
 				y=200;
 
-				}*/
+				}
 			}
 			
 			rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
 			rain.rotation.y+=0.002;
-			
+			*/
 			
 			}
 		}
