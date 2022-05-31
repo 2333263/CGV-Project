@@ -55,6 +55,8 @@ let flash = new THREE.PointLight();
 let cloudMeshArr = new Array;
 const rainGeo = new THREE.BufferGeometry()
 let rain = new THREE.Points();
+const rainInit =[32,200,-32];
+let counter=0;
 /*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
@@ -142,10 +144,6 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 **/
 
 //Skybox Init
-//let pathStrings = 
-// 	["../Objects/Textures/Skybox/bluecloud_ft.jpg", "../Objects/Textures/Skybox/bluecloud_bk.jpg",
-//	 "../Objects/Textures/Skybox/bluecloud_up.jpg", "../Objects/Textures/Skybox/bluecloud_dn.jpg",
-//	 "../Objects/Textures/Skybox/bluecloud_rt.jpg", "../Objects/Textures/Skybox/bluecloud_lf.jpg"];
 const skybox=new THREE.Mesh();
 function drawSkyBox(level)
 {
@@ -241,15 +239,18 @@ function stormSky(){
 	console.log(positions);
 	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
 
-	let rainCount=500;
+	let rainCount=40000;
 	let points = new Float32Array(500*3);
 
 	//rainGeo = new THREE.BufferGeometry(); declared in init
 	//let rainDrop = new THREE.Vector3(); 
 	for(let i=0;i<rainCount;i=i+3) {
-		points[i] = Math.random() * 200 -200+30;
-		points[i+1]=Math.random() * 200 ;
-		points[i+2]=Math.random() * 200 - 200-32;
+		/*points[i] = Math.random() * 84 -100+30;
+		points[i+1]=Math.random() * 200 +200;
+		points[i+2]=Math.random() * 84 - 84-32;*/
+		points[i] = Math.random() * 100  ;
+		points[i+1]=Math.random() * 300 +50;
+		points[i+2]=Math.random() * 100 -80;//set cprrectly
 		
 		//rainDrop.velocity ={};
 		//rainDrop.velocity =0;
@@ -509,17 +510,21 @@ function afterLoad() {
 		case 1:
 			drawSkyBox(1)
 			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
+			console.log("load world 1 enviro");
 			break;
 		case 2:
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(2)
-			console.log("changes made for level 2")
 			scene.remove(mainLight);
 			light.intensity = 0.03
 			scene.remove(light);
 			stormSky();
+			console.log("loaded world 2 enviro");
 			break;
 		case 3:
+			drawSkyBox(3);
+			
+			console.log("loaded world 3 enviro");
 			break;
 
 	}
@@ -620,7 +625,7 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash and rain movement
-			if(currentWorld==1){   //change to 2
+			if(currentWorld==2){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
 						
@@ -628,7 +633,9 @@ function animate() {
 					}
 					flash.power= 50+Math.random()*500;
 				}
+
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
+				
 			//rain drop animation
 
 			/*for (const position of rainGeo) {
@@ -638,22 +645,33 @@ function animate() {
 					position.y=200;
 					position.veclocity =0;
 				}
-			  }
-			
+			  }	*/
+			rainGeo.translate(0,-1,0);      //-----------------------
+/*
 			for(let i =0; i<500; i++){
-				const y = rainGeo.attributes.position.getY(i);
+				console.log(i)
+				let y = rainGeo.attributes.position.getY(i);
+				console.log("y=      =",y)
 				rainGeo.attributes.position.setY(y-1);
-				
-				/*if(positions.y<0){
-				y=200;
+				y = rainGeo.attributes.position.getY(i);
+				console.log("update y=",y)
+				console.log("raindrop pos change")
+				if(y<0){
+				rainGeo.attributes.position.setY(180);
 
 				}
+			}*/
+			counter+=1
+			if(counter==209){
+				rainGeo.translate(0,200,0);
+				counter=0;
+				
 			}
 			
-			rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
+			//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
 			rain.rotation.y+=0.002;
-			*/
+		
 			
 			}
 		}
