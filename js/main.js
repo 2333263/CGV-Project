@@ -53,6 +53,8 @@ const timestep = 1 / 60;
 let flash = new THREE.PointLight();
 //cloud init
 let cloudMeshArr = new Array;
+const rainGeo = new THREE.BufferGeometry()
+let rain = new THREE.Points();
 /*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
@@ -216,6 +218,58 @@ function stormSky(){
 	flash.position.set(30,110,-30);
 	
 	scene.add(flash);
+
+	//rain drops------------
+/*
+	let rainCount=500;
+	let points = []
+	//rainGeo = new THREE.BufferGeometry(); declared in init
+	let rainDrop = new THREE.Vector3(); 
+	for(let i=0;i<rainCount;i++) {
+		rainDrop = new THREE.Vector3(
+			Math.random() * 200 -200+30,
+			Math.random() * 200 ,
+			Math.random() * 200 - 200-32
+		);
+		rainDrop.velocity ={};
+		rainDrop.velocity =0;
+		console.log(rainDrop);
+		points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
+	}
+	console.log(points);
+	let positions = new Float32Array.from(points); //convert list to Float32Array
+	console.log(positions);
+	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
+
+	let rainCount=500;
+	let points = new Float32Array(500*3);
+
+	//rainGeo = new THREE.BufferGeometry(); declared in init
+	//let rainDrop = new THREE.Vector3(); 
+	for(let i=0;i<rainCount;i=i+3) {
+		points[i] = Math.random() * 200 -200+30;
+		points[i+1]=Math.random() * 200 ;
+		points[i+2]=Math.random() * 200 - 200-32;
+		
+		//rainDrop.velocity ={};
+		//rainDrop.velocity =0;
+		//console.log(rainDrop);
+		//points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
+	}
+	//console.log(points);
+	//let positions = new Float32Array.from(points); //convert list to Float32Array
+	//console.log(positions);
+	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( points, 3 ) );
+
+
+
+	let rainMaterial = new THREE.PointsMaterial({
+		color: 0xaaaaaa,
+		size: 0.1,
+		transparent: true
+	  });
+	let rain = new THREE.Points(rainGeo,rainMaterial);
+	scene.add(rain);
 }
 
 
@@ -450,12 +504,12 @@ function afterLoad() {
 	clouds = BuildWorld.getClouds();
 
 	//calls the method to draw the level's skybox (day)
-	if(currentWorld==1){
+	if(currentWorld==5){//level 1
 		drawSkyBox(1)
 		//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 	}
 	//calls the method to draw the level's skybox (evening)
-	if(currentWorld==2){
+	if(currentWorld==1){
 		drawSkyBox(2)
 		console.log("changes made for level 2")
 		scene.remove(mainLight);
@@ -557,8 +611,8 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
 
-			//lightning flash
-			if(currentWorld==2){   //change to 2
+			//lightning flash and rain movement
+			if(currentWorld==1){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
 						
@@ -567,6 +621,32 @@ function animate() {
 					flash.power= 50+Math.random()*500;
 				}
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
+			//rain drop animation
+
+			/*for (const position of rainGeo) {
+				position.velocity -=0.1 +Math.random() *0.1;
+				position.y+=position.velocity;
+				if(position.y <-200){
+					position.y=200;
+					position.veclocity =0;
+				}
+			  }*/
+			
+			for(let i =0; i<500; i++){
+				const y = rainGeo.attributes.position.getY(i);
+				rainGeo.attributes.position.setY(y-1);
+				
+				/*if(positions.y<0){
+				y=200;
+
+				}*/
+			}
+			
+			rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
+			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
+			rain.rotation.y+=0.002;
+			
+			
 			}
 		}
 		else {
