@@ -31,7 +31,7 @@ Arcade style leaderboard stored on wits servers (database)
 - Fix jumping
 
 
-current final goals:
+## current final goals:
 -shrink sphere hitbox/change it to be better to fix rolling and jumping issues
 -remove clouds from level 2 and 3
 -add comments showing whats subroutine vs scene graph
