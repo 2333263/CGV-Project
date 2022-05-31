@@ -290,9 +290,9 @@ Torso = playerModel.getObjectByName("torso");
 playerModel.traverse(function (child) {
 	child.castShadow = true;
 });
-
+//1.5
 //Hitbox Init
-const playerShape = new CANNON.Sphere(1.5);
+const playerShape = new CANNON.Sphere(1);
 const playerBody = new CANNON.Body({ //player hitbox represented by sphere for easy movement
 	mass: 5,
 	shape: playerShape,
@@ -487,7 +487,7 @@ function afterLoad() {
 	//initialises the hud
 	hud.setBullets(totalammo,totalammo)
 	hud.setTargets(0,TargetArr.length)
-	
+	hud.changeLevel(currentWorld)
 
 	//Adjust player body attributes to match hud
 	playerBody.noBullets = hud.currammo
@@ -582,7 +582,7 @@ function animate() {
 			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
 			var thetaArm = Math.atan2(xz, tempVec.y);
 
-			playerModel.translateY(-0.2)
+			playerModel.translateY(0.3)
 			playerModel.rotation.set(0, theta, 0)
 
 			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
@@ -601,7 +601,7 @@ function animate() {
 				move();
 			var pos = new THREE.Vector3()
 			pos.copy(playerBody.position)
-			pos.y += 0.7
+			pos.y += 1.2
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
 			hud.draw(currentWorld);
@@ -876,6 +876,7 @@ function checkState(){
 			currentWorld++
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
+				
 			});
 			init(false);
 		}else if(hud.entered == true){
