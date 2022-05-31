@@ -80,7 +80,7 @@ class Targets{
                     this.curveObject = new THREE.Line(geometry, material);
                     material.depthTest=false;
                     this.curveObject.renderOrder=1
-                    scene.add(this.curveObject)
+                   // scene.add(this.curveObject)
                 }
     
     }
