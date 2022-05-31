@@ -433,7 +433,7 @@ function afterLoad() {
 	//initialises the hud
 	hud.setBullets(totalammo,totalammo)
 	hud.setTargets(0,TargetArr.length)
-	
+	hud.changeLevel(currentWorld)
 
 	//Adjust player body attributes to match hud
 	playerBody.noBullets = hud.currammo
@@ -796,6 +796,7 @@ function checkState(){
 			currentWorld++
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
+				
 			});
 			init(false);
 		}else if(hud.entered == true){
