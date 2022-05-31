@@ -45,6 +45,7 @@ document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
 var gameWon=false
+var changeLevel=false
 //Raycast must not hit lines
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
@@ -504,7 +505,6 @@ function afterLoad() {
 	clouds = BuildWorld.getClouds();
 
 	//calls the method to draw the level's skybox (day)
-
 	switch(currentWorld){
 		case 1:
 			drawSkyBox(1)
@@ -521,10 +521,7 @@ function afterLoad() {
 			break;
 		case 3:
 			break;
-
 	}
-	
-
 	//Run game
 	animate();
 }
@@ -620,7 +617,7 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash and rain movement
-			if(currentWorld==1){   //change to 2
+			if(currentWorld==2){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
 						
@@ -638,7 +635,7 @@ function animate() {
 					position.y=200;
 					position.veclocity =0;
 				}
-			  }
+			  }*/
 			
 			for(let i =0; i<500; i++){
 				const y = rainGeo.attributes.position.getY(i);
@@ -647,13 +644,13 @@ function animate() {
 				/*if(positions.y<0){
 				y=200;
 
-				}
+				}*/
 			}
 			
 			rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
 			rain.rotation.y+=0.002;
-			*/
+			
 			
 			}
 		}
@@ -738,9 +735,11 @@ function init(reset) {
 		});
 	
 	}
+	
 	hudTexture.needsUpdate = true
 	removeTargets();
 	addTargets(TargetPos, TargetQuat);
+	enableMoving()
 	hud.gamestate = 0;
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
@@ -879,17 +878,22 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 2) {//change this to 3 when level 3 is added
+		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
+			changeLevel=true
+			currentWorld++
+			if(currentWorld<3){//change to 4 when level 3 is added
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
-			currentWorld++
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
-				
+				init(false);
+				changeLevel=false;
 			});
-			init(false);
-		}else if(hud.entered == true){
+		}else{
+			hud.gamestate=0;
+		}
+		}else if(hud.entered == true &&currentWorld>=3){ //change to 4 when level 3 is added
 			gameWon=true;
 			
 		}
@@ -1040,6 +1044,7 @@ function handleSparks() {
 }
 
 function MoveTargets(){
+	
 	var d = new Date();
 	var sec = d.getSeconds() + d.getMilliseconds() / 1000;
 	var min = d.getMinutes() + sec / 60;
@@ -1047,12 +1052,14 @@ function MoveTargets(){
 	time *= 60 * 60;
 	for (var i=0;i<TargetArr.length;i++){
 		if(TargetArr[i].moves==true){
+			console.log("rans")
 			TargetArr[i].moveTarget(time,TargetArr.length)
 		}
 	}
 }
 
 function enableMoving(){
+	console.log(currentWorld)
 	if(currentWorld==1){
 		for (var i=0;i<Level1.length;i++){
 			TargetArr[TargetArr.length-i-1].enableMove(i,Level1[i])
