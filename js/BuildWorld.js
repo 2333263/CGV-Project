@@ -418,7 +418,6 @@ class BuildWorld {
         //Unload THREE meshes
         //console.log(scene.getObjectByName('Scene'))
         scene.remove(scene.getObjectByName('Level_Root'))
-
         //Unload CANNON collisions of different types
         let hullLenth = hullCollisionCANNON.length - 1
         for (var i = hullLenth; i >= 0; i--) {

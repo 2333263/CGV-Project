@@ -1072,14 +1072,12 @@ function MoveTargets(){
 	time *= 60 * 60;
 	for (var i=0;i<TargetArr.length;i++){
 		if(TargetArr[i].moves==true){
-			console.log("rans")
 			TargetArr[i].moveTarget(time,TargetArr.length)
 		}
 	}
 }
 
 function enableMoving(){
-	console.log(currentWorld)
 	if(currentWorld==1){
 		for (var i=0;i<Level1.length;i++){
 			TargetArr[TargetArr.length-i-1].enableMove(i,Level1[i])
