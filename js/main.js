@@ -235,7 +235,7 @@ function drawSkyBox(level)
 	}
 
 //storm clouds
-function stormSky(){
+function stormSky(){ //come here
 	let loader = new THREE.TextureLoader();
 	let cloudGeo= new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
@@ -250,6 +250,7 @@ function stormSky(){
 
         for(let p=0; p<1; p++) {
             let cloud = new THREE.Mesh(cloudGeo,cloudMaterial);
+			cloud.name="cloud"
 			//centre :30.5453, 0, -32.0482
             cloud.position.set(Math.random()*30 -0,   100,  Math.random()*-32 + 0.0);
             cloud.rotation.x = 1.16;
@@ -263,6 +264,7 @@ function stormSky(){
 
 	//lightning flash
 	flash = new THREE.PointLight(0x062d89, 30, 500 ,2);
+	flash.name="flash"
 	flash.position.set(30,110,-30);
 	
 	scene.add(flash);
@@ -320,6 +322,7 @@ function stormSky(){
 		transparent: true
 	  });
 	let rain = new THREE.Points(rainGeo,rainMaterial);
+	rain.name="rainDrops"
 	scene.add(rain);
 }
 
@@ -566,8 +569,8 @@ function afterLoad() {
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(2)
 			scene.remove(mainLight);
-			light.intensity = 0.03
-			scene.remove(light);
+			//light.intensity = 0.03
+			scene.remove(light); //come
 			stormSky();
 			if(homeScreen.soundEffects){
 			rainSound(1);
@@ -811,12 +814,20 @@ function addTargets(position, quaternion) {
 };
 
 //Init for level reset
-function init(reset) {
+function init(reset) { //come here
 	for (const line of lines) {
 		scene.remove(line[0])
 	}
 	if(reset){
 	hud.setStartTime()
+	if(currentWorld==2){
+		scene.add(mainLight)
+		scene.add(light)
+		scene.remove(scene.getObjectByName("cloud"));
+		scene.remove(scene.getObjectByName("flash"))
+		cloudMeshArr=[]
+		scene.remove(scene.getObjectByName("rainDrops"))
+	}
 	BuildWorld.unloadCurrentLevel(scene, world)
 		cancelAnimationFrame(animationID);
 		currentWorld=1
@@ -825,6 +836,7 @@ function init(reset) {
 		});
 		rainSound(0)
 		thunderSound(0)
+		
 	}
 	
 	hudTexture.needsUpdate = true
