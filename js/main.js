@@ -103,9 +103,34 @@ orbitControls.update();
 
 //Music Init
 var backgroundmusic=new musicHandler(controls.getObject())
-backgroundmusic.init(backgroundmusic.backgroundSound);
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
+
+
+const RainListener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+RainListener.name="RainListener"
+	controls.getObject().add(RainListener);
+	const RainSound = new THREE.Audio(RainListener);
+	RainSound.name="rain"
+		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
+			RainSound.setBuffer(buffer);
+			RainSound.setLoop(false);
+			RainSound.setVolume(0.7);
+			});
+			
+
+const ThunderListner = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+ThunderListner.name="thunderSound"
+controls.getObject().add(ThunderListner);
+const ThunderSound = new THREE.Audio(ThunderListner);
+ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
+ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
+	audioLoader.load("js/thunder.mp3", function (buffer) {
+		ThunderSound.setBuffer(buffer);
+		ThunderSound.setLoop(false);
+		ThunderSound.setVolume(0.9);
+				
+			});
 
 //Audio Loader
 
@@ -121,6 +146,30 @@ function gunshotSound() {
 		gunsound.play();
 	});
 };
+function rainSound(control) 
+{
+	
+	if (control==1){
+		RainSound.play();
+		}
+	if(control==0){
+		RainSound.pause();
+	}
+};
+function thunderSound(control)
+{
+	if(control==1){
+		if(ThunderSound.isPlaying==false){
+		ThunderSound.play()
+		}else{
+			ThunderSound.stop()
+			ThunderSound.play()
+		}
+
+	}else{
+		ThunderSound.pause()
+	}
+}
 
 /**#############DEPRECATED###########
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
@@ -186,7 +235,7 @@ function drawSkyBox(level)
 	}
 
 //storm clouds
-function stormSky(){
+function stormSky(){ 
 	let loader = new THREE.TextureLoader();
 	let cloudGeo= new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
@@ -201,6 +250,7 @@ function stormSky(){
 
         for(let p=0; p<1; p++) {
             let cloud = new THREE.Mesh(cloudGeo,cloudMaterial);
+			cloud.name="cloud"
 			//centre :30.5453, 0, -32.0482
             cloud.position.set(Math.random()*30 -0,   100,  Math.random()*-32 + 0.0);
             cloud.rotation.x = 1.16;
@@ -214,6 +264,7 @@ function stormSky(){
 
 	//lightning flash
 	flash = new THREE.PointLight(0x062d89, 30, 500 ,2);
+	flash.name="flash"
 	flash.position.set(30,110,-30);
 	
 	scene.add(flash);
@@ -271,6 +322,7 @@ function stormSky(){
 		transparent: true
 	  });
 	let rain = new THREE.Points(rainGeo,rainMaterial);
+	rain.name="rainDrops"
 	scene.add(rain);
 }
 
@@ -427,9 +479,8 @@ function afterLoad() {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
-
 	//Adds the gun model to scene. Done in here to ensure model is loaded 
-	BuildWorld.addGun(playerModel)
+	BuildWorld.addGun(playerModel,banana)
 
 	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
@@ -508,6 +559,7 @@ function afterLoad() {
 	//calls the method to draw the level's skybox (day)
 	switch(currentWorld){
 		case 1:
+			rainSound(0);
 			drawSkyBox(1)
 			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 			console.log("load world 1 enviro");
@@ -516,18 +568,25 @@ function afterLoad() {
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(2)
 			scene.remove(mainLight);
-			light.intensity = 0.03
-			scene.remove(light);
+			//light.intensity = 0.03
+			scene.remove(light); 
 			stormSky();
+			if(homeScreen.soundEffects){
+			rainSound(1);
+			}
 			console.log("loaded world 2 enviro");
 			break;
 		case 3:
 			drawSkyBox(3);
-			
+			rainSound(0);
 			console.log("loaded world 3 enviro");
 			break;
 	}
 	//Run game
+	//backgroundmusic.pause();
+	if(homeScreen.Music){
+		backgroundmusic.init(backgroundmusic.backgroundSound);
+	}
 	animate();
 }
 
@@ -539,7 +598,9 @@ var animationID;
 /**
  * Function that runs the game
  */
+let count=0;
 function animate() {
+	
 	stats.begin()
 	//console.log(hud.startTime) //For monitoring
 	if (menu == true) {//if we're in the menu
@@ -621,7 +682,10 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
 
-			//lightning flash and rain movement
+			//lightning flash 
+			
+			count+=1
+			
 			if(currentWorld==2){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
@@ -629,6 +693,14 @@ function animate() {
 						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
 					flash.power= 50+Math.random()*500;
+					if(count>20){
+						if(homeScreen.soundEffects){
+						thunderSound(1);
+						count=0;
+						}
+					console.log("thunder played")
+					}
+					
 				}
 
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
@@ -662,14 +734,14 @@ function animate() {
 			//}
 			counter+=1
 			if(counter==209){
-				rainGeo.translate(0,200,0);
+				rainGeo.translate(0,200,0); //resets the rain gemoetry (vertically)
 				counter=0;
 				
 			}
 			
 			//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
-			rain.rotation.y+=0.002;
+			rain.rotation.y+=0.002; //introduces angle
 		
 			
 			}
@@ -714,7 +786,7 @@ function mapTargets() {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material,currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25-tempCylinder.position.y))
 	}
 };
 
@@ -734,26 +806,40 @@ function worldTargets() {
  */
 function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene);
+		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene, banana);
 		TargetArr.push(target);
 		scene.add(target.getCylinder()); 
 	}
 };
 
 //Init for level reset
-function init(reset) {
+function init(reset) { 
 	for (const line of lines) {
 		scene.remove(line[0])
 	}
 	if(reset){
 	hud.setStartTime()
+	if(currentWorld==2){
+		//undoes any environmental changes done by world 2
+		scene.add(mainLight)
+		scene.add(light)
+		scene.remove(scene.getObjectByName("cloud"));
+		scene.remove(scene.getObjectByName("flash"))
+		cloudMeshArr=[]
+		scene.remove(scene.getObjectByName("rainDrops"))
+	}
 	BuildWorld.unloadCurrentLevel(scene, world)
 		cancelAnimationFrame(animationID);
 		currentWorld=1
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
 		afterLoad();
+		if(banana){
+			document.body.removeChild(document.body.lastElementChild);
+		}
 		});
-	
+		rainSound(0)
+		thunderSound(0)
+		
 	}
 	
 	hudTexture.needsUpdate = true
@@ -806,6 +892,15 @@ document.addEventListener("mouseup", (e) => {
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
+		
+		if(homeScreen.Music){
+			backgroundmusic.pause()
+			backgroundmusic.play()
+			//backgroundmusic.listener.isPlaying=true
+		}
+
+
+
 		if (controls.isLocked == true) {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
@@ -900,14 +995,20 @@ function checkState(){
 		//Check that there is a next level to load, otherwise init
 		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
+			hud.isPaused(true);
+			
+			
 			changeLevel=true
 			currentWorld++
+			hud.isLoading(currentWorld);
 			if(currentWorld<3){//change to 4 when level 3 is added
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
+				document.body.removeChild(document.body.lastElementChild);
+				hud.isPaused(false);
 				changeLevel=false;
 			});
 		}else{
@@ -927,12 +1028,22 @@ function checkState(){
 
 //Keys pressed container
 const pressedKeys = {};
-
+var typedKeys=""
+var banana=false
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked) {
 		pressedKeys[e.key] = true;
-	} else {
+	} else if(menu==true){
+	typedKeys+=e.key.toLowerCase()
+	if(typedKeys.includes("banana")){
+		hud.isLoading("banana")
+		banana=true
+		homeScreen.enableBanana()
+		init(true)
+		
+	}
+	}else if(menu==false){
 		if (e.key == "r") {
 
 			init(true);
@@ -942,6 +1053,7 @@ document.addEventListener("keydown", (e) => {
 			menu = true
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())
+
 		}
 	}
 });
@@ -1072,14 +1184,12 @@ function MoveTargets(){
 	time *= 60 * 60;
 	for (var i=0;i<TargetArr.length;i++){
 		if(TargetArr[i].moves==true){
-			console.log("rans")
 			TargetArr[i].moveTarget(time,TargetArr.length)
 		}
 	}
 }
 
 function enableMoving(){
-	console.log(currentWorld)
 	if(currentWorld==1){
 		for (var i=0;i<Level1.length;i++){
 			TargetArr[TargetArr.length-i-1].enableMove(i,Level1[i])

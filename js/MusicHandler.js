@@ -10,6 +10,7 @@ class musicHandler{
         this.audioLoader = new THREE.AudioLoader();
         this.audioLoader.parent=this
         this.init=function(backgroundSound){
+            try{
             this.audioLoader.load("js/GameMusic.mp3", function (buffer) {
                 backgroundSound.setBuffer(buffer);
                 backgroundSound.setLoop(true);
@@ -17,6 +18,9 @@ class musicHandler{
                 backgroundSound.play();
             });
             this.playing=true;
+        }catch (error){
+            this.playing=false
+        }
         }
         this.pause=function(){
             if(this.playing==true){

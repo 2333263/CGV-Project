@@ -71,7 +71,6 @@ class HUD {
             input.addEventListener("keypress",function(e){
                 var keyCode = e.keyCode;
                 if (keyCode == 13) {
-                    console.log(input.id);
                     document.body.removeChild(document.body.lastElementChild);
                 }
             })
@@ -79,7 +78,28 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-
+        this.isLoading=function(currentWorld){
+            var loadingScreen=document.createElement("canvas")
+            
+            loadingScreen.style.position = 'fixed';
+            loadingScreen.style.left = 0+'px';
+            loadingScreen.style.top = 0 + 'px';
+            loadingScreen .width = width;
+            loadingScreen.height = height;
+           
+            loadingScreen.id="loadingScreen";
+            graphics = loadingScreen.getContext("2d");
+            graphics.fillStyle = "black";
+            graphics.fillRect(0,0,width,height)
+            var size=60*scaleFitNative;
+                graphics.font = String(size)+"px Arial";
+                graphics.fillStyle = "rgb(255,255,255)";
+                var word = "Loading Level "+currentWorld;
+            graphics.fillText(word, width/2-size/2*word.length/2, height/2);
+            graphics = this.canvas.getContext("2d");
+            document.body.appendChild(loadingScreen).focus;
+            
+        };
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
             this.entered=true
@@ -96,43 +116,60 @@ class HUD {
                 graphics.font = String(size)+"px Arial";
                 graphics.fillStyle = "rgb(255,255,255)";
                 var word = "Paused";
-                graphics.fillText(word, -20, -40);
+                graphics.fillText(word,    -size/2*word.length/2, -40);
                 word="Press R to restart";
-                graphics.fillText(word, -20, 0);
+                graphics.fillText(word,  -size/2*word.length/2, 0);
                 word="Click anywhere to resume";
-                graphics.fillText(word, -20, 40);
+                graphics.fillText(word,  -size/2*word.length/2, 40);
                 word="Press M to return to Main Menu";
-                graphics.fillText(word, -20, 80);
+                graphics.fillText(word,  -size/2*word.length/2, 80);
                 return;
             }
             if (!this.checkgameState(level)) {
                 graphics.save();
+                //graphics.scale(scaleFitNative,scaleFitNative)
+               // graphics.save()
                 drawCrossHair(this.level);
-                graphics.restore();
-                graphics.save();
-                this.bulletCount(this.currammo, this.totalammo);
                 graphics.restore();
                 graphics.save();
                 drawTime(this.startTime);
                 graphics.restore();
                 graphics.save();
-                graphics.translate(X_LEFT + 115, Y_BOTTOM - 18);
-                graphics.scale(0.6, 0.6);
-                drawBullet();
-                graphics.translate(25, 0);
-                drawBullet();
-                graphics.translate(25, 0);
-                drawBullet();
+                graphics.translate(X_LEFT+20,Y_BOTTOM-20)
+                this.drawAmmo()
                 graphics.restore();
-                graphics.save();
-                this.targetCount(this.currtargets, this.totaltarget);
-                graphics.restore();
-                graphics.save();
-                graphics.translate(X_RIGHT - 20, Y_TOP + 30);
-                drawTarget();
+              //  graphics.save();
+               // 
+                //graphics.restore();
+                //graphics.save();
+                //graphics.translate(X_RIGHT - 20, Y_TOP + 30);
+                graphics.save()
+                graphics.translate(X_RIGHT-120*scaleFitNative,Y_TOP+30*scaleFitNative)
+                this.drawTargetObject()
+               graphics.restore()
                 graphics.restore();
             }
         };
+
+        this.drawAmmo=function(){
+            graphics.save()
+            this.bulletCount(this.currammo, this.totalammo);
+            graphics.translate(120*scaleFitNative,-8*scaleFitNative)
+            graphics.scale(0.6*scaleFitNative, 0.6*scaleFitNative);
+                drawBullet();
+                graphics.translate(25, 0);
+                drawBullet();
+                graphics.translate(25, 0);
+                drawBullet();
+            graphics.restore()
+        }
+        this.drawTargetObject=function(){
+            graphics.save();
+            this.targetCount(this.currtargets, this.totaltarget);
+            graphics.translate(100*scaleFitNative,-1*scaleFitNative)
+            drawTarget();
+            graphics.restore();
+        }
 
         //Checks the gamestate and returns either a true or false value
         this.checkgameState=function(level) {
@@ -144,7 +181,7 @@ class HUD {
                 var word = "";
                 var bottom=Y_TOP+50;
                 if ( this.currtargets == this.totaltarget) { 
-                    if(level==3){//change this to 3 when level is added
+                    if(level==3){//change this to 4 when level is added
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
@@ -356,8 +393,8 @@ class HUD {
             var word = currammo + " / " + totalammo;
             graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
-            graphics.strokeText(word, X_LEFT + 10, Y_BOTTOM - 10);
-            graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10);
+            graphics.strokeText(word, 0, 0);
+            graphics.fillText(word,0, 0);
         }
 
         //Draws the current target count indicator text
@@ -368,8 +405,8 @@ class HUD {
             var word = currHits + " / " + totaltarget;
             graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
-            graphics.strokeText(word,  X_RIGHT-110, Y_TOP + 30);
-            graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);
+            graphics.strokeText(word,  0, 0);
+            graphics.fillText(word, 0,0);
         }
         this.setBullets=function(currBullets,totalBullets){
             this.currammo=currBullets
