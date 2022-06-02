@@ -26,6 +26,7 @@ class MainMenu{
         this.Music=true;
         this.soundEffects=true;
         this.controls=true;
+        this.banana=false
         //Apply limits, courtesy of Richard Klein
         applyLimits(this.graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         this.graphics.lineWidth = pixelSize;
@@ -93,6 +94,10 @@ class MainMenu{
             g.save()
             drawLogo(g)
             g.restore()
+            if(this.banana){
+            var word = "Banana mode enabled";
+            g.fillText(word,X_LEFT,Y_BOTTOM);
+            }
         }
         function drawLogo(graphics){
             graphics.save();
@@ -102,6 +107,9 @@ class MainMenu{
             graphics.scale(0.25*scaleFitNative,0.25*scaleFitNative)
             graphics.drawImage(logo,0,0)
             graphics.restore()
+        }
+        this.enableBanana=function(){
+            this.banana=true
         }
 
         //Draws the leaderboard on the screen
