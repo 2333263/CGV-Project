@@ -562,7 +562,7 @@ class BuildWorld {
         return torsoMesh;
     }
 
-    static addGun(scene,banana) {
+    static addGun(scene, banana) {
         const gltfLoader = new GLTFLoader(manager);
         var url=""
         if(!banana){
@@ -577,7 +577,7 @@ class BuildWorld {
             weapon.translateX(0.2)
             
             weapon.rotateX(Math.PI / 2)
-            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4')){
+            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana){
                 scene.getObjectByName('handRight').remove(scene.getObjectByName('handRight').getObjectByName('weaponsM4'))
                 weapon.translateY(-0.3)
                 weapon.scale.set(15,15,15)

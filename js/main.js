@@ -491,14 +491,9 @@ function afterLoad() {
 	
 
 
-	//Set up the main composer for the scene using preset post processing
-	composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+	
 
-	//Do selective bloom (mainly for the the lights and muzzle flash). Simply addes another pass to the composer and returns it
-	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
-
-	//Add post processing to orbital camera
-	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
+	
 
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
@@ -561,6 +556,8 @@ function afterLoad() {
 		case 1:
 			rainSound(0);
 			drawSkyBox(1)
+			//Set up the main composer for the scene using preset post processing
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
 			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 			console.log("load world 1 enviro");
 			break;
@@ -572,16 +569,27 @@ function afterLoad() {
 			scene.remove(light); 
 			stormSky();
 			if(homeScreen.soundEffects){
-			rainSound(1);
+				rainSound(1);
 			}
+			//Set up the main composer for the scene using preset post processing without volumetric lighting
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 2 enviro");
 			break;
 		case 3:
 			drawSkyBox(3);
 			rainSound(0);
+			//Set up the main composer for the scene using preset post processing without volumetric lighting
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
 			break;
 	}
+
+	//Do selective bloom (mainly for the the lights and muzzle flash). Simply addes another pass to the composer and returns it
+	composer = POSTPROCESSINGPASSES.selectiveBloomPass(composer, controls.getObject(), scene, glowing)
+
+	//Add post processing to orbital camera
+	composerMenu = POSTPROCESSINGPASSES.doPasses(renderer, Menucamera, scene, mainLight)
+
 	//Run game
 	//backgroundmusic.pause();
 	if(homeScreen.Music){

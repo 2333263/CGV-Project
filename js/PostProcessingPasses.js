@@ -110,7 +110,11 @@ class POSTPROCESSINGPASSES {
         const colorDepthPass = new POSTPROCESSING.EffectPass(camera, smaaEffect, colorDepthEffect)
 
         //Add to different passes composer
-        composer.addPass(godRayPass);
+
+        if (godRaysOn){
+            composer.addPass(godRayPass);
+        }
+        
         composer.addPass(bloomPass);
 
         //Return
