@@ -11,13 +11,17 @@ class Targets{
      * @param {THREE.Quaternion} quaternion Rotation of the target
      * @param {THREE.Vector3} endPoint Target's endpoint for motion
      */
-    constructor(name, position, quaternion,level,scene){
+    constructor(name, position, quaternion,level,scene,banana){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
+        this.texturelocation="../Objects/Textures/Targets/"
+        if(banana){
+            this.texturelocation+="B_"
+        }
         this.CrossMat=new THREE.MeshBasicMaterial({
-            map: loader.load("../Objects/Textures/Targets/crosstarget.png")
+            map: loader.load(this.texturelocation+"crosstarget.png")
         });
         this.TickMat=new THREE.MeshBasicMaterial({
-            map: loader.load("../Objects/Textures/Targets/correctTarget.jpg")
+            map: loader.load(this.texturelocation+"correctTarget.jpg")
         });
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
         this.cylinder.position.copy(position)

@@ -806,7 +806,7 @@ function worldTargets() {
  */
 function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene);
+		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene, banana);
 		TargetArr.push(target);
 		scene.add(target.getCylinder()); 
 	}
@@ -833,6 +833,9 @@ function init(reset) {
 		currentWorld=1
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
 		afterLoad();
+		if(banana){
+			document.body.removeChild(document.body.lastElementChild);
+		}
 		});
 		rainSound(0)
 		thunderSound(0)
@@ -1034,9 +1037,11 @@ document.addEventListener("keydown", (e) => {
 	} else if(menu==true){
 	typedKeys+=e.key.toLowerCase()
 	if(typedKeys.includes("banana")){
+		hud.isLoading("banana")
 		banana=true
 		homeScreen.enableBanana()
 		init(true)
+		
 	}
 	}else if(menu==false){
 		if (e.key == "r") {
