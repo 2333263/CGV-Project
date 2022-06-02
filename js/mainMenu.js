@@ -90,14 +90,16 @@ class MainMenu{
             g.fillText(word,X_LEFT*12/100,Y_TOP*-34/100);
             var word = "CREDITS";
             g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
-           drawLogo(g)
+            g.save()
+            drawLogo(g)
+            g.restore()
         }
         function drawLogo(graphics){
             graphics.save();
             var logo=new Image()
             logo.src="../Objects/Textures/Misc/Logo.png"
-            graphics.translate(-100,-500)
-            graphics.scale(0.25,0.25)
+            graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
+            graphics.scale(0.25*scaleFitNative,0.25*scaleFitNative)
             graphics.drawImage(logo,0,0)
             graphics.restore()
         }
