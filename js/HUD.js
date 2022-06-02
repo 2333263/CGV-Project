@@ -71,7 +71,6 @@ class HUD {
             input.addEventListener("keypress",function(e){
                 var keyCode = e.keyCode;
                 if (keyCode == 13) {
-                    console.log(input.id);
                     document.body.removeChild(document.body.lastElementChild);
                 }
             })
