@@ -121,6 +121,43 @@ function gunshotSound() {
 		gunsound.play();
 	});
 };
+function rainSound(control) 
+{
+	
+	const listener2 = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+	controls.getObject().add(listener2);
+	const rainSound = new THREE.Audio(listener2);
+	if(control==1){	
+		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
+			rainSound.setBuffer(buffer);
+			rainSound.setLoop(false);
+			rainSound.setVolume(0.7);
+			rainSound.play();	
+			});
+			
+		}
+	if(control==0){
+		rainSound.pause();
+	}
+};
+function thunderSound()
+{
+	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+	controls.getObject().add(listener);
+	const thunder = new THREE.Audio(listener);
+	thunder.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
+	thunder.offset=2 //natural delay for sound from electrostatic discharge to reach player
+	audioLoader.load("js/thunder.mp3", function (buffer) {
+		thunder.setBuffer(buffer);
+		thunder.setLoop(false);
+		thunder.setVolume(0.9);
+		
+		//console.log("detune by ",Math.floor(-100+1000*Math.random()));
+		//var d = new Date();
+		//rainSound.frequency.setValueAtTime(Math.floor(100*Math.random()),d.getTime);
+		thunder.play();
+	});
+}
 
 /**#############DEPRECATED###########
 //CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
@@ -508,6 +545,7 @@ function afterLoad() {
 	//calls the method to draw the level's skybox (day)
 	switch(currentWorld){
 		case 1:
+			rainSound(0);
 			drawSkyBox(1)
 			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 			console.log("load world 1 enviro");
@@ -519,11 +557,12 @@ function afterLoad() {
 			light.intensity = 0.03
 			scene.remove(light);
 			stormSky();
+			rainSound(1);
 			console.log("loaded world 2 enviro");
 			break;
 		case 3:
 			drawSkyBox(3);
-			
+			rainSound(0);
 			console.log("loaded world 3 enviro");
 			break;
 	}
@@ -539,6 +578,7 @@ var animationID;
 /**
  * Function that runs the game
  */
+let count=0;
 function animate() {
 	stats.begin()
 	//console.log(hud.startTime) //For monitoring
@@ -621,7 +661,10 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
 
-			//lightning flash and rain movement
+			//lightning flash 
+			
+			count+=1
+			
 			if(currentWorld==2){   //change to 2
 				if(Math.random() >0.98 || flash.power > 100){
 					if(flash.power <100){
@@ -629,6 +672,14 @@ function animate() {
 						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
 					flash.power= 50+Math.random()*500;
+					if(count>20){
+						thunderSound();
+						count=0;
+					console.log("thunder played")
+					}
+					
+					
+					
 				}
 
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
