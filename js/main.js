@@ -131,7 +131,7 @@ function rainSound(control)
 		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
 			rainSound.setBuffer(buffer);
 			rainSound.setLoop(false);
-			rainSound.setVolume(0.7);
+			rainSound.setVolume(0.8);
 			rainSound.play();	
 			});
 			
