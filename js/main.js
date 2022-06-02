@@ -479,9 +479,9 @@ function afterLoad() {
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
-
 	//Adds the gun model to scene. Done in here to ensure model is loaded 
-	BuildWorld.addGun(playerModel)
+	console.log(banana,"banana")
+	BuildWorld.addGun(playerModel,banana)
 
 	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
@@ -1026,12 +1026,20 @@ function checkState(){
 
 //Keys pressed container
 const pressedKeys = {};
-
+var typedKeys=""
+var banana=false
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked) {
 		pressedKeys[e.key] = true;
-	} else {
+	} else if(menu==true){
+	typedKeys+=e.key.toLowerCase()
+	if(typedKeys.includes("banana")){
+		banana=true
+		init(true)
+		console.log(banana)
+	}
+	}else if(menu==false){
 		if (e.key == "r") {
 
 			init(true);

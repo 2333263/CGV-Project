@@ -562,17 +562,28 @@ class BuildWorld {
         return torsoMesh;
     }
 
-    static addGun(scene) {
+    static addGun(scene,banana) {
         const gltfLoader = new GLTFLoader(manager);
+        var url=""
+        if(!banana){
+        url = '../Objects/Weapons/m4_2.gltf'
+        }else{
+        url="../Objects/Weapons/Banana Gun.glb"
+        }
 
-        const url = '../Objects/Weapons/m4_2.gltf'
         gltfLoader.load(url, (gltf) => {
             const weapon = gltf.scene
             weapon.name = 'weaponsM4'
             weapon.translateX(0.2)
-            weapon.scale.set(0.7, 0.7, 0.7)
+            
             weapon.rotateX(Math.PI / 2)
-
+            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4')){
+                scene.getObjectByName('handRight').remove(scene.getObjectByName('handRight').getObjectByName('weaponsM4'))
+                weapon.translateY(-0.3)
+                weapon.scale.set(15,15,15)
+            }else{
+                weapon.scale.set(0.7, 0.7, 0.7)
+            }
 
 
             scene.getObjectByName('handRight').add(weapon)
@@ -589,11 +600,17 @@ class BuildWorld {
             opacity: 0.7
         }))
         //Translate muzzle flash to be in position with gun
+        if(!banana){//banana mode off
         muzzleFlash
             .translateZ(0.11)
             .translateX(0.2)
             .translateY(-1);
-
+        }else{//banana mode on
+             muzzleFlash
+            .translateZ(0.11)
+            .translateX(-0.1)
+            .translateY(-1);
+        }
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
         muzzleFlash.visible = false;
