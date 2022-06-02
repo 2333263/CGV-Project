@@ -78,7 +78,28 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-
+        this.isLoading=function(currentWorld){
+            var loadingScreen=document.createElement("canvas")
+            
+            loadingScreen.style.position = 'fixed';
+            loadingScreen.style.left = 0+'px';
+            loadingScreen.style.top = 0 + 'px';
+            loadingScreen .width = width;
+            loadingScreen.height = height;
+           
+            loadingScreen.id="loadingScreen";
+            graphics = loadingScreen.getContext("2d");
+            graphics.fillStyle = "black";
+            graphics.fillRect(0,0,width,height)
+            var size=60*scaleFitNative;
+                graphics.font = String(size)+"px Arial";
+                graphics.fillStyle = "rgb(255,255,255)";
+                var word = "Loading Level "+currentWorld;
+            graphics.fillText(word, width/2-size/2*word.length/2, height/2);
+            graphics = this.canvas.getContext("2d");
+            document.body.appendChild(loadingScreen).focus;
+            
+        };
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
             this.entered=true

@@ -944,14 +944,20 @@ function checkState(){
 		//Check that there is a next level to load, otherwise init
 		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
+			hud.isPaused(true);
+			
+			
 			changeLevel=true
 			currentWorld++
+			hud.isLoading(currentWorld);
 			if(currentWorld<3){//change to 4 when level 3 is added
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
+				document.body.removeChild(document.body.lastElementChild);
+				hud.isPaused(false);
 				changeLevel=false;
 			});
 		}else{
