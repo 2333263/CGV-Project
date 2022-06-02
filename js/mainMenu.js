@@ -91,8 +91,6 @@ class MainMenu{
             var word = "CREDITS";
             g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
             g.save()
-            g.translate(-100,-475)
-            g.scale(scaleFitNative,scaleFitNative)
             drawLogo(g)
             g.restore()
         }
@@ -100,7 +98,8 @@ class MainMenu{
             graphics.save();
             var logo=new Image()
             logo.src="../Objects/Textures/Misc/Logo.png"
-            graphics.scale(0.25,0.25)
+            graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
+            graphics.scale(0.25*scaleFitNative,0.25*scaleFitNative)
             graphics.drawImage(logo,0,0)
             graphics.restore()
         }
