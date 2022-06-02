@@ -103,9 +103,34 @@ orbitControls.update();
 
 //Music Init
 var backgroundmusic=new musicHandler(controls.getObject())
-backgroundmusic.init(backgroundmusic.backgroundSound);
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
+
+
+const RainListener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+RainListener.name="RainListener"
+	controls.getObject().add(RainListener);
+	const RainSound = new THREE.Audio(RainListener);
+	RainSound.name="rain"
+		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
+			RainSound.setBuffer(buffer);
+			RainSound.setLoop(false);
+			RainSound.setVolume(0.7);
+			});
+			
+
+const ThunderListner = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
+ThunderListner.name="thunderSound"
+controls.getObject().add(ThunderListner);
+const ThunderSound = new THREE.Audio(ThunderListner);
+ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
+ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
+	audioLoader.load("js/thunder.mp3", function (buffer) {
+		ThunderSound.setBuffer(buffer);
+		ThunderSound.setLoop(false);
+		ThunderSound.setVolume(0.9);
+				
+			});
 
 //Audio Loader
 
@@ -124,39 +149,26 @@ function gunshotSound() {
 function rainSound(control) 
 {
 	
-	const listener2 = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-	controls.getObject().add(listener2);
-	const rainSound = new THREE.Audio(listener2);
-	if(control==1){	
-		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
-			rainSound.setBuffer(buffer);
-			rainSound.setLoop(false);
-			rainSound.setVolume(0.7);
-			rainSound.play();	
-			});
-			
+	if (control==1){
+		RainSound.play();
 		}
 	if(control==0){
-		rainSound.pause();
+		RainSound.pause();
 	}
 };
-function thunderSound()
+function thunderSound(control)
 {
-	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-	controls.getObject().add(listener);
-	const thunder = new THREE.Audio(listener);
-	thunder.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
-	thunder.offset=2 //natural delay for sound from electrostatic discharge to reach player
-	audioLoader.load("js/thunder.mp3", function (buffer) {
-		thunder.setBuffer(buffer);
-		thunder.setLoop(false);
-		thunder.setVolume(0.9);
-		
-		//console.log("detune by ",Math.floor(-100+1000*Math.random()));
-		//var d = new Date();
-		//rainSound.frequency.setValueAtTime(Math.floor(100*Math.random()),d.getTime);
-		thunder.play();
-	});
+	if(control==1){
+		if(ThunderSound.isPlaying==false){
+		ThunderSound.play()
+		}else{
+			ThunderSound.stop()
+			ThunderSound.play()
+		}
+
+	}else{
+		ThunderSound.pause()
+	}
 }
 
 /**#############DEPRECATED###########
@@ -557,7 +569,9 @@ function afterLoad() {
 			light.intensity = 0.03
 			scene.remove(light);
 			stormSky();
+			if(homeScreen.soundEffects){
 			rainSound(1);
+			}
 			console.log("loaded world 2 enviro");
 			break;
 		case 3:
@@ -567,6 +581,10 @@ function afterLoad() {
 			break;
 	}
 	//Run game
+	//backgroundmusic.pause();
+	if(homeScreen.Music){
+		backgroundmusic.init(backgroundmusic.backgroundSound);
+	}
 	animate();
 }
 
@@ -580,6 +598,7 @@ var animationID;
  */
 let count=0;
 function animate() {
+	
 	stats.begin()
 	//console.log(hud.startTime) //For monitoring
 	if (menu == true) {//if we're in the menu
@@ -673,8 +692,10 @@ function animate() {
 					}
 					flash.power= 50+Math.random()*500;
 					if(count>20){
-						thunderSound();
+						if(homeScreen.soundEffects){
+						thunderSound(1);
 						count=0;
+						}
 					console.log("thunder played")
 					}
 					
@@ -804,7 +825,8 @@ function init(reset) {
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
 		afterLoad();
 		});
-	
+		rainSound(0)
+		thunderSound(0)
 	}
 	
 	hudTexture.needsUpdate = true
@@ -857,6 +879,15 @@ document.addEventListener("mouseup", (e) => {
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
+		
+		if(homeScreen.Music){
+			backgroundmusic.pause()
+			backgroundmusic.play()
+			//backgroundmusic.listener.isPlaying=true
+		}
+
+
+
 		if (controls.isLocked == true) {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
@@ -993,6 +1024,7 @@ document.addEventListener("keydown", (e) => {
 			menu = true
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())
+
 		}
 	}
 });
