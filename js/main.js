@@ -194,7 +194,7 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 **/
 
 //Skybox Init
-const skybox=new THREE.Mesh();
+var skybox;
 function drawSkyBox(level)
 {
 	console.log("Drawing skybox")
@@ -229,8 +229,8 @@ function drawSkyBox(level)
 	const materialArray = createMaterialArray();
 
 	//Smaller skybox that follows the player (thanks-jamin)
-	const skybxGeo = new THREE.BoxGeometry(380, 380, 380);
-	const skybox = new THREE.Mesh(skybxGeo, materialArray);
+	const skybxGeo = new THREE.BoxGeometry(390, 390, 390);
+	skybox = new THREE.Mesh(skybxGeo, materialArray);
 	scene.add(skybox);
 	}
 
