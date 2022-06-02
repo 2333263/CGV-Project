@@ -235,7 +235,7 @@ function drawSkyBox(level)
 	}
 
 //storm clouds
-function stormSky(){ //come here
+function stormSky(){ 
 	let loader = new THREE.TextureLoader();
 	let cloudGeo= new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
@@ -570,7 +570,7 @@ function afterLoad() {
 			drawSkyBox(2)
 			scene.remove(mainLight);
 			//light.intensity = 0.03
-			scene.remove(light); //come
+			scene.remove(light); 
 			stormSky();
 			if(homeScreen.soundEffects){
 			rainSound(1);
@@ -814,13 +814,14 @@ function addTargets(position, quaternion) {
 };
 
 //Init for level reset
-function init(reset) { //come here
+function init(reset) { 
 	for (const line of lines) {
 		scene.remove(line[0])
 	}
 	if(reset){
 	hud.setStartTime()
 	if(currentWorld==2){
+		//undoes any environmental changes done by world 2
 		scene.add(mainLight)
 		scene.add(light)
 		scene.remove(scene.getObjectByName("cloud"));
