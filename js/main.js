@@ -758,7 +758,7 @@ function mapTargets() {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material,currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25-tempCylinder.position.y))
 	}
 };
 
