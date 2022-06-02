@@ -127,32 +127,49 @@ class HUD {
             }
             if (!this.checkgameState(level)) {
                 graphics.save();
+                //graphics.scale(scaleFitNative,scaleFitNative)
+               // graphics.save()
                 drawCrossHair(this.level);
-                graphics.restore();
-                graphics.save();
-                this.bulletCount(this.currammo, this.totalammo);
                 graphics.restore();
                 graphics.save();
                 drawTime(this.startTime);
                 graphics.restore();
                 graphics.save();
-                graphics.translate(X_LEFT + 115, Y_BOTTOM - 18);
-                graphics.scale(0.6, 0.6);
-                drawBullet();
-                graphics.translate(25, 0);
-                drawBullet();
-                graphics.translate(25, 0);
-                drawBullet();
+                graphics.translate(X_LEFT+20,Y_BOTTOM-20)
+                this.drawAmmo()
                 graphics.restore();
-                graphics.save();
-                this.targetCount(this.currtargets, this.totaltarget);
-                graphics.restore();
-                graphics.save();
-                graphics.translate(X_RIGHT - 20, Y_TOP + 30);
-                drawTarget();
+              //  graphics.save();
+               // 
+                //graphics.restore();
+                //graphics.save();
+                //graphics.translate(X_RIGHT - 20, Y_TOP + 30);
+                graphics.save()
+                graphics.translate(X_RIGHT-120*scaleFitNative,Y_TOP+30*scaleFitNative)
+                this.drawTargetObject()
+               graphics.restore()
                 graphics.restore();
             }
         };
+
+        this.drawAmmo=function(){
+            graphics.save()
+            this.bulletCount(this.currammo, this.totalammo);
+            graphics.translate(120*scaleFitNative,-8*scaleFitNative)
+            graphics.scale(0.6*scaleFitNative, 0.6*scaleFitNative);
+                drawBullet();
+                graphics.translate(25, 0);
+                drawBullet();
+                graphics.translate(25, 0);
+                drawBullet();
+            graphics.restore()
+        }
+        this.drawTargetObject=function(){
+            graphics.save();
+            this.targetCount(this.currtargets, this.totaltarget);
+            graphics.translate(100*scaleFitNative,-1*scaleFitNative)
+            drawTarget();
+            graphics.restore();
+        }
 
         //Checks the gamestate and returns either a true or false value
         this.checkgameState=function(level) {
@@ -376,8 +393,8 @@ class HUD {
             var word = currammo + " / " + totalammo;
             graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
-            graphics.strokeText(word, X_LEFT + 10, Y_BOTTOM - 10);
-            graphics.fillText(word, X_LEFT + 10, Y_BOTTOM - 10);
+            graphics.strokeText(word, 0, 0);
+            graphics.fillText(word,0, 0);
         }
 
         //Draws the current target count indicator text
@@ -388,8 +405,8 @@ class HUD {
             var word = currHits + " / " + totaltarget;
             graphics.strokeStyle ="rgb(0,0,0)";
             graphics.lineWidth=1.2*scaleFitNative;
-            graphics.strokeText(word,  X_RIGHT-110, Y_TOP + 30);
-            graphics.fillText(word, X_RIGHT-110, Y_TOP + 30);
+            graphics.strokeText(word,  0, 0);
+            graphics.fillText(word, 0,0);
         }
         this.setBullets=function(currBullets,totalBullets){
             this.currammo=currBullets
