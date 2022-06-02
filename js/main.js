@@ -150,7 +150,7 @@ function thunderSound()
 	audioLoader.load("js/thunder.mp3", function (buffer) {
 		thunder.setBuffer(buffer);
 		thunder.setLoop(false);
-		thunder.setVolume(0.9);
+		thunder.setVolume(0.7);
 		
 		//console.log("detune by ",Math.floor(-100+1000*Math.random()));
 		//var d = new Date();
