@@ -116,13 +116,13 @@ class HUD {
                 graphics.font = String(size)+"px Arial";
                 graphics.fillStyle = "rgb(255,255,255)";
                 var word = "Paused";
-                graphics.fillText(word, -20, -40);
+                graphics.fillText(word,    -size/2*word.length/2, -40);
                 word="Press R to restart";
-                graphics.fillText(word, -20, 0);
+                graphics.fillText(word,  -size/2*word.length/2, 0);
                 word="Click anywhere to resume";
-                graphics.fillText(word, -20, 40);
+                graphics.fillText(word,  -size/2*word.length/2, 40);
                 word="Press M to return to Main Menu";
-                graphics.fillText(word, -20, 80);
+                graphics.fillText(word,  -size/2*word.length/2, 80);
                 return;
             }
             if (!this.checkgameState(level)) {
