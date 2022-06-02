@@ -699,8 +699,6 @@ function animate() {
 					console.log("thunder played")
 					}
 					
-					
-					
 				}
 
 				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
@@ -734,14 +732,14 @@ function animate() {
 			//}
 			counter+=1
 			if(counter==209){
-				rainGeo.translate(0,200,0);
+				rainGeo.translate(0,200,0); //resets the rain gemoetry (vertically)
 				counter=0;
 				
 			}
 			
 			//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
-			rain.rotation.y+=0.002;
+			rain.rotation.y+=0.002; //introduces angle
 		
 			
 			}
@@ -786,7 +784,7 @@ function mapTargets() {
 		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material,currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(20))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25-tempCylinder.position.y))
 	}
 };
 
@@ -982,14 +980,20 @@ function checkState(){
 		//Check that there is a next level to load, otherwise init
 		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
+			hud.isPaused(true);
+			
+			
 			changeLevel=true
 			currentWorld++
+			hud.isLoading(currentWorld);
 			if(currentWorld<3){//change to 4 when level 3 is added
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
+				document.body.removeChild(document.body.lastElementChild);
+				hud.isPaused(false);
 				changeLevel=false;
 			});
 		}else{
