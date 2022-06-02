@@ -151,10 +151,6 @@ function thunderSound()
 		thunder.setBuffer(buffer);
 		thunder.setLoop(false);
 		thunder.setVolume(0.7);
-		
-		//console.log("detune by ",Math.floor(-100+1000*Math.random()));
-		//var d = new Date();
-		//rainSound.frequency.setValueAtTime(Math.floor(100*Math.random()),d.getTime);
 		thunder.play();
 	});
 }
@@ -672,13 +668,10 @@ function animate() {
 						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
 					flash.power= 50+Math.random()*500;
-					if(count>20){
+					if(count>20){ //ensures thunder doesn't play over itself
 						thunderSound();
 						count=0;
-					console.log("thunder played")
 					}
-					
-					
 					
 				}
 
@@ -713,14 +706,14 @@ function animate() {
 			//}
 			counter+=1
 			if(counter==209){
-				rainGeo.translate(0,200,0);
+				rainGeo.translate(0,200,0); //resets the rain gemoetry (vertically)
 				counter=0;
 				
 			}
 			
 			//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
 			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
-			rain.rotation.y+=0.002;
+			rain.rotation.y+=0.002; //introduces angle
 		
 			
 			}
