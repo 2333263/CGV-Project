@@ -583,6 +583,7 @@ function afterLoad() {
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
 			break;
+		
 	}
 
 	//Do selective bloom (mainly for the the lights and muzzle flash). Simply addes another pass to the composer and returns it
@@ -595,6 +596,9 @@ function afterLoad() {
 	//backgroundmusic.pause();
 	if(homeScreen.Music){
 		backgroundmusic.init(backgroundmusic.backgroundSound,banana);
+	}
+	if(banana){
+		document.body.removeChild(document.body.lastElementChild); //remove loading screen
 	}
 	animate();
 }
@@ -848,9 +852,7 @@ function init(reset) {
 		currentWorld=1
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
 		afterLoad();
-		if(banana){
-			document.body.removeChild(document.body.lastElementChild);
-		}
+		
 		});
 		rainSound(0)
 		thunderSound(0)
@@ -1022,7 +1024,7 @@ function checkState(){
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
-				document.body.removeChild(document.body.lastElementChild);
+				document.body.removeChild(document.body.lastElementChild);//remove loading screen
 				hud.isPaused(false);
 				changeLevel=false;
 			});
@@ -1051,7 +1053,7 @@ document.addEventListener("keydown", (e) => {
 		pressedKeys[e.key] = true;
 	} else if(menu==true){
 	typedKeys+=e.key.toLowerCase()
-	if(typedKeys.includes("banana")){
+	if(typedKeys.includes("banana") && !banana){
 		hud.isLoading("banana")
 		banana=true
 		homeScreen.enableBanana()
