@@ -89,7 +89,7 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-        this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 3);
+        this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 4);
 
             this.loading=true
             var loadingScreen=document.createElement("canvas")
@@ -148,8 +148,8 @@ class HUD {
         //Draw function of HUD, responsible for handling all the elements of the HUD
         this.draw = function (level) 
             {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-                var random=Math.floor(Math.random() * 3);
-               drawImage(graphics, random)
+               // var random=Math.floor(Math.random() * 3);
+              // drawImage(graphics, random)
             if(this.Paused){
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
