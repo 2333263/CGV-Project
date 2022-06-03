@@ -564,9 +564,7 @@ function afterLoad() {
 		case 2:
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(2)
-			scene.remove(mainLight);
-			//light.intensity = 0.03
-			scene.remove(light);
+			
 			stormSky();
 			if (homeScreen.soundEffects) {
 				rainSound(1);
@@ -860,7 +858,13 @@ function init(reset) {
 		thunderSound(0)
 
 	}else{
-		if(currentWorld==3){
+		//remove visual effects from previous levels
+		if(currentWorld==2){
+			scene.remove(mainLight);
+			//light.intensity = 0.03
+			scene.remove(light);
+		}
+			else if(currentWorld==3){
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
