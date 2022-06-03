@@ -844,6 +844,8 @@ function init(reset) {
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}else if(currentWorld==3){
+		//	scene.remove(light)
+		scene.add(mainLight)
 			//undo any visual effects changed in world 3
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
@@ -865,6 +867,8 @@ function init(reset) {
 			scene.remove(light);
 		}
 			else if(currentWorld==3){
+			//light.intensity = 0.03
+			scene.add(light);
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
