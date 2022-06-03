@@ -198,6 +198,7 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 var skybox;
 function drawSkyBox(level)
 {
+	scene.remove(skybox)
 	console.log("Drawing skybox")
 	let pathStrings
 	if(level==1){
@@ -714,11 +715,9 @@ function animate() {
 							
 						thunderSound(1);
 						count=0;
-						console.log("thunder played")
 						}
 					
 					}
-					console.log(count)
 					
 				}
 
@@ -1217,6 +1216,10 @@ function enableMoving(){
 	}else if(currentWorld==2){
 		for (var i=0;i<Level2.length;i++){
 			TargetArr[TargetArr.length-i-1].enableMove(i,Level2[i])
+		}	
+	}else if(currentWorld==3){
+		for (var i=0;i<Level3.length;i++){
+			TargetArr[TargetArr.length-i-1].enableMove(i,Level3[i])
 		}	
 	}
 	
