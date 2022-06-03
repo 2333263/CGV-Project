@@ -89,7 +89,8 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-        this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 3);
+        this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 4);
+
             this.loading=true
             var loadingScreen=document.createElement("canvas")
             
@@ -103,29 +104,41 @@ class HUD {
             graphics = loadingScreen.getContext("2d");
             
             graphics.fillStyle = "black";
-           graphics.fillRect(0,0,width,height)
-         // drawImage(graphics,random);
+            graphics.fillRect(0,0,width,height)
+            drawImage(graphics,random);
            
             var size=60*scaleFitNative;
                 graphics.font = String(size)+"px Arial";
                 graphics.fillStyle = "rgb(255,255,255)";
                 var word = "Loading Level "+currentWorld;
-            graphics.fillText(word, width/2-size/2*word.length/2, height/2);
+            graphics.fillText(word, width/2-size/2*word.length/2, 3*height/4);
             
             graphics = this.canvas.getContext("2d");
             document.body.appendChild(loadingScreen).focus;
             
         };
-        function drawImage(graphics,random){
+        function drawImage(graphics, random){
             graphics.save();
             var sign=new Image()
             var path="../Objects/Textures/Signs/v_sign_"
             sign.src=path+random+".png"
-           
+            var scales=50
+            sign.onload = function() {
+                
+                graphics .drawImage(
+                  sign,
+                  width/2-9*scales*scaleFitNative/2,
+                  height/2- 12*scales*scaleFitNative,
+                  9*scales*scaleFitNative,
+                  16*scales*scaleFitNative
+                );
+                
+              };
+              graphics.restore()
            // graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
            // graphics.scale(scaleFitNative,scaleFitNative)
-            graphics.drawImage(sign,0,0,100,100)
-            graphics.restore()
+            
+            
         };
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
@@ -136,7 +149,7 @@ class HUD {
         this.draw = function (level) 
             {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
                // var random=Math.floor(Math.random() * 3);
-               // drawImage(graphics,random)
+              // drawImage(graphics, random)
             if(this.Paused){
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
