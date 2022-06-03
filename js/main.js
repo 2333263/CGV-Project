@@ -24,13 +24,13 @@ const width = window.innerWidth + 20;
 const height = window.innerHeight + 20;
 var scene = new THREE.Scene();
 const aspectRatio = width / height;
-const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 6000);
 const HudCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30);
 var sceneHUD = new THREE.Scene();
 var frustumSize = 14;
 var dt = 0;
 var menu = true;
-const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 500);
+const Menucamera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const pipcamera = new THREE.OrthographicCamera(-frustumSize, frustumSize, frustumSize, -frustumSize, 1, 1000);
 var Clock = new THREE.Clock(true);
 const renderer = new THREE.WebGLRenderer();
@@ -44,8 +44,8 @@ renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
-var gameWon=false
-var changeLevel=false
+var gameWon = false
+var changeLevel = false
 //Raycast must not hit lines
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
@@ -56,8 +56,8 @@ let flash = new THREE.PointLight();
 let cloudMeshArr = new Array;
 const rainGeo = new THREE.BufferGeometry()
 let rain = new THREE.Points();
-const rainInit =[32,200,-32];
-let counter=0;
+const rainInit = [32, 200, -32];
+let counter = 0;
 /*
 // Refractor object test
 const refractorGeo = new THREE.PlaneGeometry(3,3);
@@ -92,8 +92,8 @@ const planeMaterial = new CANNON.Material({
 
 //Controls Init
 const controls = new PointerLockControls(camera, document.body);
-controls.minPolarAngle=0.1
-controls.maxPolarAngle=Math.PI-0.1
+controls.minPolarAngle = 0.1
+controls.maxPolarAngle = Math.PI - 0.1
 const orbitControls = new OrbitControls(Menucamera, renderer.domElement);
 Menucamera.position.set(0, 30, 30);
 orbitControls.target.set(30.5453, 0, -32.0482);
@@ -102,36 +102,36 @@ orbitControls.dispose();
 orbitControls.update();
 
 //Music Init
-var banana=false 
-var backgroundmusic=new musicHandler(controls.getObject(),banana)
+var banana = false
+var backgroundmusic = new musicHandler(controls.getObject(), banana)
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
 
 
 const RainListener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-RainListener.name="RainListener"
-	controls.getObject().add(RainListener);
-	const RainSound = new THREE.Audio(RainListener);
-	RainSound.name="rain"
-		audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
-			RainSound.setBuffer(buffer);
-			RainSound.setLoop(false);
-			RainSound.setVolume(0.7);
-			});
-			
+RainListener.name = "RainListener"
+controls.getObject().add(RainListener);
+const RainSound = new THREE.Audio(RainListener);
+RainSound.name = "rain"
+audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
+	RainSound.setBuffer(buffer);
+	RainSound.setLoop(false);
+	RainSound.setVolume(0.7);
+});
+
 
 const ThunderListner = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
-ThunderListner.name="thunderSound"
+ThunderListner.name = "thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
-ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
-	audioLoader.load("js/thunder.mp3", function (buffer) {
-		ThunderSound.setBuffer(buffer);
-		ThunderSound.setLoop(false);
-		ThunderSound.setVolume(0.9);
-				
-			});
+ThunderSound.detune = Math.floor(-100 + 1000 * Math.random()); //varies the pitch of the same thunder audio file
+ThunderSound.offset = 2 //natural delay for sound from electrostatic discharge to reach player
+audioLoader.load("js/thunder.mp3", function (buffer) {
+	ThunderSound.setBuffer(buffer);
+	ThunderSound.setLoop(false);
+	ThunderSound.setVolume(0.9);
+
+});
 
 //Audio Loader
 
@@ -147,27 +147,25 @@ function gunshotSound() {
 		gunsound.play();
 	});
 };
-function rainSound(control) 
-{
-	
-	if (control==1){
+function rainSound(control) {
+
+	if (control == 1) {
 		RainSound.play();
-		}
-	if(control==0){
+	}
+	if (control == 0) {
 		RainSound.pause();
 	}
 };
-function thunderSound(control)
-{
-	if(control==1){
-		if(ThunderSound.isPlaying==false){
-		ThunderSound.play()
-		}else{
+function thunderSound(control) {
+	if (control == 1) {
+		if (ThunderSound.isPlaying == false) {
+			ThunderSound.play()
+		} else {
 			ThunderSound.stop()
 			ThunderSound.play()
 		}
 
-	}else{
+	} else {
 		ThunderSound.pause()
 	}
 }
@@ -196,27 +194,27 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 //Skybox Init
 var skybox;
-function drawSkyBox(level)
-{
+function drawSkyBox(level) {
+	scene.remove(skybox);
 	console.log("Drawing skybox")
 	let pathStrings
-	if(level==1){
-	pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-	"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
+	if (level == 1) {
+		pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
+			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
 	}
-	if(level==2){
-		pathStrings = ["../Objects/Textures/Skybox/dark-blue-sky.jpg","../Objects/Textures/Skybox/dark-blue-sky.jpg",
-		"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
-		"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
+	if (level == 2) {
+		pathStrings = ["../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
+			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
+			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
 	}
-	if(level==3){
+	if (level == 3) {
 		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
+			"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
+			"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
 	}
-	
-//This function maps over the array of images, skybox related
+
+	//This function maps over the array of images, skybox related
 	function createMaterialArray() {
 		const skyboxImagepaths = pathStrings;
 		const materialArray = skyboxImagepaths.map(image => {
@@ -230,81 +228,81 @@ function drawSkyBox(level)
 	const materialArray = createMaterialArray();
 
 	//Smaller skybox that follows the player (thanks-jamin)
-	const skybxGeo = new THREE.BoxGeometry(390, 390, 390);
+	const skybxGeo = new THREE.BoxGeometry(1000, 1000, 1000);
 	skybox = new THREE.Mesh(skybxGeo, materialArray);
 	scene.add(skybox);
-	}
+}
 
 //storm clouds
-function stormSky(){ 
+function stormSky() {
 	let loader = new THREE.TextureLoader();
-	let cloudGeo= new THREE.PlaneBufferGeometry();
+	let cloudGeo = new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
-    loader.load("../Objects/Textures/Skybox/cloud/cloudTex.png", function(texture){
+	loader.load("../Objects/Textures/Skybox/cloud/cloudTex.png", function (texture) {
 
-        //cloudGeo = new THREE.PlaneBufferGeometry(400,400);
-		cloudGeo = new THREE.PlaneBufferGeometry(200,200);
-        cloudMaterial = new THREE.MeshPhongMaterial({
-            map: texture,
-            transparent: true
-        });
+		//cloudGeo = new THREE.PlaneBufferGeometry(400,400);
+		cloudGeo = new THREE.PlaneBufferGeometry(200, 200);
+		cloudMaterial = new THREE.MeshPhongMaterial({
+			map: texture,
+			transparent: true
+		});
 
-        for(let p=0; p<1; p++) {
-            let cloud = new THREE.Mesh(cloudGeo,cloudMaterial);
-			cloud.name="cloud"
+		for (let p = 0; p < 1; p++) {
+			let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
+			cloud.name = "cloud"
 			//centre :30.5453, 0, -32.0482
-            cloud.position.set(Math.random()*30 -0,   100,  Math.random()*-32 + 0.0);
-            cloud.rotation.x = 1.16;
-            cloud.rotation.y = -0.12;
-            cloud.rotation.z = Math.random()*360;
-            cloud.material.opacity = 0.6;
-            scene.add(cloud);
+			cloud.position.set(Math.random() * 30 - 0, 100, Math.random() * -32 + 0.0);
+			cloud.rotation.x = 1.16;
+			cloud.rotation.y = -0.12;
+			cloud.rotation.z = Math.random() * 360;
+			cloud.material.opacity = 0.6;
+			scene.add(cloud);
 			cloudMeshArr.push(cloud);
-        }
-    });
+		}
+	});
 
 	//lightning flash
-	flash = new THREE.PointLight(0x062d89, 30, 500 ,2);
-	flash.name="flash"
-	flash.position.set(30,110,-30);
-	
+	flash = new THREE.PointLight(0x062d89, 30, 500, 2);
+	flash.name = "flash"
+	flash.position.set(30, 110, -30);
+
 	scene.add(flash);
 
 	//rain drops------------
-/*
-	let rainCount=500;
-	let points = []
-	//rainGeo = new THREE.BufferGeometry(); declared in init
-	let rainDrop = new THREE.Vector3(); 
-	for(let i=0;i<rainCount;i++) {
-		rainDrop = new THREE.Vector3(
-			Math.random() * 200 -200+30,
-			Math.random() * 200 ,
-			Math.random() * 200 - 200-32
-		);
-		rainDrop.velocity ={};
-		rainDrop.velocity =0;
-		console.log(rainDrop);
-		points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
-	}
-	console.log(points);
-	let positions = new Float32Array.from(points); //convert list to Float32Array
-	console.log(positions);
-	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
+	/*
+		let rainCount=500;
+		let points = []
+		//rainGeo = new THREE.BufferGeometry(); declared in init
+		let rainDrop = new THREE.Vector3(); 
+		for(let i=0;i<rainCount;i++) {
+			rainDrop = new THREE.Vector3(
+				Math.random() * 200 -200+30,
+				Math.random() * 200 ,
+				Math.random() * 200 - 200-32
+			);
+			rainDrop.velocity ={};
+			rainDrop.velocity =0;
+			console.log(rainDrop);
+			points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
+		}
+		console.log(points);
+		let positions = new Float32Array.from(points); //convert list to Float32Array
+		console.log(positions);
+		rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
 
-	let rainCount=40000;
-	let points = new Float32Array(500*3);
+	let rainCount = 40000;
+	let points = new Float32Array(500 * 3);
 
 	//rainGeo = new THREE.BufferGeometry(); declared in init
 	//let rainDrop = new THREE.Vector3(); 
-	for(let i=0;i<rainCount;i=i+3) {
+	for (let i = 0; i < rainCount; i = i + 3) {
 		/*points[i] = Math.random() * 84 -100+30;
 		points[i+1]=Math.random() * 200 +200;
 		points[i+2]=Math.random() * 84 - 84-32;*/
-		points[i] = Math.random() * 100  ;
-		points[i+1]=Math.random() * 300 +50;
-		points[i+2]=Math.random() * 100 -80;//set cprrectly
-		
+		points[i] = Math.random() * 100;
+		points[i + 1] = Math.random() * 300 + 50;
+		points[i + 2] = Math.random() * 100 - 80;//set cprrectly
+
 		//rainDrop.velocity ={};
 		//rainDrop.velocity =0;
 		//console.log(rainDrop);
@@ -313,7 +311,7 @@ function stormSky(){
 	//console.log(points);
 	//let positions = new Float32Array.from(points); //convert list to Float32Array
 	//console.log(positions);
-	rainGeo.setAttribute( 'position', new THREE.BufferAttribute( points, 3 ) );
+	rainGeo.setAttribute('position', new THREE.BufferAttribute(points, 3));
 
 
 
@@ -321,9 +319,9 @@ function stormSky(){
 		color: 0xaaaaaa,
 		size: 0.1,
 		transparent: true
-	  });
-	let rain = new THREE.Points(rainGeo,rainMaterial);
-	rain.name="rainDrops"
+	});
+	let rain = new THREE.Points(rainGeo, rainMaterial);
+	rain.name = "rainDrops"
 	scene.add(rain);
 }
 
@@ -443,25 +441,25 @@ menuScene.add(MenuPlane);
 //initilize hud with random variables
 hud = new HUD(1, 1, 0, 5);
 
-	//returns the canvas object to use as a texture
-	hudTexture = new THREE.Texture(hud.getCanvas())
-	hudTexture.needsUpdate = true;
+//returns the canvas object to use as a texture
+hudTexture = new THREE.Texture(hud.getCanvas())
+hudTexture.needsUpdate = true;
 
-	//Create hud mesh
-	var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
-	hudMat.transparent = true
-	var HudGeom = new THREE.BoxGeometry(width, height, 0)
-	var HudPlane = new THREE.Mesh(HudGeom, hudMat)
+//Create hud mesh
+var hudMat = new THREE.MeshBasicMaterial({ map: hudTexture });
+hudMat.transparent = true
+var HudGeom = new THREE.BoxGeometry(width, height, 0)
+var HudPlane = new THREE.Mesh(HudGeom, hudMat)
 
-	//Change hud attrubuts to not interfere with main renderer/scene
-	HudPlane.material.depthWrite = false;
-	HudPlane.castShadow = false
-	HudPlane.onBeforeRender = function (renderer) {
-		renderer.clearDepth();
-	}
+//Change hud attrubuts to not interfere with main renderer/scene
+HudPlane.material.depthWrite = false;
+HudPlane.castShadow = false
+HudPlane.onBeforeRender = function (renderer) {
+	renderer.clearDepth();
+}
 
-	//Add hud to separate hud scene
-	sceneHUD.add(HudPlane)
+//Add hud to separate hud scene
+sceneHUD.add(HudPlane)
 
 
 
@@ -469,36 +467,36 @@ hud = new HUD(1, 1, 0, 5);
 var gunEnd
 
 //Load level 1
-var currentWorld = 1;
+var currentWorld = 3;
 BuildWorld.loadLevel(scene, world, currentWorld, function () {
 	afterLoad();
 });
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 function afterLoad() {
-	
+
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	// EVERYTHING REQUIRING THE LEVELS IN THE SCENE MUST BE PUT INTO THIS FUNCTION NB!! 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Adds the gun model to scene. Done in here to ensure model is loaded 
-	BuildWorld.addGun(playerModel,banana)
+	BuildWorld.addGun(playerModel, banana)
 
 	//Get all objects that should have high selective bloom applied, i.e. glowing
 	const glowing = BuildWorld.getGlowing();
 
 	//creates object for calling methods related to dynamic skybox...to be implemented later
 
-	
-	
 
 
-	
 
-	
+
+
+
+
 
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
-	const targetArrayMeshMove=BuildWorld.getTargetsMoving()
+	const targetArrayMeshMove = BuildWorld.getTargetsMoving()
 	//Clean target arrays (for reloading)
 	removeTargets()
 	TargetPos = [];
@@ -515,7 +513,7 @@ function afterLoad() {
 		const targetQuaterion = tarMesh.quaternion;
 		TargetQuat.push(targetQuaterion);
 	}
-	for (const tarMesh of targetArrayMeshMove){
+	for (const tarMesh of targetArrayMeshMove) {
 		const x = tarMesh.position.x
 		const y = tarMesh.position.y
 		const z = tarMesh.position.z
@@ -536,8 +534,8 @@ function afterLoad() {
 	//Create hud with target information
 
 	//initialises the hud
-	hud.setBullets(totalammo,totalammo)
-	hud.setTargets(0,TargetArr.length)
+	hud.setBullets(totalammo, totalammo)
+	hud.setTargets(0, TargetArr.length)
 	hud.changeLevel(currentWorld)
 
 	//Adjust player body attributes to match hud
@@ -553,7 +551,7 @@ function afterLoad() {
 	clouds = BuildWorld.getClouds();
 
 	//calls the method to draw the level's skybox (day)
-	switch(currentWorld){
+	switch (currentWorld) {
 		case 1:
 			rainSound(0);
 			drawSkyBox(1)
@@ -567,9 +565,9 @@ function afterLoad() {
 			drawSkyBox(2)
 			scene.remove(mainLight);
 			//light.intensity = 0.03
-			scene.remove(light); 
+			scene.remove(light);
 			stormSky();
-			if(homeScreen.soundEffects){
+			if (homeScreen.soundEffects) {
 				rainSound(1);
 			}
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
@@ -583,7 +581,7 @@ function afterLoad() {
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
 			break;
-		
+
 	}
 
 	//Do selective bloom (mainly for the the lights and muzzle flash). Simply addes another pass to the composer and returns it
@@ -594,10 +592,10 @@ function afterLoad() {
 
 	//Run game
 	//backgroundmusic.pause();
-	if(homeScreen.Music){
-		backgroundmusic.init(backgroundmusic.backgroundSound,banana);
+	if (homeScreen.Music) {
+		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
-	if(banana){
+	if (banana) {
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
 	}
 	animate();
@@ -611,9 +609,9 @@ var animationID;
 /**
  * Function that runs the game
  */
-let count=0;
+let count = 0;
 function animate() {
-	
+
 	stats.begin()
 	//console.log(hud.startTime) //For monitoring
 	if (menu == true) {//if we're in the menu
@@ -632,9 +630,9 @@ function animate() {
 
 		MenuTexture.needsUpdate = true//update main menu
 		renderer.render(menuScene, HudCamera)//render the main menu
-		if(homeScreen.Music==true){
+		if (homeScreen.Music == true) {
 			backgroundmusic.play()
-		}else{
+		} else {
 			backgroundmusic.pause()
 		}
 	}
@@ -696,67 +694,67 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash 
-			
-			count+=1
-			
-			if(currentWorld==2){   //change to 2
-				if(Math.random() >0.98 || flash.power > 100){
-					if(flash.power <100){
-						
-						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
+
+			count += 1
+
+			if (currentWorld == 2) {   //change to 2
+				if (Math.random() > 0.98 || flash.power > 100) {
+					if (flash.power < 100) {
+
+						flash.position.set(Math.random() * 30, 100 + Math.random() * 10, -30);
 					}
-					flash.power= 50+Math.random()*500;
-					if(count>20){
-						if(homeScreen.soundEffects && count>50){
-						thunderSound(1);
-						count=0;
+					flash.power = 50 + Math.random() * 500;
+					if (count > 20) {
+						if (homeScreen.soundEffects && count > 50) {
+							thunderSound(1);
+							count = 0;
 						}
-					console.log("thunder played")
+						console.log("thunder played")
 					}
-					
+
 				}
 
-				cloudMeshArr.forEach(p => { p.rotation.z -=0.002;})
-				
-			//rain drop animation
+				cloudMeshArr.forEach(p => { p.rotation.z -= 0.002; })
 
-			/*for (const position of rainGeo) {
-				position.velocity -=0.1 +Math.random() *0.1;
-				position.y+=position.velocity;
-				if(position.y <-200){
-					position.y=200;
-					position.veclocity =0;
+				//rain drop animation
+
+				/*for (const position of rainGeo) {
+					position.velocity -=0.1 +Math.random() *0.1;
+					position.y+=position.velocity;
+					if(position.y <-200){
+						position.y=200;
+						position.veclocity =0;
+					}
+				  }	*/
+				rainGeo.translate(0, -1, 0);      //-----------------------
+
+				//}
+				/*
+				for(let i =0; i<500; i++){
+					console.log(i)
+					let y = rainGeo.attributes.position.getY(i);
+					console.log("y=      =",y)
+					rainGeo.attributes.position.setY(y-1);
+					y = rainGeo.attributes.position.getY(i);
+					console.log("update y=",y)
+					console.log("raindrop pos change")
+					if(y<0){
+					rainGeo.attributes.position.setY(180);
+				
+					}*/
+				//}
+				counter += 1
+				if (counter == 209) {
+					rainGeo.translate(0, 200, 0); //resets the rain gemoetry (vertically)
+					counter = 0;
+
 				}
-			  }	*/
-			rainGeo.translate(0,-1,0);      //-----------------------
 
-			  //}
-			/*
-			for(let i =0; i<500; i++){
-				console.log(i)
-				let y = rainGeo.attributes.position.getY(i);
-				console.log("y=      =",y)
-				rainGeo.attributes.position.setY(y-1);
-				y = rainGeo.attributes.position.getY(i);
-				console.log("update y=",y)
-				console.log("raindrop pos change")
-				if(y<0){
-				rainGeo.attributes.position.setY(180);
-			
-				}*/
-			//}
-			counter+=1
-			if(counter==209){
-				rainGeo.translate(0,200,0); //resets the rain gemoetry (vertically)
-				counter=0;
-				
-			}
-			
-			//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
-			//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
-			rain.rotation.y+=0.002; //introduces angle
-		
-			
+				//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
+				//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
+				rain.rotation.y += 0.002; //introduces angle
+
+
 			}
 		}
 		else {
@@ -766,7 +764,7 @@ function animate() {
 			hudTexture.needsUpdate = true;
 		}
 		renderWorld()
-		
+
 	}
 	stats.end() //For monitoring
 	animationID = requestAnimationFrame(animate);
@@ -796,10 +794,10 @@ function renderWorld() {
 //Rotates targets for appearance on the map camera
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
-		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material,currentWorld)
+		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material, currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
-		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25-tempCylinder.position.y))
+		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25 - tempCylinder.position.y))
 	}
 };
 
@@ -819,40 +817,41 @@ function worldTargets() {
  */
 function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
-		var target = new Targets(i, position[i], quaternion[i],currentWorld,scene, banana);
+		var target = new Targets(i, position[i], quaternion[i], currentWorld, scene, banana);
 		TargetArr.push(target);
-		scene.add(target.getCylinder()); 
+		scene.add(target.getCylinder());
 	}
 };
 
 //Init for level reset
-function init(reset) { 
+function init(reset) {
 	for (const line of lines) {
 		scene.remove(line[0])
 	}
-	if(reset){
-	hud.setStartTime()
-	if(currentWorld==2){
-		//undoes any environmental changes done by world 2
-		scene.add(mainLight)
-		scene.add(light)
-		scene.remove(scene.getObjectByName("cloud"));
-		scene.remove(scene.getObjectByName("flash"))
-		cloudMeshArr=[]
-		scene.remove(scene.getObjectByName("rainDrops"))
-	}
-	BuildWorld.unloadCurrentLevel(scene, world)
+	if (reset) {
+		hud.setStartTime()
+		if (currentWorld == 2) {
+			//undoes any environmental changes done by world 2
+			scene.add(mainLight)
+			scene.add(light)
+			scene.remove(scene.getObjectByName("cloud"));
+			scene.remove(scene.getObjectByName("flash"))
+			cloudMeshArr = []
+			scene.remove(scene.getObjectByName("rainDrops"))
+		}
+		BuildWorld.unloadCurrentLevel(scene, world)
+		scene.remove(skybox)
 		cancelAnimationFrame(animationID);
-		currentWorld=1
+		currentWorld = 1
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
-		afterLoad();
-		
+			afterLoad();
+
 		});
 		rainSound(0)
 		thunderSound(0)
-		
+
 	}
-	
+
 	hudTexture.needsUpdate = true
 	removeTargets();
 	addTargets(TargetPos, TargetQuat);
@@ -861,8 +860,8 @@ function init(reset) {
 	hud.currtargets = 0;
 	playerBody.noBullets = totalammo;
 	playerBody.canJump = false
-	playerBody.prevVel=0;
-	playerBody.counter=0;
+	playerBody.prevVel = 0;
+	playerBody.counter = 0;
 	hud.updateAmmoCount(playerBody.noBullets);
 	playerBody.velocity = new CANNON.Vec3(0, 0, 0)
 	playerBody.position.copy(initposition)
@@ -891,9 +890,9 @@ controls.addEventListener('unlocked', () => {
 //Mouse-up event listener
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
-	try{
-	scene.getObjectByName('muzzleFlash').visible = false;
-	}catch (error){
+	try {
+		scene.getObjectByName('muzzleFlash').visible = false;
+	} catch (error) {
 	}
 });
 
@@ -903,8 +902,8 @@ document.addEventListener("mouseup", (e) => {
 //Mouse-down event listener
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
-		
-		if(homeScreen.Music){
+
+		if (homeScreen.Music) {
 			backgroundmusic.pause()
 			backgroundmusic.play()
 			//backgroundmusic.listener.isPlaying=true
@@ -915,7 +914,7 @@ document.addEventListener("mousedown", (e) => {
 		if (controls.isLocked == true) {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
-				if(homeScreen.soundEffects){
+				if (homeScreen.soundEffects) {
 					gunshotSound()
 				}
 				scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
@@ -970,14 +969,14 @@ document.addEventListener("mousedown", (e) => {
 				scene.add(line);
 				const spark = new SPARK(intersects[i].point.clone(), creationTime, scene);
 				sparks.push(spark);
-				
-				if(gameWon==true){
-					gameWon=false
+
+				if (gameWon == true) {
+					gameWon = false
 					init(true);
 				}
 
 			}
-			
+
 		}
 		else {
 			if (menu == true) {
@@ -997,39 +996,39 @@ document.addEventListener("mousedown", (e) => {
 		}
 	}
 });
-function checkState(){
+function checkState() {
 	if (hud.gamestate == -1) { //Game failed
 		init(true);
 	}
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 3 && changeLevel == false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
-			
-			
-			changeLevel=true
+
+
+			changeLevel = true
 			currentWorld++
 			hud.isLoading(currentWorld);
-			if(currentWorld<4){//change to 4 when level 3 is added
-			BuildWorld.unloadCurrentLevel(scene, world)
-			cancelAnimationFrame(animationID);
-			BuildWorld.loadLevel(scene, world, currentWorld, function () {
-				afterLoad();
-				init(false);
-				document.body.removeChild(document.body.lastElementChild);//remove loading screen
-				hud.isPaused(false);
-				changeLevel=false;
-			});
-		}else{
-			hud.gamestate=0;
+			if (currentWorld < 4) {//change to 4 when level 3 is added
+				BuildWorld.unloadCurrentLevel(scene, world)
+				cancelAnimationFrame(animationID);
+				BuildWorld.loadLevel(scene, world, currentWorld, function () {
+					afterLoad();
+					init(false);
+					document.body.removeChild(document.body.lastElementChild);//remove loading screen
+					hud.isPaused(false);
+					changeLevel = false;
+				});
+			} else {
+				hud.gamestate = 0;
+			}
+		} else if (hud.entered == true && currentWorld >= 4) { //change to 4 when level 3 is added
+			gameWon = true;
+
 		}
-		}else if(hud.entered == true &&currentWorld>=4){ //change to 4 when level 3 is added
-			gameWon=true;
-			
-		}
-		 // Important for playe reset
+		// Important for playe reset
 	}
 }
 
@@ -1039,25 +1038,25 @@ function checkState(){
 
 //Keys pressed container
 const pressedKeys = {};
-var typedKeys=""
+var typedKeys = ""
 //var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked) {
 		pressedKeys[e.key] = true;
-	} else if(menu==true){
-	typedKeys+=e.key.toLowerCase()
-	if(typedKeys.includes("banana") && !banana){
-		hud.isLoading("banana")
-		banana=true
-		homeScreen.enableBanana()
-		backgroundmusic.pause()
-		//backgroundmusic=new musicHandler(controls.getObject(),banana)
-		backgroundmusic.init(banana)
-		init(true)
-		
-	}
-	}else if(menu==false){
+	} else if (menu == true) {
+		typedKeys += e.key.toLowerCase()
+		if (typedKeys.includes("banana") && !banana) {
+			hud.isLoading("banana")
+			banana = true
+			homeScreen.enableBanana()
+			backgroundmusic.pause()
+			//backgroundmusic=new musicHandler(controls.getObject(),banana)
+			backgroundmusic.init(banana)
+			init(true)
+
+		}
+	} else if (menu == false) {
 		if (e.key == "r") {
 
 			init(true);
@@ -1090,56 +1089,56 @@ function move() {
 	var delta = dt * 1000
 	delta *= 0.1
 	if (controls.isLocked) {
-		if(Math.floor(playerBody.prevVel)==Math.floor(playerBody.velocity.y)){
-			if(playerBody.counter==10){
-			playerBody.canJump=true;
-			}else{
+		if (Math.floor(playerBody.prevVel) == Math.floor(playerBody.velocity.y)) {
+			if (playerBody.counter == 10) {
+				playerBody.canJump = true;
+			} else {
 				playerBody.counter++;
 			}
-		}else{
-			playerBody.counter=0;
+		} else {
+			playerBody.counter = 0;
 		}
-		playerBody.prevVel=playerBody.velocity.y;
-		if(homeScreen.controls){
-		if (pressedKeys['w']) {
-			tempVec.z = -0.4 * delta
-		}
-		if (pressedKeys['a']) {
-			tempVec.x = -0.4 * delta
-		}
-		if (pressedKeys["d"]) {
-			tempVec.x = 0.4 * delta
-		}
-		if (pressedKeys['s']) {
-			tempVec.z = 0.4 * delta
-		}
-		if (pressedKeys[" "]) {
-			if (playerBody.canJump == true) {
-				playerBody.velocity.y = 15
+		playerBody.prevVel = playerBody.velocity.y;
+		if (homeScreen.controls) {
+			if (pressedKeys['w']) {
+				tempVec.z = -0.4 * delta
 			}
-			playerBody.canJump = false          //change back jump to false
-		}
-	}else{
-		if (pressedKeys["ArrowUp"]) {
-			tempVec.z = -0.4 * delta
-		}
-		if (pressedKeys['ArrowLeft']) {
-			tempVec.x = -0.4 * delta
-		}
-		if (pressedKeys["ArrowRight"]) {
-			tempVec.x = 0.4 * delta
-		}
-		if (pressedKeys['ArrowDown']) {
-			tempVec.z = 0.4 * delta
-		}
-		if (pressedKeys["Control"]) {
-			if (playerBody.canJump == true) {
-				playerBody.velocity.y = 15
+			if (pressedKeys['a']) {
+				tempVec.x = -0.4 * delta
 			}
-			playerBody.canJump = false
+			if (pressedKeys["d"]) {
+				tempVec.x = 0.4 * delta
+			}
+			if (pressedKeys['s']) {
+				tempVec.z = 0.4 * delta
+			}
+			if (pressedKeys[" "]) {
+				if (playerBody.canJump == true) {
+					playerBody.velocity.y = 15
+				}
+				playerBody.canJump = false          //change back jump to false
+			}
+		} else {
+			if (pressedKeys["ArrowUp"]) {
+				tempVec.z = -0.4 * delta
+			}
+			if (pressedKeys['ArrowLeft']) {
+				tempVec.x = -0.4 * delta
+			}
+			if (pressedKeys["ArrowRight"]) {
+				tempVec.x = 0.4 * delta
+			}
+			if (pressedKeys['ArrowDown']) {
+				tempVec.z = 0.4 * delta
+			}
+			if (pressedKeys["Control"]) {
+				if (playerBody.canJump == true) {
+					playerBody.velocity.y = 15
+				}
+				playerBody.canJump = false
+			}
 		}
-	}
-		
+
 	}
 	tempVec.applyQuaternion(controls.getObject().quaternion);
 	playerBody.velocity.x += tempVec.x
@@ -1189,29 +1188,29 @@ function handleSparks() {
 
 }
 
-function MoveTargets(){
-	
+function MoveTargets() {
+
 	var d = new Date();
 	var sec = d.getSeconds() + d.getMilliseconds() / 1000;
 	var min = d.getMinutes() + sec / 60;
 	var time = d.getHours() + min / 60;
 	time *= 60 * 60;
-	for (var i=0;i<TargetArr.length;i++){
-		if(TargetArr[i].moves==true){
-			TargetArr[i].moveTarget(time,TargetArr.length)
+	for (var i = 0; i < TargetArr.length; i++) {
+		if (TargetArr[i].moves == true) {
+			TargetArr[i].moveTarget(time, TargetArr.length)
 		}
 	}
 }
 
-function enableMoving(){
-	if(currentWorld==1){
-		for (var i=0;i<Level1.length;i++){
-			TargetArr[TargetArr.length-i-1].enableMove(i,Level1[i])
+function enableMoving() {
+	if (currentWorld == 1) {
+		for (var i = 0; i < Level1.length; i++) {
+			TargetArr[TargetArr.length - i - 1].enableMove(i, Level1[i])
 		}
-	}else if(currentWorld==2){
-		for (var i=0;i<Level2.length;i++){
-			TargetArr[TargetArr.length-i-1].enableMove(i,Level2[i])
-		}	
+	} else if (currentWorld == 2) {
+		for (var i = 0; i < Level2.length; i++) {
+			TargetArr[TargetArr.length - i - 1].enableMove(i, Level2[i])
+		}
 	}
-	
+
 }
