@@ -594,7 +594,7 @@ function afterLoad() {
 	//Run game
 	//backgroundmusic.pause();
 	if(homeScreen.Music){
-		backgroundmusic.init(backgroundmusic.backgroundSound);
+		backgroundmusic.init(backgroundmusic.backgroundSound,banana);
 	}
 	animate();
 }
@@ -1050,7 +1050,8 @@ document.addEventListener("keydown", (e) => {
 		banana=true
 		homeScreen.enableBanana()
 		backgroundmusic.pause()
-		backgroundmusic=new musicHandler(controls.getObject(),banana)
+		//backgroundmusic=new musicHandler(controls.getObject(),banana)
+		backgroundmusic.init(banana)
 		init(true)
 		
 	}

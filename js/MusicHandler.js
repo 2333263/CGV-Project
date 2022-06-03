@@ -9,7 +9,7 @@ class musicHandler{
         this.backgroundSound = new THREE.Audio(this.listener);
         this.audioLoader = new THREE.AudioLoader();
         this.audioLoader.parent=this
-        this.init=function(backgroundSound){
+        this.init=function(backgroundSound,banana){
             try{
                 let audiourl;
                 if(banana){
