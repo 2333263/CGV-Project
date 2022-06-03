@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 class musicHandler{
-    constructor(camera){
+    constructor(camera, banana){
         this.playing=false;
         this.camera=camera
         this.listener = new THREE.AudioListener();
@@ -11,7 +11,12 @@ class musicHandler{
         this.audioLoader.parent=this
         this.init=function(backgroundSound){
             try{
-            this.audioLoader.load("js/GameMusic.mp3", function (buffer) {
+                let audiourl;
+                if(banana){
+                    audiourl="js/bananaTrack.mp3";
+                }
+                else{audiourl="js/GameMusic.mp3"}
+            this.audioLoader.load(audiourl, function (buffer) {
                 backgroundSound.setBuffer(buffer);
                 backgroundSound.setLoop(true);
                 backgroundSound.setVolume(0.4);

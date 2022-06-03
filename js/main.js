@@ -102,7 +102,8 @@ orbitControls.dispose();
 orbitControls.update();
 
 //Music Init
-var backgroundmusic=new musicHandler(controls.getObject())
+var banana=false 
+var backgroundmusic=new musicHandler(controls.getObject(),banana)
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
 
@@ -702,7 +703,7 @@ function animate() {
 					}
 					flash.power= 50+Math.random()*500;
 					if(count>20){
-						if(homeScreen.soundEffects){
+						if(homeScreen.soundEffects && count>50){
 						thunderSound(1);
 						count=0;
 						}
@@ -1037,7 +1038,7 @@ function checkState(){
 //Keys pressed container
 const pressedKeys = {};
 var typedKeys=""
-var banana=false
+//var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked) {
@@ -1048,6 +1049,8 @@ document.addEventListener("keydown", (e) => {
 		hud.isLoading("banana")
 		banana=true
 		homeScreen.enableBanana()
+		backgroundmusic.pause()
+		backgroundmusic=new musicHandler(controls.getObject(),banana)
 		init(true)
 		
 	}
