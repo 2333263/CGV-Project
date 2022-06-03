@@ -1036,7 +1036,7 @@ function checkState() {
 			currentWorld++
 			
 			if(currentWorld<4){//change to 4 when level 3 is added
-			hud.isLoading(currentWorld);
+			hud.isLoading(currentWorld,banana);
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
@@ -1072,7 +1072,7 @@ document.addEventListener("keydown", (e) => {
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()
 		if (typedKeys.includes("banana") && !banana) {
-			hud.isLoading("banana")
+			hud.isLoading("banana",true)
 			banana = true
 			homeScreen.enableBanana()
 			backgroundmusic.pause()
