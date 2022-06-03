@@ -468,7 +468,7 @@ sceneHUD.add(HudPlane)
 var gunEnd
 
 //Load level 1
-var currentWorld = 3;
+var currentWorld = 1;
 BuildWorld.loadLevel(scene, world, currentWorld, function () {
 	afterLoad();
 });
@@ -838,12 +838,15 @@ function init(reset) {
 		hud.setStartTime()
 		if (currentWorld == 2) {
 			//undoes any environmental changes done by world 2
+			console.log("ran")
 			scene.add(mainLight)
 			scene.add(light)
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
+		}else if(currentWorld==3){
+			//undo any visual effects changed in world 3
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
 		scene.remove(skybox)
@@ -856,6 +859,13 @@ function init(reset) {
 		rainSound(0)
 		thunderSound(0)
 
+	}else{
+		if(currentWorld==3){
+			scene.remove(scene.getObjectByName("cloud"));
+			scene.remove(scene.getObjectByName("flash"))
+			cloudMeshArr = []
+			scene.remove(scene.getObjectByName("rainDrops"))
+		}
 	}
 
 	hudTexture.needsUpdate = true
