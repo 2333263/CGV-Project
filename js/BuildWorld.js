@@ -586,7 +586,8 @@ class BuildWorld {
             weapon.translateX(0.2)
             
             weapon.rotateX(Math.PI / 2)
-            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana){
+            
+            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana==true){
                 scene.getObjectByName('handRight').remove(scene.getObjectByName('handRight').getObjectByName('weaponsM4'))
                 weapon.translateY(-0.3)
                 weapon.scale.set(15,15,15)

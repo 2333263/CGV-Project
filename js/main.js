@@ -171,13 +171,14 @@ function drawSkyBox(level) {
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
 	}
-	if (level == 3) {
-		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-			"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-			"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
-	}
-
-	//This function maps over the array of images, skybox related
+	if(level==3){
+	pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+	"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+	"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
+}
+	
+	
+//This function maps over the array of images, skybox related
 	function createMaterialArray() {
 		const skyboxImagepaths = pathStrings;
 		const materialArray = skyboxImagepaths.map(image => {
@@ -430,7 +431,7 @@ sceneHUD.add(HudPlane)
 var gunEnd
 
 //Load level 1
-var currentWorld = 3;
+var currentWorld = 1;
 BuildWorld.loadLevel(scene, world, currentWorld, function () {
 	afterLoad();
 });
@@ -526,9 +527,7 @@ function afterLoad() {
 		case 2:
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(2)
-			scene.remove(mainLight);
-			//light.intensity = 0.03
-			scene.remove(light);
+			
 			stormSky();
 			if (homeScreen.soundEffects) {
 				rainSound(1);
@@ -543,6 +542,7 @@ function afterLoad() {
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
+			mainLight.color.setHex(0xf05cb2);
 			break;
 
 	}
@@ -804,12 +804,17 @@ function init(reset) {
 		hud.setStartTime()
 		if (currentWorld == 2) {
 			//undoes any environmental changes done by world 2
+			console.log("ran")
 			scene.add(mainLight)
 			scene.add(light)
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
+		}else if(currentWorld==3){
+		//	scene.remove(light)
+		scene.add(mainLight)
+			//undo any visual effects changed in world 3
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
 		scene.remove(skybox)
@@ -822,6 +827,21 @@ function init(reset) {
 		rainSound(0)
 		thunderSound(0)
 
+	}else{
+		//remove visual effects from previous levels
+		if(currentWorld==2){
+			scene.remove(mainLight);
+			//light.intensity = 0.03
+			scene.remove(light);
+		}
+			else if(currentWorld==3){
+			//light.intensity = 0.03
+			scene.add(light);
+			scene.remove(scene.getObjectByName("cloud"));
+			scene.remove(scene.getObjectByName("flash"))
+			cloudMeshArr = []
+			scene.remove(scene.getObjectByName("rainDrops"))
+		}
 	}
 
 	hudTexture.needsUpdate = true
@@ -982,29 +1002,33 @@ function checkState() {
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 3 && changeLevel == false) {//change this to 4 when level 3 is added
+		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
 
 
 			changeLevel = true
 			currentWorld++
-			hud.isLoading(currentWorld);
-			if (currentWorld < 4) {//change to 4 when level 3 is added
-				BuildWorld.unloadCurrentLevel(scene, world)
-				cancelAnimationFrame(animationID);
-				BuildWorld.loadLevel(scene, world, currentWorld, function () {
-					afterLoad();
-					init(false);
-
-					hud.isPaused(false);
-					changeLevel = false;
-				});
-			} else {
-				hud.gamestate = 0;
-			}
-			// Important for playe reset
+			
+			if(currentWorld<4){//change to 4 when level 3 is added
+			hud.isLoading(currentWorld,banana);
+			BuildWorld.unloadCurrentLevel(scene, world)
+			cancelAnimationFrame(animationID);
+			BuildWorld.loadLevel(scene, world, currentWorld, function () {
+				afterLoad();
+				init(false);
+				
+				hud.isPaused(false);
+				changeLevel=false;
+			});
+		}else{
+			hud.gamestate=0;
 		}
+		}else if(hud.entered == true && currentWorld>=4 ){ //change to 4 when level 3 is added
+			gameWon=true;
+			
+		}
+		 // Important for playe reset
 	}
 }
 
@@ -1023,7 +1047,7 @@ document.addEventListener("keydown", (e) => {
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()
 		if (typedKeys.includes("banana") && !banana) {
-			hud.isLoading("banana")
+			hud.isLoading("banana",true)
 			banana = true
 			homeScreen.enableBanana()
 			backgroundmusic.pause()
