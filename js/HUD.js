@@ -171,7 +171,7 @@ class HUD {
                 //graphics.save();
                 //graphics.translate(X_RIGHT - 20, Y_TOP + 30);
                 graphics.save()
-                graphics.translate(X_RIGHT-120*scaleFitNative,Y_TOP+30*scaleFitNative)
+                graphics.translate(X_RIGHT-140*scaleFitNative,Y_TOP+35*scaleFitNative)
                 this.drawTargetObject()
                graphics.restore()
                 graphics.restore();
@@ -193,7 +193,7 @@ class HUD {
         this.drawTargetObject=function(){
             graphics.save();
             this.targetCount(this.currtargets, this.totaltarget);
-            graphics.translate(100*scaleFitNative,-1*scaleFitNative)
+            graphics.translate(120*scaleFitNative,(-0.5)*scaleFitNative)
             drawTarget();
             graphics.restore();
         }
