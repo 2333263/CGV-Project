@@ -597,9 +597,10 @@ function afterLoad() {
 	if(homeScreen.Music){
 		backgroundmusic.init(backgroundmusic.backgroundSound,banana);
 	}
-	if(banana){
+	if(hud.loading){
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
-	}
+	hud.loading=false}
+	
 	animate();
 }
 
@@ -1024,7 +1025,7 @@ function checkState(){
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
-				document.body.removeChild(document.body.lastElementChild);//remove loading screen
+				
 				hud.isPaused(false);
 				changeLevel=false;
 			});
