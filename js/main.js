@@ -598,9 +598,10 @@ function afterLoad() {
 	if(homeScreen.Music){
 		backgroundmusic.init(backgroundmusic.backgroundSound,banana);
 	}
-	if(banana){
+	if(hud.loading){
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
-	}
+	hud.loading=false}
+	
 	animate();
 }
 
@@ -1009,7 +1010,7 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
 			
@@ -1023,7 +1024,7 @@ function checkState(){
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
-				document.body.removeChild(document.body.lastElementChild);//remove loading screen
+				
 				hud.isPaused(false);
 				changeLevel=false;
 			});

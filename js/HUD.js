@@ -24,6 +24,7 @@ class HUD {
         this.timepaused=0;
         this.entered=true;
         this.Paused=false;
+        this.loading=false;
         this.name="";
         this.leaderBoard=new leaderBoard();
         this.level=1
@@ -89,6 +90,7 @@ class HUD {
             input.focus();
         };
         this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 3);
+            this.loading=true
             var loadingScreen=document.createElement("canvas")
             
             loadingScreen.style.position = 'fixed';
