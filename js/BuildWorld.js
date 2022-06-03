@@ -38,6 +38,9 @@ var muzzleFlash
 //Array of clouds to send to main
 var clouds = [];
 
+//Array of movable to send to main
+var movingDoor = [];
+
 
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
@@ -369,6 +372,12 @@ class BuildWorld {
                     child.material = newMat
                     clouds.push(child.rotateX(180));            
                 }
+                else if (name.substring(0, 10) === 'MovingDoor') {
+                    var CANNONBody = threeToCannonObj.getCannonMesh(child, 'BOX')
+                    world.addBody(CANNONBody);
+                    movingDoor.push(child);    
+                    movingDoor.push(CANNONBody);        
+                }
 
 
             });
@@ -674,6 +683,14 @@ class BuildWorld {
      */
     static getClouds() {
         return clouds;
+    }
+
+    /**
+     * Function to get the moving door
+     * @returns {Array.<THREE.Mesh || CANNON.Body>} The muzzle flash mesh
+     */
+     static getDoor() {
+        return movingDoor;
     }
 }
 

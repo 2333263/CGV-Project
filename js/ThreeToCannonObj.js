@@ -37,6 +37,7 @@ class threeToCannonObj{
         const objCollisionBody=new CANNON.Body({
             material: planeMaterial
         })
+        
         objCollisionBody.addShape(result.shape, offsetObj, quaternionObj)
 
         //Return

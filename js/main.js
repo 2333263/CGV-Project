@@ -58,26 +58,7 @@ const rainGeo = new THREE.BufferGeometry()
 let rain = new THREE.Points();
 const rainInit = [32, 200, -32];
 let counter = 0;
-/*
-// Refractor object test
-const refractorGeo = new THREE.PlaneGeometry(3,3);
 
-// const refractor = new Refractor(refractorGeo,{
-// 	shader: WaterRefractionShader
-// });
-
-const refractorMat = new THREE.MeshPhysicalMaterial({
-	roughness: 0.1,   
-	transmission: 1,  
-	thickness: 3,
-	reflectivity : 0.5
-})
-
-const frostedGlass = new THREE.Mesh(refractorGeo, refractorMat)
-frostedGlass.position.set( 3, 1, 0 );
-
-scene.add(frostedGlass);
-*/
 
 //Canon world Init
 const world = new CANNON.World({
@@ -124,12 +105,12 @@ const ThunderListner = new THREE.AudioListener(); //a virtual listener of all au
 ThunderListner.name = "thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-	audioLoader.load("js/thunder.mp3", function (buffer) {
-		ThunderSound.setBuffer(buffer);
-		ThunderSound.setLoop(false);
-		ThunderSound.setVolume(0.5);
-				
-			});
+audioLoader.load("js/thunder.mp3", function (buffer) {
+	ThunderSound.setBuffer(buffer);
+	ThunderSound.setLoop(false);
+	ThunderSound.setVolume(0.5);
+
+});
 
 //Audio Loader
 
@@ -160,8 +141,8 @@ function thunderSound(control) {
 			ThunderSound.play()
 		} else {
 			ThunderSound.stop()
-			ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
-			ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
+			ThunderSound.detune = Math.floor(-100 + 1000 * Math.random()); //varies the pitch of the same thunder audio file
+			ThunderSound.offset = 2 //natural delay for sound from electrostatic discharge to reach player
 			ThunderSound.play()
 		}
 
@@ -169,33 +150,14 @@ function thunderSound(control) {
 		ThunderSound.pause()
 	}
 }
+//init door moving variables
+var doorMovingBool = false;
+var doorMovingStartTime;
 
-/**#############DEPRECATED###########
-//CODE TO GET TOON/CELL SHADING WORKING_COLOR_SPACE
-/*
-const alphaIndex = 10
-const colors = new Uint8Array(alphaIndex + 2);
-
-for (let c = 0; c <= colors.length; c++) {
-
-	colors[c] = (c / colors.length) * 256;
-}
-const format = ( renderer.capabilities.isWebGL2 ) ? THREE.RedFormat : THREE.LuminanceFormat;
-const gradientMap = new THREE.DataTexture(colors, colors.length, 1, format);
-gradientMap.needsUpdate = true;
-
-const toonMaterial = new THREE.MeshToonMaterial({
-	color: new THREE.Color('#31A5E7'),
-	gradientMap: gradientMap
-})
-
-scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
-**/
 
 //Skybox Init
 var skybox;
-function drawSkyBox(level)
-{
+function drawSkyBox(level) {
 	scene.remove(skybox)
 	console.log("Drawing skybox")
 	let pathStrings
@@ -596,10 +558,11 @@ function afterLoad() {
 	if (homeScreen.Music) {
 		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
-	if(hud.loading){
+	if (hud.loading) {
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
-	hud.loading=false}
-	
+		hud.loading = false
+	}
+
 	animate();
 }
 
@@ -696,26 +659,26 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash 
-			
-			
-			
-			if(currentWorld==2){ 
+
+
+
+			if (currentWorld == 2) {
 				//console.log(flash.power)  //change to 2
-				
-				if(Math.random() >0.98 || flash.power > 100){
+
+				if (Math.random() > 0.98 || flash.power > 100) {
 					count++
-					if(flash.power <100){
-						
-						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
+					if (flash.power < 100) {
+
+						flash.position.set(Math.random() * 30, 100 + Math.random() * 10, -30);
 					}
-					flash.power= 50+Math.random()*500;
-					if(count>70){//make it only run every 80 seconds //parseInt(0.75*60)
-						if(homeScreen.soundEffects && count>70){
-							
-						thunderSound(1);
-						count=0;
+					flash.power = 50 + Math.random() * 500;
+					if (count > 70) {//make it only run every 80 seconds //parseInt(0.75*60)
+						if (homeScreen.soundEffects && count > 70) {
+
+							thunderSound(1);
+							count = 0;
 						}
-					
+
 					}
 
 				}
@@ -761,6 +724,9 @@ function animate() {
 				rain.rotation.y += 0.002; //introduces angle
 
 
+			} 
+			if (doorMovingBool){
+				handleDoor()
 			}
 		}
 		else {
@@ -923,6 +889,13 @@ document.addEventListener("mousedown", (e) => {
 				if (homeScreen.soundEffects) {
 					gunshotSound()
 				}
+				//Get time of shot
+				let d = new Date();
+				let sec = d.getSeconds() + d.getMilliseconds() / 1000;
+				let min = d.getMinutes() + sec / 60;
+				let creationTime = d.getHours() + min / 60;
+				creationTime *= 60 * 60;
+
 				scene.getObjectByName('muzzleFlash').visible = true; //Add muzzle flash on shoot
 				raycaster.setFromCamera(new THREE.Vector2(0, 0), controls.getObject()); // hit thing in line of sight of crosshair
 				const intersects = raycaster.intersectObjects(scene.children);
@@ -932,7 +905,11 @@ document.addEventListener("mousedown", (e) => {
 						i++;
 					}
 					if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
-						HitTarget(intersects[i].object.name)
+						var name = intersects[i].object.name
+						HitTarget(name)
+						if (currentWorld == 3 && name == '4') {
+							doorMovingBool = true;
+						}
 						hud.increaseTarget();
 					}
 				}
@@ -965,11 +942,7 @@ document.addEventListener("mousedown", (e) => {
 					})
 				)
 
-				let d = new Date();
-				let sec = d.getSeconds() + d.getMilliseconds() / 1000;
-				let min = d.getMinutes() + sec / 60;
-				let creationTime = d.getHours() + min / 60;
-				creationTime *= 60 * 60;
+
 				// [Line, age of line]
 				lines.push([line, creationTime])
 				scene.add(line);
@@ -1017,22 +990,23 @@ function checkState() {
 			changeLevel = true
 			currentWorld++
 			hud.isLoading(currentWorld);
-			if(currentWorld<4){//change to 4 when level 3 is added
-			BuildWorld.unloadCurrentLevel(scene, world)
-			cancelAnimationFrame(animationID);
-			BuildWorld.loadLevel(scene, world, currentWorld, function () {
-				afterLoad();
-				init(false);
-				
-				hud.isPaused(false);
-				changeLevel=false;
-			});
-		}else{
-			hud.gamestate=0;
+			if (currentWorld < 4) {//change to 4 when level 3 is added
+				BuildWorld.unloadCurrentLevel(scene, world)
+				cancelAnimationFrame(animationID);
+				BuildWorld.loadLevel(scene, world, currentWorld, function () {
+					afterLoad();
+					init(false);
+
+					hud.isPaused(false);
+					changeLevel = false;
+				});
+			} else {
+				hud.gamestate = 0;
+			}
+			// Important for playe reset
 		}
-		// Important for playe reset
 	}
-}}
+}
 
 
 
@@ -1213,14 +1187,25 @@ function enableMoving() {
 		for (var i = 0; i < Level2.length; i++) {
 			TargetArr[TargetArr.length - i - 1].enableMove(i, Level2[i])
 		}
-	}else if(currentWorld==2){
-		for (var i=0;i<Level2.length;i++){
-			TargetArr[TargetArr.length-i-1].enableMove(i,Level2[i])
-		}	
-	}else if(currentWorld==3){
-		for (var i=0;i<Level3.length;i++){
-			TargetArr[TargetArr.length-i-1].enableMove(i,Level3[i])
-		}	
+	} else if (currentWorld == 2) {
+		for (var i = 0; i < Level2.length; i++) {
+			TargetArr[TargetArr.length - i - 1].enableMove(i, Level2[i])
+		}
+	} else if (currentWorld == 3) {
+		for (var i = 0; i < Level3.length; i++) {
+			TargetArr[TargetArr.length - i - 1].enableMove(i, Level3[i])
+		}
 	}
 
+}
+
+/**
+ * Function to handle the door moving
+ */
+function handleDoor() {
+	var door = BuildWorld.getDoor();
+	door[0].translateY(-0.01);
+	var offSetVec3 = door[1].shapeOffsets.pop()
+	offSetVec3.y -=0.01
+	door[1].shapeOffsets.push(offSetVec3);
 }
