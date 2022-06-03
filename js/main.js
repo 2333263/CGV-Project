@@ -124,12 +124,10 @@ const ThunderListner = new THREE.AudioListener(); //a virtual listener of all au
 ThunderListner.name="thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
-ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
 	audioLoader.load("js/thunder.mp3", function (buffer) {
 		ThunderSound.setBuffer(buffer);
 		ThunderSound.setLoop(false);
-		ThunderSound.setVolume(0.9);
+		ThunderSound.setVolume(0.5);
 				
 			});
 
@@ -164,6 +162,8 @@ function thunderSound(control)
 		ThunderSound.play()
 		}else{
 			ThunderSound.stop()
+			ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
+			ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
 			ThunderSound.play()
 		}
 
@@ -693,22 +693,28 @@ function animate() {
 
 			//lightning flash 
 			
-			count+=1
 			
-			if(currentWorld==2){   //change to 2
+			
+			if(currentWorld==2){ 
+				//console.log(flash.power)  //change to 2
+				
 				if(Math.random() >0.98 || flash.power > 100){
+					count++
 					if(flash.power <100){
 						
 						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
 					flash.power= 50+Math.random()*500;
-					if(count>20){
-						if(homeScreen.soundEffects && count>50){
+					if(count>70){//make it only run every 80 seconds //parseInt(0.75*60)
+						if(homeScreen.soundEffects && count>70){
+							
 						thunderSound(1);
 						count=0;
+						console.log("thunder played")
 						}
-					console.log("thunder played")
+					
 					}
+					console.log(count)
 					
 				}
 
@@ -1002,7 +1008,7 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
 			
@@ -1010,7 +1016,7 @@ function checkState(){
 			changeLevel=true
 			currentWorld++
 			hud.isLoading(currentWorld);
-			if(currentWorld<3){//change to 4 when level 3 is added
+			if(currentWorld<4){//change to 4 when level 3 is added
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
@@ -1023,7 +1029,7 @@ function checkState(){
 		}else{
 			hud.gamestate=0;
 		}
-		}else if(hud.entered == true &&currentWorld>=3){ //change to 4 when level 3 is added
+		}else if(hud.entered == true &&currentWorld>=4){ //change to 4 when level 3 is added
 			gameWon=true;
 			
 		}
