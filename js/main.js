@@ -211,10 +211,11 @@ function drawSkyBox(level)
 		"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
 	}
 	if(level==3){
-		pathStrings = ["../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png",
-		"../Objects/Textures/Skybox/nightskyemission.png", "../Objects/Textures/Skybox/nightskyemission.png"]
-	}
+	pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+	"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+	"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
+}
+	
 	
 //This function maps over the array of images, skybox related
 	function createMaterialArray() {
@@ -582,6 +583,7 @@ function afterLoad() {
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
+			mainLight.color.setHex(0xf05cb2);
 			break;
 		
 	}
