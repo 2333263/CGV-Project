@@ -89,7 +89,7 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-        this.isLoading=function(currentWorld,banana){ var random=Math.floor(Math.random()  * 4);
+        this.isLoading=function(currentWorld,banana){ var random=Math.floor(Math.random()  * 8);
 
             this.loading=true
             var loadingScreen=document.createElement("canvas")
@@ -120,18 +120,18 @@ class HUD {
         function drawImage(graphics, random,banana){
             graphics.save();
             var sign=new Image()
-            var path="../Objects/Textures/Signs/v_sign_"
-            if(banana)path="../Objects/Textures/Signs/b_v_sign_";
-            sign.src=path+random+".png"
-            var scales=50
+            var path="../Objects/Textures/Signs/sign_"+random
+            if(banana)path+="_b"
+            sign.src=path+".png"
+            var scales=500
             sign.onload = function() {
                 
                 graphics .drawImage(
                   sign,
-                  width/2-9*scales*scaleFitNative/2,
-                  height/2- 12*scales*scaleFitNative,
-                  9*scales*scaleFitNative,
-                  16*scales*scaleFitNative
+                  width/2-2*scales*scaleFitNative/2,
+                  height/2- 4*scales*scaleFitNative/5,
+                  2*scales*scaleFitNative,
+                  1*scales*scaleFitNative
                 );
                 
               };
