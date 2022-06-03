@@ -1010,15 +1010,16 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
 			
 			
 			changeLevel=true
 			currentWorld++
-			hud.isLoading(currentWorld);
+			
 			if(currentWorld<4){//change to 4 when level 3 is added
+			hud.isLoading(currentWorld);
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
 			BuildWorld.loadLevel(scene, world, currentWorld, function () {
@@ -1031,7 +1032,7 @@ function checkState(){
 		}else{
 			hud.gamestate=0;
 		}
-		}else if(hud.entered == true &&currentWorld>=4){ //change to 4 when level 3 is added
+		}else if(hud.entered == true && currentWorld>=4 ){ //change to 4 when level 3 is added
 			gameWon=true;
 			
 		}

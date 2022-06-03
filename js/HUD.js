@@ -210,7 +210,7 @@ class HUD {
                 var word = "";
                 var bottom=Y_TOP+50;
                 if ( this.currtargets == this.totaltarget) { 
-                    if(level==3){//change this to 4 when level is added
+                    if(level==4){//change this to 4 when level is added
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
