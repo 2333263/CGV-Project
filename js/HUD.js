@@ -89,7 +89,7 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
-        this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 4);
+        this.isLoading=function(currentWorld,banana){ var random=Math.floor(Math.random()  * 4);
 
             this.loading=true
             var loadingScreen=document.createElement("canvas")
@@ -105,7 +105,7 @@ class HUD {
             
             graphics.fillStyle = "black";
             graphics.fillRect(0,0,width,height)
-            drawImage(graphics,random);
+            drawImage(graphics,random,banana);
            
             var size=60*scaleFitNative;
                 graphics.font = String(size)+"px Arial";
@@ -117,10 +117,11 @@ class HUD {
             document.body.appendChild(loadingScreen).focus;
             
         };
-        function drawImage(graphics, random){
+        function drawImage(graphics, random,banana){
             graphics.save();
             var sign=new Image()
             var path="../Objects/Textures/Signs/v_sign_"
+            if(banana)path="../Objects/Textures/Signs/b_v_sign_";
             sign.src=path+random+".png"
             var scales=50
             sign.onload = function() {
