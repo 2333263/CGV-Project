@@ -124,14 +124,12 @@ const ThunderListner = new THREE.AudioListener(); //a virtual listener of all au
 ThunderListner.name = "thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-ThunderSound.detune = Math.floor(-100 + 1000 * Math.random()); //varies the pitch of the same thunder audio file
-ThunderSound.offset = 2 //natural delay for sound from electrostatic discharge to reach player
-audioLoader.load("js/thunder.mp3", function (buffer) {
-	ThunderSound.setBuffer(buffer);
-	ThunderSound.setLoop(false);
-	ThunderSound.setVolume(0.9);
-
-});
+	audioLoader.load("js/thunder.mp3", function (buffer) {
+		ThunderSound.setBuffer(buffer);
+		ThunderSound.setLoop(false);
+		ThunderSound.setVolume(0.5);
+				
+			});
 
 //Audio Loader
 
@@ -162,6 +160,8 @@ function thunderSound(control) {
 			ThunderSound.play()
 		} else {
 			ThunderSound.stop()
+			ThunderSound.detune=Math.floor(-100+1000*Math.random()); //varies the pitch of the same thunder audio file
+			ThunderSound.offset=2 //natural delay for sound from electrostatic discharge to reach player
 			ThunderSound.play()
 		}
 
@@ -194,8 +194,9 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(2),toonMaterial))
 
 //Skybox Init
 var skybox;
-function drawSkyBox(level) {
-	scene.remove(skybox);
+function drawSkyBox(level)
+{
+	scene.remove(skybox)
 	console.log("Drawing skybox")
 	let pathStrings
 	if (level == 1) {
@@ -595,9 +596,10 @@ function afterLoad() {
 	if (homeScreen.Music) {
 		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
-	if (banana) {
+	if(hud.loading){
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
-	}
+	hud.loading=false}
+	
 	animate();
 }
 
@@ -694,22 +696,26 @@ function animate() {
 			world.step(timestep, dt);
 
 			//lightning flash 
-
-			count += 1
-
-			if (currentWorld == 2) {   //change to 2
-				if (Math.random() > 0.98 || flash.power > 100) {
-					if (flash.power < 100) {
-
-						flash.position.set(Math.random() * 30, 100 + Math.random() * 10, -30);
+			
+			
+			
+			if(currentWorld==2){ 
+				//console.log(flash.power)  //change to 2
+				
+				if(Math.random() >0.98 || flash.power > 100){
+					count++
+					if(flash.power <100){
+						
+						flash.position.set( Math.random()*30, 100+Math.random()*10,-30);
 					}
-					flash.power = 50 + Math.random() * 500;
-					if (count > 20) {
-						if (homeScreen.soundEffects && count > 50) {
-							thunderSound(1);
-							count = 0;
+					flash.power= 50+Math.random()*500;
+					if(count>70){//make it only run every 80 seconds //parseInt(0.75*60)
+						if(homeScreen.soundEffects && count>70){
+							
+						thunderSound(1);
+						count=0;
 						}
-						console.log("thunder played")
+					
 					}
 
 				}
@@ -1011,22 +1017,18 @@ function checkState() {
 			changeLevel = true
 			currentWorld++
 			hud.isLoading(currentWorld);
-			if (currentWorld < 4) {//change to 4 when level 3 is added
-				BuildWorld.unloadCurrentLevel(scene, world)
-				cancelAnimationFrame(animationID);
-				BuildWorld.loadLevel(scene, world, currentWorld, function () {
-					afterLoad();
-					init(false);
-					document.body.removeChild(document.body.lastElementChild);//remove loading screen
-					hud.isPaused(false);
-					changeLevel = false;
-				});
-			} else {
-				hud.gamestate = 0;
-			}
-		} else if (hud.entered == true && currentWorld >= 4) { //change to 4 when level 3 is added
-			gameWon = true;
-
+			if(currentWorld<4){//change to 4 when level 3 is added
+			BuildWorld.unloadCurrentLevel(scene, world)
+			cancelAnimationFrame(animationID);
+			BuildWorld.loadLevel(scene, world, currentWorld, function () {
+				afterLoad();
+				init(false);
+				
+				hud.isPaused(false);
+				changeLevel=false;
+			});
+		}else{
+			hud.gamestate=0;
 		}
 		// Important for playe reset
 	}
@@ -1211,6 +1213,14 @@ function enableMoving() {
 		for (var i = 0; i < Level2.length; i++) {
 			TargetArr[TargetArr.length - i - 1].enableMove(i, Level2[i])
 		}
+	}else if(currentWorld==2){
+		for (var i=0;i<Level2.length;i++){
+			TargetArr[TargetArr.length-i-1].enableMove(i,Level2[i])
+		}	
+	}else if(currentWorld==3){
+		for (var i=0;i<Level3.length;i++){
+			TargetArr[TargetArr.length-i-1].enableMove(i,Level3[i])
+		}	
 	}
 
 }

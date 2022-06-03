@@ -5,7 +5,9 @@ const height=window.innerHeight+20
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
 
-        //Varible Init
+        /**
+         * Varible Init
+         */
         this.currammo = currammo;
         this.totalammo = totalammo;
         this.document = document;
@@ -22,12 +24,15 @@ class HUD {
         this.timepaused=0;
         this.entered=true;
         this.Paused=false;
+        this.loading=false;
         this.name="";
         this.leaderBoard=new leaderBoard();
         this.level=1
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
-        //XY Scalings
+        /**
+         * XY Scalings
+         */
         var X_LEFT = (-width / 2);
         var X_RIGHT = (width / 2);
         var Y_BOTTOM = (height / 2);
@@ -35,7 +40,11 @@ class HUD {
         var pixelSize;
         var graphics = this.canvas.getContext("2d");
 
-        //Updates the number of targets on the level
+        /**
+         * Updates the number of targets on the level
+         * @param {int} totaltarget 
+         * @param {int} currtargets 
+         */
         this.updateTargetNumbers = function (totaltarget, currtargets) {
             graphics.save();
             graphics.setTransform(1, 0, 0, 1, 0, 0);
@@ -45,7 +54,9 @@ class HUD {
             this.currtargets = currtargets;
         };
 
-        //Creates the start time of the level
+        /**
+         * Creates the start time of the level
+         */
         this.setStartTime=function(){
             let d = new Date();
             let sec=d.getSeconds()+d.getMilliseconds()/1000;
@@ -79,6 +90,7 @@ class HUD {
             input.focus();
         };
         this.isLoading=function(currentWorld){ var random=Math.floor(Math.random()  * 3);
+            this.loading=true
             var loadingScreen=document.createElement("canvas")
             
             loadingScreen.style.position = 'fixed';
@@ -114,7 +126,7 @@ class HUD {
            // graphics.scale(scaleFitNative,scaleFitNative)
             graphics.drawImage(sign,0,0,100,100)
             graphics.restore()
-        }
+        };
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
             this.entered=true
@@ -161,7 +173,7 @@ class HUD {
                 //graphics.save();
                 //graphics.translate(X_RIGHT - 20, Y_TOP + 30);
                 graphics.save()
-                graphics.translate(X_RIGHT-120*scaleFitNative,Y_TOP+30*scaleFitNative)
+                graphics.translate(X_RIGHT-140*scaleFitNative,Y_TOP+35*scaleFitNative)
                 this.drawTargetObject()
                graphics.restore()
                 graphics.restore();
@@ -183,7 +195,7 @@ class HUD {
         this.drawTargetObject=function(){
             graphics.save();
             this.targetCount(this.currtargets, this.totaltarget);
-            graphics.translate(100*scaleFitNative,-1*scaleFitNative)
+            graphics.translate(120*scaleFitNative,(-0.5)*scaleFitNative)
             drawTarget();
             graphics.restore();
         }
