@@ -1004,7 +1004,7 @@ function checkState(){
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 3 && changeLevel==false) {//change this to 4 when level 3 is added
 			//Code to swap levels
 			hud.isPaused(true);
 			
