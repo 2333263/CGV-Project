@@ -5,7 +5,9 @@ const height=window.innerHeight+20
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
 
-        //Varible Init
+        /**
+         * Varible Init
+         */
         this.currammo = currammo;
         this.totalammo = totalammo;
         this.document = document;
@@ -27,7 +29,9 @@ class HUD {
         this.level=1
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
-        //XY Scalings
+        /**
+         * XY Scalings
+         */
         var X_LEFT = (-width / 2);
         var X_RIGHT = (width / 2);
         var Y_BOTTOM = (height / 2);
@@ -35,7 +39,11 @@ class HUD {
         var pixelSize;
         var graphics = this.canvas.getContext("2d");
 
-        //Updates the number of targets on the level
+        /**
+         * Updates the number of targets on the level
+         * @param {int} totaltarget 
+         * @param {int} currtargets 
+         */
         this.updateTargetNumbers = function (totaltarget, currtargets) {
             graphics.save();
             graphics.setTransform(1, 0, 0, 1, 0, 0);
@@ -45,7 +53,9 @@ class HUD {
             this.currtargets = currtargets;
         };
 
-        //Creates the start time of the level
+        /**
+         * Creates the start time of the level
+         */
         this.setStartTime=function(){
             let d = new Date();
             let sec=d.getSeconds()+d.getMilliseconds()/1000;
@@ -114,7 +124,7 @@ class HUD {
            // graphics.scale(scaleFitNative,scaleFitNative)
             graphics.drawImage(sign,0,0,100,100)
             graphics.restore()
-        }
+        };
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
             this.entered=true
