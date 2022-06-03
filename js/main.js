@@ -1032,7 +1032,7 @@ function checkState() {
 		}
 		// Important for playe reset
 	}
-}
+}}
 
 
 
