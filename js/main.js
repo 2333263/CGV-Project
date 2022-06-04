@@ -812,9 +812,10 @@ function init(reset) {
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}else if(currentWorld==3){
+		//undo any visual effects changed in world 3
 		mainLight.color.set(0xFFFFFF)
 		scene.add(mainLight)
-			//undo any visual effects changed in world 3
+			
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
 		scene.remove(skybox)
