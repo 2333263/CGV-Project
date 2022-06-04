@@ -167,12 +167,12 @@ function drawSkyBox(level) {
 			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
 			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
 	}
-	if (level == 2) {
+	if (level == 3) {
 		pathStrings = ["../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
 	}
-	if(level==3){
+	if(level==2){
 	pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
 	"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
 	"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
@@ -525,9 +525,9 @@ function afterLoad() {
 			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
 			console.log("load world 1 enviro");
 			break;
-		case 2:
+		case 3:
 			//calls the method to draw the level's skybox (evening)
-			drawSkyBox(2)
+			drawSkyBox(3)
 			
 			stormSky();
 			if (homeScreen.soundEffects) {
@@ -537,8 +537,8 @@ function afterLoad() {
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 2 enviro");
 			break;
-		case 3:
-			drawSkyBox(3);
+		case 2:
+			drawSkyBox(2);
 			rainSound(0);
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
@@ -665,7 +665,7 @@ function animate() {
 
 
 
-			if (currentWorld == 2) {
+			if (currentWorld == 3) {
 				//console.log(flash.power)  //change to 2
 
 				if (Math.random() > 0.98 || flash.power > 100) {
@@ -728,9 +728,9 @@ function animate() {
 
 
 			} 
-			if (doorMovingBool){
+			/*if (doorMovingBool){
 				handleDoor()
-			}
+			}*/
 		}
 		else {
 			hud.isPaused(true);
@@ -805,7 +805,7 @@ function init(reset) {
 	}
 	if (reset) {
 		hud.setStartTime()
-		if (currentWorld == 2) {
+		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 2
 			scene.add(mainLight)
 			scene.add(light)
@@ -813,7 +813,7 @@ function init(reset) {
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
-		}else if(currentWorld>=3){
+		}else if(currentWorld==2){
 		//undo any visual effects changed in world 3
 		console.log("Undoing light changes")
 		mainLight.color.set(0xFFFFFF)
@@ -836,12 +836,12 @@ function init(reset) {
 
 	}else{
 		//remove visual effects from previous levels
-		if(currentWorld==2){
+		if(currentWorld==3){
 			scene.remove(mainLight);
 			//light.intensity = 0.03
 			scene.remove(light);
 		}
-			else if(currentWorld==3){
+			else if(currentWorld==2){
 			//light.intensity = 0.03
 			scene.add(light);
 			scene.remove(scene.getObjectByName("cloud"));
