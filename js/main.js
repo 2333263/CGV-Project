@@ -813,7 +813,7 @@ function init(reset) {
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
-		}else if(currentWorld==3){
+		}else if(currentWorld>=3){
 		//undo any visual effects changed in world 3
 		console.log("Undoing light changes")
 		mainLight.color.set(0xFFFFFF)
