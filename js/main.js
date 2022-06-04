@@ -432,7 +432,7 @@ sceneHUD.add(HudPlane)
 var gunEnd
 
 //Load level 1
-var currentWorld = 1;
+var currentWorld = 2;
 BuildWorld.loadLevel(scene, world, currentWorld, function () {
 	afterLoad();
 });

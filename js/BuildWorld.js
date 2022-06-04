@@ -159,9 +159,9 @@ class BuildWorld {
                     const RefracGeo = new THREE.PlaneGeometry(6, 7.5);
                     const RefracMat = new THREE.MeshPhysicalMaterial({
                         roughness: 0.05,   
-                        transmission: 0.9,  
-                        thickness: 3,
-                        reflectivity : 0.5
+                        transmission: 0.8,  
+                        thickness: 4,
+                        reflectivity : 0.6
                     })
                     
                     const refractor = new THREE.Mesh(RefracGeo, RefracMat)
