@@ -244,13 +244,15 @@ class HUD {
                         graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
                         this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
-                        var specialtime=200
-                        var word="Try complete all 3 levels in under "+specialtime+" sec"
-                        if(this.timetaken<specialtime){
+                        var specialtime=200 //incentive to get a good time
+                         word="Try complete all 3 levels in under "+specialtime+" sec"
+                        if(this.timetaken<specialtime){ //if good time acheived, told about 'banana mode'
                             graphics.fillStyle = "rgb(255,0,0)";
                             word="Enter 'banana' on the main menu for a suprise"
                         }
+                       
                         graphics.fillText(word,  X_LEFT+200, bottom+60*scaleFitNative)
+                        word=""
                         bottom+=60*scaleFitNative;
                         graphics.fillText("click anywhere to restart",  X_LEFT+200, bottom+60*scaleFitNative)
                     }   
@@ -262,10 +264,11 @@ class HUD {
                         if(this.entered==false){ 
                             this.name=(document.getElementById("input").value.toUpperCase())
                         }
-                        word = "Level complete! Please enter your name and press enter";
+                        word = "Level complete! Please enter your name and press enter.";
                         this.gamestate = 1; //win
                         graphics.fillStyle = "rgb(0,255,0)";
                         graphics.fillText("Your Time: "+this.timetaken, X_LEFT+200*scaleFitNative, Y_TOP+250*scaleFitNative)
+                        graphics.fillText("NOTE: Your name will get cut off at 8 characters", X_LEFT+200*scaleFitNative, Y_TOP+800*scaleFitNative)
                     }
                 }else{
                     this.gamestate=1
