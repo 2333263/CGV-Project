@@ -728,9 +728,9 @@ function animate() {
 
 
 			} 
-			/*if (doorMovingBool){
+			if (doorMovingBool){
 				handleDoor()
-			}*/
+			}
 		}
 		else {
 			hud.isPaused(true);
@@ -809,7 +809,7 @@ function init(reset) {
 			//undoes any environmental changes done by world 2
 			scene.add(mainLight)
 			scene.add(light)
-			scene.remove(scene.getObjectByName("cloud"));
+			//scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
@@ -939,10 +939,15 @@ document.addEventListener("mousedown", (e) => {
 					}
 					if (intersects[i].object == TargetArr[j].getCylinder() && TargetArr[j].isHit == false) { // only count if hit target and the target has not been already hit
 						var name = intersects[i].object.name
+						//Count the target as shot
 						HitTarget(name)
-						if (currentWorld == 3 && name == '4') {
+
+						//Target that triggers door is target 3 on world 3, WILL CHANGE IF TARGETS CHANGE!!!!!
+						if (currentWorld == 3 && name == '3') {
 							doorMovingBool = true;
 						}
+
+						//Increase the shot targets on HUD
 						hud.increaseTarget();
 					}
 				}
