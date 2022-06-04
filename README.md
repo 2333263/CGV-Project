@@ -33,7 +33,7 @@ Arcade style leaderboard stored on wits servers (database)
 
 ## current final goals:
 - shrink sphere hitbox/change it to be better to fix rolling and jumping issues (currently shrunk)
-- remove clouds from level 2 and 3
+- remove clouds from level 2
 - add comments showing whats subroutine vs scene graph
 - potetnially more world changes (hit target, srhink gate to get to next part of level)
 - change bloom in lvl2
