@@ -579,19 +579,36 @@ class BuildWorld {
         }else{
         url="../Objects/Weapons/Banana Gun.glb"
         }
+        
+        if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') || scene.getObjectByName('handRight').getObjectByName('muzzleFlash')){
+            var children=scene.getObjectByName('handRight').children
+            for(var i=0;i<children.length;i++){
+                if(children[i].name=="weaponsM4"){
+                    scene.getObjectByName('handRight').remove(children[i])
+                }else if(children[i].name=="muzzleFlash"){
+                    scene.getObjectByName('handRight').remove(children[i])
+                }
+            }
+        }
+
+
 
         gltfLoader.load(url, (gltf) => {
             const weapon = gltf.scene
+            if(!banana){
             weapon.name = 'weaponsM4'
+            }else{
+            weapon.name = 'BG'
+            }
             weapon.translateX(0.2)
             
             weapon.rotateX(Math.PI / 2)
             
-            if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana==true){
-                scene.getObjectByName('handRight').remove(scene.getObjectByName('handRight').getObjectByName('weaponsM4'))
+            if(banana){
                 weapon.translateY(-0.3)
                 weapon.scale.set(15,15,15)
-            }else{
+            }
+            else{
                 weapon.scale.set(0.7, 0.7, 0.7)
             }
 
