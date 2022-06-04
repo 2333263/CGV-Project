@@ -543,7 +543,12 @@ function afterLoad() {
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
 			console.log("loaded world 3 enviro");
+			
 			mainLight.color.setHex(0xf05cb2);
+			//mainLight.position=(400,200,0);
+			mainLight.position.set(400, 200, 1.5);
+			//light.color.setHex(0x800490);
+			light.color.setHex(0xc23b05);
 			break;
 
 	}
@@ -813,9 +818,13 @@ function init(reset) {
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}else if(currentWorld==3){
 		//undo any visual effects changed in world 3
+		console.log("Undoing light changes")
 		mainLight.color.set(0xFFFFFF)
+		mainLight.position.set(1.5, 2.75, 1.5);
+		mainLight.position.multiplyScalar(50);
 		scene.add(mainLight)
-			
+		light.color.set(0xFFFFFF)
+		scene.add(light)
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
 		scene.remove(skybox)
