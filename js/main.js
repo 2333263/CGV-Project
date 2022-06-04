@@ -46,6 +46,7 @@ const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
 var gameWon = false
 var changeLevel = false
+var gameFailed=false
 //Raycast must not hit lines
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
@@ -804,7 +805,6 @@ function init(reset) {
 		hud.setStartTime()
 		if (currentWorld == 2) {
 			//undoes any environmental changes done by world 2
-			console.log("ran")
 			scene.add(mainLight)
 			scene.add(light)
 			scene.remove(scene.getObjectByName("cloud"));
@@ -812,7 +812,7 @@ function init(reset) {
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}else if(currentWorld==3){
-		//	scene.remove(light)
+		mainLight.color.set(0xFFFFFF)
 		scene.add(mainLight)
 			//undo any visual effects changed in world 3
 		}
@@ -822,7 +822,7 @@ function init(reset) {
 		currentWorld = 1
 		BuildWorld.loadLevel(scene, world, currentWorld, function () {
 			afterLoad();
-
+			init(false)
 		});
 		rainSound(0)
 		thunderSound(0)
@@ -842,9 +842,7 @@ function init(reset) {
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}
-	}
-
-	hudTexture.needsUpdate = true
+		hudTexture.needsUpdate = true
 	removeTargets();
 	addTargets(TargetPos, TargetQuat);
 	enableMoving()
@@ -860,6 +858,9 @@ function init(reset) {
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
+	}
+
+	
 };
 
 //Remove all targets from scene
@@ -973,6 +974,12 @@ document.addEventListener("mousedown", (e) => {
 					gameWon = false
 					init(true);
 				}
+				
+				}else if(gameFailed==true){
+					gameFailed=false;
+					console.log("ran")
+					init(true); //come here
+					
 
 			}
 
@@ -996,8 +1003,10 @@ document.addEventListener("mousedown", (e) => {
 	}
 });
 function checkState() {
-	if (hud.gamestate == -1) { //Game failed
-		init(true);
+	if (hud.gamestate == -1 &&gameFailed==false) { //Game failed
+		console.log("ran state")
+		gameFailed=true
+		
 	}
 	else if (hud.gamestate == 1) { //game win (only one level so just resets)
 		removeTargets();
