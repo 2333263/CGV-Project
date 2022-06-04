@@ -1073,6 +1073,7 @@ document.addEventListener("keydown", (e) => {
 		if (e.key == "m") {
 			init(true)
 			menu = true
+			scene.getObjectByName('handRight').remove(scene.getObjectByName('handRight').getObjectByName('weaponsM4'))
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())
 
