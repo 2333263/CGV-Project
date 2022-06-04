@@ -235,7 +235,7 @@ class HUD {
                         graphics.font = String(size)+"px monospace";
                         var top=this.leaderBoard.getNearest10(this.timetaken);
                         graphics.fillStyle = "rgb(255,255,255)";
-                        graphics.fillText("Top "+(top.length), X_LEFT+200, Y_TOP+50*scaleFitNative);
+                        graphics.fillText("Leaderboard", X_LEFT+200, Y_TOP+50*scaleFitNative);
                         for (var i=0 ;i<top.length; i++){
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;
@@ -244,6 +244,15 @@ class HUD {
                         graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
                         this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
+                        var specialtime=200
+                        var word="Try complete all 3 levels in under "+specialtime+" sec"
+                        if(this.timetaken<specialtime){
+                            graphics.fillStyle = "rgb(255,0,0)";
+                            word="Enter 'banana' on the main menu for a suprise"
+                        }
+                        graphics.fillText(word,  X_LEFT+200, bottom+60*scaleFitNative)
+                        bottom+=60*scaleFitNative;
+                        graphics.fillText("click anywhere to restart",  X_LEFT+200, bottom+60*scaleFitNative)
                     }   
                     else{
                         if (!document.getElementById("input") &&this.entered==false) { 

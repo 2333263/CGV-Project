@@ -562,6 +562,7 @@ function afterLoad() {
 	if (hud.loading) {
 		document.body.removeChild(document.body.lastElementChild); //remove loading screen
 		hud.loading = false
+		hud.isPaused(false);
 	}
 
 	animate();
@@ -1028,7 +1029,7 @@ function checkState() {
 				afterLoad();
 				init(false);
 				
-				hud.isPaused(false);
+				
 				changeLevel=false;
 			});
 		}else{
