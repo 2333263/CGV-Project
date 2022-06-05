@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from '../Dependencies/GLTFLoader.js';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
-import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
+import { Reflector } from "../Dependencies/Reflector.js"
 
 
 const loader = new THREE.TextureLoader();
