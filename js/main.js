@@ -5,7 +5,7 @@ import * as CANNON from 'cannon-es';
 //Custom Classes
 import Stats from "stats";
 import { SPARK } from '../js/Spark.js';
-import { PointerLockControls } from '../js/PointerLockControls.js';
+import { PointerLockControls } from '../Dependencies/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
 import { Targets } from '../js/targets.js';
 import { BuildWorld } from '../js/BuildWorld.js';
