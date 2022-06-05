@@ -42,3 +42,12 @@ Arcade style leaderboard stored on wits servers (database)
 - Loading screen
 - documentation
 
+
+## Remaining work:
+- signs to change dynamically
+- loading screen when resetting level
+- Monkey face sun in banana mode
+- Glowing monkey face on third level (green?)
+- Change order of requests to database (add before pull)
+- slight addujstments to spacing in UI
+- Exit to main menu from leaderboard after level 3 (+ message to click to restart)
