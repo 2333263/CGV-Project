@@ -23,6 +23,9 @@ class Targets{
         this.TickMat=new THREE.MeshBasicMaterial({
             map: loader.load(this.texturelocation+"correctTarget.jpg")
         });
+        if(name=='7' && level==3){
+            this.geometry.scale(0.2,0.2,0.2)
+        }
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
         this.cylinder.position.copy(position)
         this.cylinder.quaternion.copy(quaternion)
@@ -31,6 +34,7 @@ class Targets{
         this.cp=[]
         this.moves=false
         this.id=-1
+       
         this.getCylinder=function (){
             return this.cylinder
         };
