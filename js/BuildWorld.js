@@ -658,6 +658,21 @@ class BuildWorld {
 
 
         gltfLoader.load(url, (gltf) => {
+            //for some unknown reason this code needs to be repeated here
+            if((scene.getObjectByName('handRight').getObjectByName('weaponsM4') &&banana)|| (scene.getObjectByName('handRight').getObjectByName('muzzleFlash')&&banana)){
+                var children=scene.getObjectByName('handRight').children
+                for(var i=0;i<children.length;i++){
+                    if(children[i].name=="weaponsM4"){
+                        scene.getObjectByName('handRight').remove(children[i])
+                    }else if(children[i].name=="muzzleFlash"){
+                        scene.getObjectByName('handRight').remove(children[i])
+                    }
+                }
+            }
+
+
+
+
             const weapon = gltf.scene
             if(!banana){
             weapon.name = 'weaponsM4'
