@@ -1,13 +1,3 @@
-/*var http=new XMLHttpRequest()
-const url='https://api.lyrics.ovh/v1/toto/africa'
-http.open("GET",url)
-http.send()
-http.onreadystatechange=function(){
-    if(this.readyState==4 && this.status==200){
-        console.log(http.responseText)
-    }
-}
-*/
 import { Entry } from "./lbObject.js"
 
 class leaderBoard {
@@ -153,24 +143,6 @@ class leaderBoard {
             this.LeaderBoard.push(new Entry(key, value))
         }
 
-        /* this.addTextField=function(){
-             
-             var board=document.createElement('board')
-             board.type = 'text';
-             board.style.position = 'fixed';
-             board.style.backgroundColour="rgba(0,0,0,0)"
-             board.style.left = (90) + 'px';
-             board.style.top = (90) + 'px';
-             board.style['width']='50px'
-             board.style['height']='50px'
-             board.value="HELLLOEEEEEEEEEEEEE"
-             board.id="Board"
-             console.log(board)
-             document.body.appendChild(board)
-             board.focus()
-             
-             
-         }*/
         function addSpaces(word, spaces) {
             var temp = ""
             for (var i = word.length; i < spaces; i++) {

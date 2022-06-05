@@ -48,8 +48,6 @@ class PointerLockControls extends EventDispatcher {
 				movementY=(window.innerHeight/movementY)-2.3
 			}
 
-			//console.log("X",movementX,"XAfter",(window.innerWidth/movementX)-2.3,"Y",movementY,"YAfter",(window.innerHeight/movementY)-2.3)
-			//console.log(movementX,movementY)
 			_euler.setFromQuaternion( camera.quaternion );
 			_euler.y -= movementX * 0.002 * scope.pointerSpeed;
 			_euler.x -= movementY * 0.002 * scope.pointerSpeed;

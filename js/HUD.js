@@ -136,8 +136,6 @@ class HUD {
                 
               };
               graphics.restore()
-           // graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
-           // graphics.scale(scaleFitNative,scaleFitNative)
             
             
         };
@@ -149,8 +147,6 @@ class HUD {
         //Draw function of HUD, responsible for handling all the elements of the HUD
         this.draw = function (level) 
             {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
-               // var random=Math.floor(Math.random() * 3);
-              // drawImage(graphics, random)
             if(this.Paused){
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
@@ -170,8 +166,6 @@ class HUD {
             }
             if (!this.checkgameState(level)) {
                 graphics.save();
-                //graphics.scale(scaleFitNative,scaleFitNative)
-               // graphics.save()
                 drawCrossHair(this.level);
                 graphics.restore();
                 graphics.save();
@@ -181,11 +175,6 @@ class HUD {
                 graphics.translate(X_LEFT+20,Y_BOTTOM-20)
                 this.drawAmmo()
                 graphics.restore();
-              //  graphics.save();
-               // 
-                //graphics.restore();
-                //graphics.save();
-                //graphics.translate(X_RIGHT - 20, Y_TOP + 30);
                 graphics.save()
                 graphics.translate(X_RIGHT-140*scaleFitNative,Y_TOP+35*scaleFitNative)
                 this.drawTargetObject()
@@ -224,7 +213,7 @@ class HUD {
                 var word = "";
                 var bottom=Y_TOP+50;
                 if ( this.currtargets == this.totaltarget) { 
-                    if(level==4){//change this to 4 when level is added
+                    if(level==4){
                     if(this.gamestate==0){
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
@@ -240,7 +229,6 @@ class HUD {
                             graphics.fillText(top[i],  X_LEFT+200, bottom+60*scaleFitNative);
                             bottom=bottom+60*scaleFitNative;
                         }
-                       // this.leaderBoard.requested=false;
                         graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
                         this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
@@ -398,19 +386,6 @@ class HUD {
 
         }
 
-        //Outlines a custom polygon
-        function drawCustomPoly(points, size) {
-            graphics.beginPath();
-            graphics.moveTo(points[0][0], points[0][1]);
-            for (var i = 1; i < points.length; i++) {
-                graphics.lineTo(points[i][0], points[i][1]);
-            }
-            graphics.lineTo(points[0][0], points[0][1]);
-            var currwidth = graphics.lineWidth;
-            graphics.lineWidth = size;
-            graphics.stroke();
-            graphics.lineWidth = currwidth;
-        }
 
         //Fills a custom polygon
         function fillCustomPoly(points, size) {
@@ -426,12 +401,6 @@ class HUD {
             graphics.lineWidth = currwidth;
         }
 
-        //Outlines a custom circle
-        function circle() { // Strokes a circle, diameter = 1, center = (0,0)
-            graphics.beginPath();
-            graphics.arc(0, 0, 0.5, 0, 2 * Math.PI);
-            graphics.stroke();
-        }
 
         //Fills a custom circle
         function filledCircle() { // Fills a circle, diameter = 1, center = (0,0)

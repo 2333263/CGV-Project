@@ -32,7 +32,6 @@ class SPARK{
             endLoc.z += THREE.MathUtils.randFloat(-sparkDist,sparkDist);
             this.endLocs.push(endLoc);
             const sparkGeo = new THREE.BoxGeometry(0.10,0.10,0.10);
-            // const sparkGeo = new THREE.SphereGeometry(0.05);
             const sparkMat = new THREE.MeshPhongMaterial({
                 color: new THREE.Color('#FFFF00'),
                 emissive: new THREE.Color('#FFFF00'),
@@ -43,18 +42,9 @@ class SPARK{
             const spark = new THREE.Mesh(sparkGeo, sparkMat);
             
             spark.position.copy(new THREE.Vector3(this.startLoc.x, this.startLoc.y, this.startLoc.z));
-
-            // const diffX = this.startLoc.x-endLoc.x;
-            // const diffY = this.startLoc.y-endLoc.y;
-            // const diffZ = this.startLoc.z-endLoc.z;
-
-            // var thetaXZ = Math.atan2(diffX, diffZ);
-			// var xz = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffZ, 2))
-			// var thetaY = Math.atan2(xz, diffY);
             const randRot = THREE.MathUtils.randInt(-Math.PI, Math.PI);
 
             spark.rotation.set(randRot, randRot, randRot)
-            //spark.rotation.set(thetaY, 0, 0)
 
             scene.add(spark)
             this.particles.push(spark)

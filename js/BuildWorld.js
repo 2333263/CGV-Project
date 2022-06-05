@@ -3,7 +3,7 @@ import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
 import { Reflector } from "../node_modules/three/examples/jsm/objects/Reflector.js"
-import { Refractor } from "../node_modules/three/examples/jsm/objects/Refractor.js"
+
 
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
@@ -154,8 +154,6 @@ class BuildWorld {
 
                 else if (name.substring(0, 6) === 'Refrac') {
                     //Add Refractor
-                    // const sizeX = child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x
-                    // const sizeZ = child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z
                     const RefracGeo = new THREE.PlaneGeometry(6, 7.5);
                     const RefracMat = new THREE.MeshPhysicalMaterial({
                         roughness: 0.05,   
@@ -183,7 +181,7 @@ class BuildWorld {
                     //Add walls to collision detection
                     hullCollision.push(child)
                 }
-                else if (name.substring(0, 8) === 'TrashBin' /*|| name.substring(0, 5) === 'Crate'*/) {
+                else if (name.substring(0, 8) === 'TrashBin' ) {
                     //Add trash bins to collision detection, crates handled with invis
                     boxCollision.push(child)
                 }
@@ -192,14 +190,6 @@ class BuildWorld {
                     //Make glass specular
                     child.material.specular = new THREE.Color('#31A5E7')
 
-                    /*
-                    Translucent material
-                    const material1 = new THREE.MeshPhysicalMaterial({
-                        roughness: 0,
-                        transmission: 1,
-                        thickness: 2
-                    });
-                     */
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
                     //Add spotlights to the street lights
@@ -208,15 +198,12 @@ class BuildWorld {
                     const streetLight = new THREE.SpotLight('#FFFFE0')
 
                     //Adjust light properties
-                    //scene.add( new THREE.CameraHelper( streetLight.shadow.camera ) )
                     streetLight.power = 2
                     streetLight.decay = 2
                     streetLight.castShadow = true;
                     streetLight.shadow.mapSize.width = 512;
                     streetLight.shadow.mapSize.height = 512;
                     streetLight.shadow.focus = 0.9
-                    // streetLight.shadow.camera.near = 2;
-                    // streetLight.shadow.camera.far = 10;
                     streetLight.angle = Math.PI / 3
                     streetLight.penumbra = 0.5
                     streetLight.position.set(
@@ -278,13 +265,6 @@ class BuildWorld {
                     child.material = newMat
                 }
 
-                else if (name.substring(0, 5) === 'Crate') {
-                    //child.visible = false;
-                    // toRemove.push(child)
-                    // child.receiveShadow = false;
-                    // child.castShadow = false;
-                }
-
                 else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     hullCollision.push(child)
@@ -339,7 +319,6 @@ class BuildWorld {
                     const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
                     const sizeWidth = Math.sqrt(Math.pow(sizex, 2) + Math.pow(sizey, 2)) / 2
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z / 2
-                    //console.log(sizeHeight)
 
                     //Wrap texture depending on path size
                     wireColor.repeat.set(sizeWidth, sizeHeight)
@@ -413,7 +392,6 @@ class BuildWorld {
 
         });
 
-        //callback();
     }
 
 
@@ -425,7 +403,6 @@ class BuildWorld {
     static unloadCurrentLevel(scene, world) {
 
         //Unload THREE meshes
-        //console.log(scene.getObjectByName('Scene'))
         scene.remove(scene.getObjectByName('Level_Root'))
         //Unload CANNON collisions of different types
         let hullLenth = hullCollisionCANNON.length - 1

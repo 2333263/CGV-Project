@@ -8,16 +8,11 @@ import { SPARK } from '../js/Spark.js';
 import { PointerLockControls } from '../js/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
 import { Targets } from '../js/targets.js';
-//import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js'; (unused currently)
 import { BuildWorld } from '../js/BuildWorld.js';
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
-import { leaderBoard } from '../js/LeaderBoard.js'; //(unused currently)
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
-//import { dynamicSky } from '/js/dynamicSky.js';
-
-//import { stormClouds } from '/js/dynamicSky.js';
 
 //View Init
 const width = window.innerWidth + 20;
@@ -95,7 +90,7 @@ RainListener.name = "RainListener"
 controls.getObject().add(RainListener);
 const RainSound = new THREE.Audio(RainListener);
 RainSound.name = "rain"
-audioLoader.load("js/soft-rain-ambient.mp3", function (buffer) {
+audioLoader.load("../Objects/Sound Effects/soft-rain-ambient.mp3", function (buffer) {
 	RainSound.setBuffer(buffer);
 	RainSound.setLoop(false);
 	RainSound.setVolume(0.7);
@@ -106,7 +101,7 @@ const ThunderListner = new THREE.AudioListener(); //a virtual listener of all au
 ThunderListner.name = "thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-audioLoader.load("js/thunder.mp3", function (buffer) {
+audioLoader.load("../Objects/Sound Effects/thunder.mp3", function (buffer) {
 	ThunderSound.setBuffer(buffer);
 	ThunderSound.setLoop(false);
 	ThunderSound.setVolume(0.5);
@@ -120,7 +115,7 @@ function gunshotSound() {
 	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
 	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
-	audioLoader.load("js/rifle.mp3", function (buffer) {
+	audioLoader.load("../Objects/Sound Effects/rifle.mp3", function (buffer) {
 		gunsound.setBuffer(buffer);
 		gunsound.setLoop(false);
 		gunsound.setVolume(0.1);
@@ -160,7 +155,6 @@ var doorMovingStartTime;
 var skybox;
 function drawSkyBox(level) {
 	scene.remove(skybox)
-	console.log("Drawing skybox")
 	let pathStrings
 	if (level == 1) {
 		pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
@@ -204,8 +198,6 @@ function stormSky() {
 	let cloudGeo = new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
 	loader.load("../Objects/Textures/Skybox/cloud/cloudTex.png", function (texture) {
-
-		//cloudGeo = new THREE.PlaneBufferGeometry(400,400);
 		cloudGeo = new THREE.PlaneBufferGeometry(200, 200);
 		cloudMaterial = new THREE.MeshPhongMaterial({
 			map: texture,
@@ -233,49 +225,13 @@ function stormSky() {
 
 	scene.add(flash);
 
-	//rain drops------------
-	/*
-		let rainCount=500;
-		let points = []
-		//rainGeo = new THREE.BufferGeometry(); declared in init
-		let rainDrop = new THREE.Vector3(); 
-		for(let i=0;i<rainCount;i++) {
-			rainDrop = new THREE.Vector3(
-				Math.random() * 200 -200+30,
-				Math.random() * 200 ,
-				Math.random() * 200 - 200-32
-			);
-			rainDrop.velocity ={};
-			rainDrop.velocity =0;
-			console.log(rainDrop);
-			points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
-		}
-		console.log(points);
-		let positions = new Float32Array.from(points); //convert list to Float32Array
-		console.log(positions);
-		rainGeo.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );*/
-
 	let rainCount = 40000;
 	let points = new Float32Array(500 * 3);
-
-	//rainGeo = new THREE.BufferGeometry(); declared in init
-	//let rainDrop = new THREE.Vector3(); 
 	for (let i = 0; i < rainCount; i = i + 3) {
-		/*points[i] = Math.random() * 84 -100+30;
-		points[i+1]=Math.random() * 200 +200;
-		points[i+2]=Math.random() * 84 - 84-32;*/
 		points[i] = Math.random() * 100;
 		points[i + 1] = Math.random() * 300 + 50;
 		points[i + 2] = Math.random() * 100 - 80;//set cprrectly
-
-		//rainDrop.velocity ={};
-		//rainDrop.velocity =0;
-		//console.log(rainDrop);
-		//points.push(rainDrop);	//adds vertex (pos of rain drop) to the geometry
 	}
-	//console.log(points);
-	//let positions = new Float32Array.from(points); //convert list to Float32Array
-	//console.log(positions);
 	rainGeo.setAttribute('position', new THREE.BufferAttribute(points, 3));
 
 
@@ -451,14 +407,6 @@ function afterLoad() {
 
 	//creates object for calling methods related to dynamic skybox...to be implemented later
 
-
-
-
-
-
-
-
-
 	//Get the array of stationary targets as a mesh
 	const targetArrayMeshStill = BuildWorld.getTargetsStill()
 	const targetArrayMeshMove = BuildWorld.getTargetsMoving()
@@ -487,10 +435,6 @@ function afterLoad() {
 		const targetQuaterion = tarMesh.quaternion;
 		TargetQuat.push(targetQuaterion);
 	}
-	//TargetPos = targetStillPos
-
-	//Send positions to addTargets func
-	//console.log(TargetPos, TargetQuat) //TESTING
 	addTargets(TargetPos, TargetQuat);
 	enableMoving()
 	//Make total amo proportional to no targets 
@@ -522,8 +466,6 @@ function afterLoad() {
 			drawSkyBox(1)
 			//Set up the main composer for the scene using preset post processing
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
-			//scene.fog = new THREE.Fog(0xDFE9F3, 5, 60.00)
-			console.log("load world 1 enviro");
 			break;
 		case 3:
 			//calls the method to draw the level's skybox (evening)
@@ -535,19 +477,15 @@ function afterLoad() {
 			}
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
-			console.log("loaded world 2 enviro");
 			break;
 		case 2:
 			drawSkyBox(2);
 			rainSound(0);
 			mainLight.color.setHex(0xf05cb2);
-			//mainLight.position=(400,200,0);
 			mainLight.position.set(400, 200, 1.5);
-			//light.color.setHex(0x800490);
 			light.color.setHex(0xc23b05);
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
 			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, true)
-			console.log("loaded world 3 enviro");
 			
 			
 			break;
@@ -571,7 +509,6 @@ function afterLoad() {
 }
 
 //To unload current world
-//BuildWorld.unloadCurrentLevel(scene, world)
 
 //Used to stop animation for level loads
 var animationID;
@@ -582,7 +519,6 @@ let count = 0;
 function animate() {
 
 	stats.begin()
-	//console.log(hud.startTime) //For monitoring
 	if (menu == true) {//if we're in the menu
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
@@ -590,12 +526,6 @@ function animate() {
 
 		//Make skybox follow orbital camera to make the distance to the skybox look infinite
 		skybox.position.copy(orbitControls.object.position)
-
-		//Code to make it look like only the level is rotating (stops skybox rotation)
-		// var tempVec = new THREE.Vector3();
-		// orbitControls.object.getWorldDirection(tempVec)
-		// var theta = Math.atan2(tempVec.x, tempVec.z);
-		// skybox.rotation.set(0, theta , 0)
 
 		MenuTexture.needsUpdate = true//update main menu
 		renderer.render(menuScene, HudCamera)//render the main menu
@@ -606,7 +536,6 @@ function animate() {
 		}
 	}
 	else {
-		//direcLight.translateX(-0.01)
 		if (controls.isLocked) {
 			checkState()
 			hud.isPaused(false);
@@ -617,7 +546,6 @@ function animate() {
 			skybox.position.copy(playerBody.position)
 
 			//make clouds move
-			//console.log(clouds.length)
 			for (let i = 0; i < clouds.length; i = i + 2) {
 				clouds[i].position.x += 0.09
 				clouds[i].position.z += 0.05
@@ -653,7 +581,6 @@ function animate() {
 				move();
 			var pos = new THREE.Vector3()
 			pos.copy(playerBody.position)
-			//0.7
 			pos.y += 1.2
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
@@ -662,12 +589,7 @@ function animate() {
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
 
-			//lightning flash 
-
-
-
 			if (currentWorld == 3) {
-				//console.log(flash.power)  //change to 2
 
 				if (Math.random() > 0.98 || flash.power > 100) {
 					count++
@@ -688,43 +610,13 @@ function animate() {
 				}
 
 				cloudMeshArr.forEach(p => { p.rotation.z -= 0.002; })
-
-				//rain drop animation
-
-				/*for (const position of rainGeo) {
-					position.velocity -=0.1 +Math.random() *0.1;
-					position.y+=position.velocity;
-					if(position.y <-200){
-						position.y=200;
-						position.veclocity =0;
-					}
-				  }	*/
 				rainGeo.translate(0, -1, 0);      //-----------------------
-
-				//}
-				/*
-				for(let i =0; i<500; i++){
-					console.log(i)
-					let y = rainGeo.attributes.position.getY(i);
-					console.log("y=      =",y)
-					rainGeo.attributes.position.setY(y-1);
-					y = rainGeo.attributes.position.getY(i);
-					console.log("update y=",y)
-					console.log("raindrop pos change")
-					if(y<0){
-					rainGeo.attributes.position.setY(180);
-				
-					}*/
-				//}
 				counter += 1
 				if (counter == 209) {
 					rainGeo.translate(0, 200, 0); //resets the rain gemoetry (vertically)
 					counter = 0;
 
 				}
-
-				//rainGeo.attributes.position.needsUpdate = true; //requires building of a new shader program
-				//rainGeo.needUpdate = true;  //might be necessary for new BufferObject type
 				rain.rotation.y += 0.002; //introduces angle
 
 
@@ -807,7 +699,7 @@ function init(reset) {
 	if (reset) {
 		hud.setStartTime()
 		if (currentWorld >= 3) {
-			//undoes any environmental changes done by world 2
+			//undoes any environmental changes done by world 3
 			scene.add(mainLight)
 			scene.add(light)
 			scene.remove(scene.getObjectByName("cloud"));
@@ -815,8 +707,7 @@ function init(reset) {
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
 		}else if(currentWorld==2){
-		//undo any visual effects changed in world 3
-		console.log("Undoing light changes")
+		//undo any visual effects changed in world 2
 		mainLight.color.set(0xFFFFFF)
 		mainLight.position.set(1.5, 2.75, 1.5);
 		mainLight.position.multiplyScalar(50);
@@ -843,11 +734,9 @@ function init(reset) {
 			mainLight.position.set(1.5, 2.75, 1.5);
 			mainLight.position.multiplyScalar(50);
 			scene.remove(mainLight);
-			//light.intensity = 0.03
 			scene.remove(light);
 		}
 			else if(currentWorld==2){
-			//light.intensity = 0.03
 			scene.add(light);
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
@@ -916,7 +805,6 @@ document.addEventListener("mousedown", (e) => {
 		if (homeScreen.Music) {
 			backgroundmusic.pause()
 			backgroundmusic.play()
-			//backgroundmusic.listener.isPlaying=true
 		}
 
 
@@ -980,8 +868,6 @@ document.addEventListener("mousedown", (e) => {
 						transparent: true,
 						opacity: 1,
 						linewidth: 2
-						// depthTest: false,
-						// depthWrite: false
 					})
 				)
 
@@ -999,8 +885,7 @@ document.addEventListener("mousedown", (e) => {
 				
 				}else if(gameFailed==true){
 					gameFailed=false;
-					console.log("ran")
-					init(true); //come here
+					init(true);
 					
 
 			}
@@ -1026,7 +911,6 @@ document.addEventListener("mousedown", (e) => {
 });
 function checkState() {
 	if (hud.gamestate == -1 &&gameFailed==false) { //Game failed
-		console.log("ran state")
 		gameFailed=true
 		
 	}
@@ -1034,7 +918,7 @@ function checkState() {
 		hud.isPaused(true);
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 4 && changeLevel==false) {//change this to 4 when level 3 is added
+		if (currentWorld < 4 && changeLevel==false) {
 			//Code to swap levels
 			
 
@@ -1042,7 +926,7 @@ function checkState() {
 			changeLevel = true
 			currentWorld++
 			
-			if(currentWorld<4){//change to 4 when level 3 is added
+			if(currentWorld<4){
 			hud.isLoading(currentWorld,banana);
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
@@ -1056,7 +940,7 @@ function checkState() {
 		}else{
 			hud.gamestate=0;
 		}
-		}else if(hud.entered == true && currentWorld>=4 ){ //change to 4 when level 3 is added
+		}else if(hud.entered == true && currentWorld>=4 ){ 
 			gameWon=true;
 			
 		}
@@ -1083,7 +967,6 @@ document.addEventListener("keydown", (e) => {
 			banana = true
 			homeScreen.enableBanana()
 			backgroundmusic.pause()
-			//backgroundmusic=new musicHandler(controls.getObject(),banana)
 			backgroundmusic.init(banana)
 			init(true)
 

@@ -23,18 +23,6 @@ var BlendFunction = {
     SUBTRACT: 18
   };
 
-/* ################################# DEPRECATED ######################################
-//USING BUILT IN THREE.JS POST PROCESSING
-const composer = new EffectComposer(renderer);
-
-const renderPass = new RenderPass(scene, controls.getObject());
-composer.addPass(renderPass);
-
-
-//new UnrealBloomPass(RES: {x: 512, y: 512}, STRENGTH : 2.0, RADIUS: 0.0, THRESHOLD : 0.75);
-const unrealBloomPass = new UnrealBloomPass({x: 512, y: 512}, 0.2, 0.0, 0.25);
-composer.addPass(unrealBloomPass);
-*/
 const areaImage = new Image();
 areaImage.src = POSTPROCESSING.SMAAEffect.areaImageDataURL;
 const searchImage = new Image();
@@ -133,7 +121,6 @@ class POSTPROCESSINGPASSES {
         //TODO: Comments maybe?
         const selection = selectiveBloomEffect.selection;
         for (var selectedObject of glowing){
-            //console.log(glowing)
             selection.add(selectedObject);
         } 
         selectiveBloomEffect.selection = selection;

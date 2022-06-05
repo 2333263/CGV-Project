@@ -1,5 +1,4 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
-import * as CANNON from '../node_modules/cannon-es/dist/cannon-es.js';
 
 const loader = new THREE.TextureLoader();
 
@@ -84,7 +83,6 @@ class Targets{
                     this.curveObject = new THREE.Line(geometry, material);
                     material.depthTest=false;
                     this.curveObject.renderOrder=1
-                   // scene.add(this.curveObject)
                 }
     
     }

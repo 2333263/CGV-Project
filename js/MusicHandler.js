@@ -13,9 +13,9 @@ class musicHandler{
             try{
                 let audiourl;
                 if(banana){
-                    audiourl="js/bananaTrack.mp3";
+                    audiourl="/Objects/Sound Effects/bananaTrack.mp3";
                 }
-                else{audiourl="js/GameMusic.mp3"}
+                else{audiourl="/Objects/Sound Effects/GameMusic.mp3"}
             this.audioLoader.load(audiourl, function (buffer) {
                 backgroundSound.setBuffer(buffer);
                 backgroundSound.setLoop(true);
