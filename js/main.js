@@ -697,7 +697,7 @@ function init(reset) {
 		scene.remove(line[0])
 	}
 	if (reset) {
-		hud.isLoading(1, banana)
+		if(!hud.loading){hud.isLoading(1, banana)}
 		
 		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 3
@@ -983,6 +983,7 @@ document.addEventListener("keydown", (e) => {
 			init(true);
 		}
 		if (e.key == "m") {
+			hud.isLoading("menu", banana)
 			init(true)
 			menu = true
 			scene.remove(playerModel)

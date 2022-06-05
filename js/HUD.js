@@ -110,7 +110,12 @@ class HUD {
             var size=60*scaleFitNative;
                 graphics.font = String(size)+"px Arial";
                 graphics.fillStyle = "rgb(255,255,255)";
-                var word = "Loading Level "+currentWorld;
+                var word=""
+                if(typeof(currentWorld)=="int"){
+                 word = "Loading Level "+currentWorld;}
+                 else {
+                     word= "Loading "+currentWorld;
+                 }
             graphics.fillText(word, width/2-size/2*word.length/2, 3*height/4);
             
             graphics = this.canvas.getContext("2d");
