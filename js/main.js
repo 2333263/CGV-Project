@@ -662,7 +662,7 @@ function renderWorld() {
 //Rotates targets for appearance on the map camera
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
-		var tempCylinder = new THREE.Mesh(TargetArr[i].getCylinder().geometry, TargetArr[i].getCylinder().material, currentWorld)
+		var tempCylinder = new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.01,32), TargetArr[i].getCylinder().material, currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
 		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25 - tempCylinder.position.y))
