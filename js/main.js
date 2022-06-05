@@ -538,7 +538,8 @@ function animate() {
 		if (controls.isLocked) {
 			checkState()
 			hud.isPaused(false);
-			if (playerModel.position.y < -25) { init(true); } // if player out of bounds, reset level
+			if (playerModel.position.y < -25) { hud.isLoading(1, banana)
+				 init(true); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
 
 			//Make skybox follow player to make the distance to the skybox look infinite
@@ -696,7 +697,8 @@ function init(reset) {
 		scene.remove(line[0])
 	}
 	if (reset) {
-		hud.setStartTime()
+		hud.isLoading(1, banana)
+		
 		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 3
 			scene.add(mainLight)
@@ -720,6 +722,7 @@ function init(reset) {
 		currentWorld = 1
 		BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
 			afterLoad();
+			hud.setStartTime()
 			init(false)
 		});
 		rainSound(0)
