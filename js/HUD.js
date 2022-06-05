@@ -242,7 +242,7 @@ class HUD {
                         graphics.fillText(word,  X_LEFT+200, bottom+60*scaleFitNative)
                         word=""
                         bottom+=60*scaleFitNative;
-                        graphics.fillText("click anywhere to restart",  X_LEFT+200, bottom+60*scaleFitNative)
+                        graphics.fillText("click anywhere to return to the main menu",  X_LEFT+200, bottom+60*scaleFitNative)
                     }   
                     else{
                         if (!document.getElementById("input") &&this.entered==false) { 

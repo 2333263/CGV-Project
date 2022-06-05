@@ -881,6 +881,10 @@ document.addEventListener("mousedown", (e) => {
 				if (gameWon == true) {
 					gameWon = false
 					init(true);
+					controls.unlock()
+					menu = true
+					scene.remove(playerModel)
+					scene.remove(controls.getObject())
 				}
 				
 				}else if(gameFailed==true){

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../Dependencies/GLTFLoader.js';
-import { threeToCannonObj } from '../js/ThreeToCannonObj.js'
+import { threeToCannonObj } from './ThreeToCannonObj.js'
 import { Reflector } from "../Dependencies/Reflector.js"
 
 
