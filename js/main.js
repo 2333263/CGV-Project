@@ -389,7 +389,7 @@ var gunEnd
 
 //Load level 1
 var currentWorld = 1;
-BuildWorld.loadLevel(scene, world, currentWorld, function () {
+BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
 	afterLoad();
 });
 
@@ -504,7 +504,6 @@ function afterLoad() {
 		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
 	
-
 	animate();
 }
 
@@ -719,7 +718,7 @@ function init(reset) {
 		scene.remove(skybox)
 		cancelAnimationFrame(animationID);
 		currentWorld = 1
-		BuildWorld.loadLevel(scene, world, currentWorld, function () {
+		BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
 			afterLoad();
 			init(false)
 		});
@@ -934,7 +933,7 @@ function checkState() {
 			hud.isLoading(currentWorld,banana);
 			BuildWorld.unloadCurrentLevel(scene, world)
 			cancelAnimationFrame(animationID);
-			BuildWorld.loadLevel(scene, world, currentWorld, function () {
+			BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
 				afterLoad();
 				init(false);
 				

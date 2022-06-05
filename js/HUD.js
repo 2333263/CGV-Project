@@ -120,8 +120,12 @@ class HUD {
         function drawImage(graphics, random,banana){
             graphics.save();
             var sign=new Image()
-            var path="../Objects/Textures/Signs/sign_"+random
-            if(banana)path+="_b"
+            var path=""
+            if(!banana){
+            path="../Objects/Textures/Signs/Normal/sign_"+random
+            }else{
+            path="../Objects/Textures/Signs/Banana/sign_"+random
+            }
             sign.src=path+".png"
             var scales=500
             sign.onload = function() {

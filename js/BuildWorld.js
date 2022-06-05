@@ -68,7 +68,7 @@ class BuildWorld {
      * 
      */
 
-    static loadLevel(scene, world, level = 1, callback) {
+    static loadLevel(banana,scene, world, level = 1, callback) {
         var url;
         const toRemove = [];
 
@@ -249,13 +249,13 @@ class BuildWorld {
                     child.material = newMat
                     }
                 }
-                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 4) === 'Sign' || name.substring(0, 11) === 'Pathoutline') {
+                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door'|| name.substring(0, 11) === 'Pathoutline') {
                     //Stop these from cast shadows
                     child.castShadow = false;
+                    
                 }
 
-
-                else if (name.substring(0, 5) === 'Sign0') {
+                else if (name.substring(0, 7) === 'Sign001') {
                     //Replace textures
                     const textureTemp = child.material.map
                     const newMat = new THREE.MeshPhongMaterial({
@@ -263,9 +263,96 @@ class BuildWorld {
 
                     })
                     child.material = newMat
-                }
+                    child.castShadow = false;
+                }else if (name.substring(0, 7) === 'Sign002') {
+                    //Replace textures
+                    var location="../Objects/Textures/Signs/"
+                    if(banana){
+                        location+="Banana/"
+                    }else{
+                        location+="Normal/"
+                    }
+                    const textureTemp=loader.load(location+'sign_5.png')
+                    textureTemp.flipY=false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
 
-                else if (name.substring(0, 5) === 'Floor') {
+                    })
+                    child.material = newMat
+                    child.castShadow = false;
+                }else if (name.substring(0, 7) === 'Sign003') {
+                    //Replace textures
+                    var location="../Objects/Textures/Signs/"
+                    if(banana){
+                        location+="Banana/"
+                    }else{
+                        location+="Normal/"
+                    }
+                    const textureTemp=loader.load(location+'sign_0.png')
+                    textureTemp.flipY=false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
+
+                    })
+                    child.material = newMat
+                    child.castShadow = false;
+                }else if (name.substring(0, 7) === 'Sign004') {
+                    //Replace textures
+                    var location="../Objects/Textures/Signs/"
+                    if(banana){
+                        location+="Banana/"
+                    }else{
+                        location+="Normal/"
+                    }
+                    const textureTemp=loader.load(location+'sign_3.png')
+                    textureTemp.flipY=false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
+
+                    })
+                    child.material = newMat
+                    child.castShadow = false;
+                }else if (name.substring(0, 7) === 'Sign005') {
+                    //Replace textures
+                    var location="../Objects/Textures/Signs/"
+                    if(banana){
+                        location+="Banana/"
+                    }else{
+                        location+="Normal/"
+                    }
+                    const textureTemp=loader.load(location+'sign_1.png')
+                    textureTemp.flipY=false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
+
+                    })
+                    child.material = newMat
+                }else if (name.substring(0, 7) === 'Sign006') {
+                    //Replace textures
+                    var location="../Objects/Textures/Signs/"
+                    if(banana){
+                        location+="Banana/"
+                    }else{
+                        location+="Normal/"
+                    }
+                    const textureTemp=loader.load(location+'Tutorial.png')
+                    textureTemp.flipY=false
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
+
+                    })
+                    child.material = newMat
+                    child.castShadow = false;
+                }else if (name.substring(0, 7) === 'Sign007') {
+                    //Replace textures
+                    const textureTemp = child.material.map
+                    const newMat = new THREE.MeshPhongMaterial({
+                        map: textureTemp,
+
+                    })
+                    child.material = newMat
+                    child.castShadow = false;
+                 } else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     hullCollision.push(child)
                     const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
