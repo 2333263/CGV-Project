@@ -540,15 +540,16 @@ function afterLoad() {
 		case 2:
 			drawSkyBox(2);
 			rainSound(0);
-			//Set up the main composer for the scene using preset post processing without volumetric lighting
-			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
-			console.log("loaded world 3 enviro");
-			
 			mainLight.color.setHex(0xf05cb2);
 			//mainLight.position=(400,200,0);
 			mainLight.position.set(400, 200, 1.5);
 			//light.color.setHex(0x800490);
 			light.color.setHex(0xc23b05);
+			//Set up the main composer for the scene using preset post processing without volumetric lighting
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, true)
+			console.log("loaded world 3 enviro");
+			
+			
 			break;
 
 	}
@@ -809,7 +810,7 @@ function init(reset) {
 			//undoes any environmental changes done by world 2
 			scene.add(mainLight)
 			scene.add(light)
-			//scene.remove(scene.getObjectByName("cloud"));
+			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
@@ -837,6 +838,10 @@ function init(reset) {
 	}else{
 		//remove visual effects from previous levels
 		if(currentWorld==3){
+			light.color.set(0xFFFFFF)
+			mainLight.color.set(0xFFFFFF)
+			mainLight.position.set(1.5, 2.75, 1.5);
+			mainLight.position.multiplyScalar(50);
 			scene.remove(mainLight);
 			//light.intensity = 0.03
 			scene.remove(light);
