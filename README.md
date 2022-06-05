@@ -53,3 +53,4 @@ Arcade style leaderboard stored on wits servers (database)
 - Exit to main menu from leaderboard after level 3 (+ message to click to restart)
 - empty database
 - maybe special message to those who beat banana mode in 'specialtime'
+- Lock frames 
