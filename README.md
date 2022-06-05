@@ -51,3 +51,5 @@ Arcade style leaderboard stored on wits servers (database)
 - Change order of requests to database (add before pull)
 - slight addujstments to spacing in UI
 - Exit to main menu from leaderboard after level 3 (+ message to click to restart)
+- empty database
+- maybe special message to those who beat banana mode in 'specialtime'
