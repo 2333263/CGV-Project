@@ -266,13 +266,14 @@ class BuildWorld {
                     child.castShadow = false;
                 }else if (name.substring(0, 7) === 'Sign002') {
                     //Replace textures
+                    var random=Math.floor(Math.random()  * 8);
                     var location="../Objects/Textures/Signs/"
                     if(banana){
                         location+="Banana/"
                     }else{
                         location+="Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_5.png')
+                    const textureTemp=loader.load(location+'sign_'+random+'.png')
                     textureTemp.flipY=false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
@@ -282,13 +283,14 @@ class BuildWorld {
                     child.castShadow = false;
                 }else if (name.substring(0, 7) === 'Sign003') {
                     //Replace textures
+                    var random=Math.floor(Math.random()  * 8);
                     var location="../Objects/Textures/Signs/"
                     if(banana){
                         location+="Banana/"
                     }else{
                         location+="Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_0.png')
+                    const textureTemp=loader.load(location+'sign_'+random+'.png')
                     textureTemp.flipY=false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
@@ -298,13 +300,14 @@ class BuildWorld {
                     child.castShadow = false;
                 }else if (name.substring(0, 7) === 'Sign004') {
                     //Replace textures
+                    var random=Math.floor(Math.random()  * 8);
                     var location="../Objects/Textures/Signs/"
                     if(banana){
                         location+="Banana/"
                     }else{
                         location+="Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_3.png')
+                    const textureTemp=loader.load(location+'sign_'+random+'.png')
                     textureTemp.flipY=false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
@@ -314,13 +317,14 @@ class BuildWorld {
                     child.castShadow = false;
                 }else if (name.substring(0, 7) === 'Sign005') {
                     //Replace textures
+                    var random=Math.floor(Math.random()  * 8);
                     var location="../Objects/Textures/Signs/"
                     if(banana){
                         location+="Banana/"
                     }else{
                         location+="Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_1.png')
+                    const textureTemp=loader.load(location+'sign_'+random+'.png')
                     textureTemp.flipY=false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
