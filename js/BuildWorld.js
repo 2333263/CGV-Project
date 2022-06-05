@@ -68,7 +68,7 @@ class BuildWorld {
      * 
      */
 
-    static loadLevel(banana,scene, world, level = 1, callback) {
+    static loadLevel(banana, scene, world, level = 1, callback) {
         var url;
         const toRemove = [];
 
@@ -124,10 +124,10 @@ class BuildWorld {
                     //Add targets to respective arrays
                     if (name.substring(6, 10) === 'Move') {
                         targetsMoving.push(child);
-                    } else if (name.substring(6, 10) === 'Path'){
+                    } else if (name.substring(6, 10) === 'Path') {
                         //Don't add target paths to scene
                         child.visible = false
-                    }else {
+                    } else {
                         targetsStill.push(child);
                     }
 
@@ -156,12 +156,12 @@ class BuildWorld {
                     //Add Refractor
                     const RefracGeo = new THREE.PlaneGeometry(6, 7.5);
                     const RefracMat = new THREE.MeshPhysicalMaterial({
-                        roughness: 0.05,   
-                        transmission: 0.8,  
+                        roughness: 0.05,
+                        transmission: 0.8,
                         thickness: 4,
-                        reflectivity : 0.6
+                        reflectivity: 0.6
                     })
-                    
+
                     const refractor = new THREE.Mesh(RefracGeo, RefracMat)
                     refractor.position.copy(child.position)
                     refractor.quaternion.copy(child.quaternion)
@@ -181,7 +181,7 @@ class BuildWorld {
                     //Add walls to collision detection
                     hullCollision.push(child)
                 }
-                else if (name.substring(0, 8) === 'TrashBin' ) {
+                else if (name.substring(0, 8) === 'TrashBin') {
                     //Add trash bins to collision detection, crates handled with invis
                     boxCollision.push(child)
                 }
@@ -193,66 +193,68 @@ class BuildWorld {
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
                     //Add spotlights to the street lights
+                    if (level == 3) {
+                        //Create light
+                        const streetLight = new THREE.SpotLight('#FFFFE0')
 
-                    //Create light
-                    const streetLight = new THREE.SpotLight('#FFFFE0')
+                        //Adjust light properties
+                        streetLight.power = 2
+                        streetLight.decay = 2
+                        streetLight.castShadow = true;
+                        streetLight.shadow.mapSize.width = 512;
+                        streetLight.shadow.mapSize.height = 512;
+                        streetLight.shadow.focus = 0.9
+                        streetLight.angle = Math.PI / 3
+                        streetLight.penumbra = 0.5
+                        streetLight.position.set(
+                            child.position.x,
+                            child.position.y,
+                            child.position.z
+                        )
+                        //Create light target
+                        const target = new THREE.Object3D
 
-                    //Adjust light properties
-                    streetLight.power = 2
-                    streetLight.decay = 2
-                    streetLight.castShadow = true;
-                    streetLight.shadow.mapSize.width = 512;
-                    streetLight.shadow.mapSize.height = 512;
-                    streetLight.shadow.focus = 0.9
-                    streetLight.angle = Math.PI / 3
-                    streetLight.penumbra = 0.5
-                    streetLight.position.set(
-                        child.position.x,
-                        child.position.y,
-                        child.position.z
-                    )
-                    //Create light target
-                    const target = new THREE.Object3D
+                        //position.copy was creating problems, do it manually
+                        target.position.set(child.children[0].position.x + child.position.x,
+                            child.children[0].position.y + child.position.y,
+                            child.children[0].position.z + child.position.z
+                        );
 
-                    //position.copy was creating problems, do it manually
-                    target.position.set(child.children[0].position.x + child.position.x,
-                        child.children[0].position.y + child.position.y,
-                        child.children[0].position.z + child.position.z
-                    );
-
-                    root.add(target)
+                        root.add(target)
 
 
-                    streetLight.target = target
+                        streetLight.target = target
 
-                    //Add light to lights array
-                    streetLights.push(streetLight)
+                        //Add light to lights array
+                        streetLights.push(streetLight)
 
-                    //Add light to scene
-                    root.add(streetLight)
+                        //Add light to scene
+                        root.add(streetLight)
+                    }
+
 
                     //Remove light ref from scene
                     toRemove.push(child)
 
-                    
+
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
-                    //Don't make glass glow in level 1
-                    if (level != 1){
+                    //Don't make glass glow in level 1 && 2
+                    if (level == 3) {
                         glowing.push(child)
                         const newMat = new THREE.MeshPhongMaterial({
-                        color: child.material.color,
-                        emissiveMap: emissiveMapTex,
-                        emissive: child.material.color,
-                        emissiveIntensity: 1
-                    })
-                    child.material = newMat
+                            color: child.material.color,
+                            emissiveMap: emissiveMapTex,
+                            emissive: child.material.color,
+                            emissiveIntensity: 1
+                        })
+                        child.material = newMat
                     }
                 }
-                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door'|| name.substring(0, 11) === 'Pathoutline') {
+                else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 11) === 'Pathoutline') {
                     //Stop these from cast shadows
                     child.castShadow = false;
-                    
+
                 }
 
                 else if (name.substring(0, 7) === 'Sign001') {
@@ -264,90 +266,90 @@ class BuildWorld {
                     })
                     child.material = newMat
                     child.castShadow = false;
-                }else if (name.substring(0, 7) === 'Sign002') {
+                } else if (name.substring(0, 7) === 'Sign002') {
                     //Replace textures
-                    var random=Math.floor(Math.random()  * 8);
-                    var location="../Objects/Textures/Signs/"
-                    if(banana){
-                        location+="Banana/"
-                    }else{
-                        location+="Normal/"
+                    var random = Math.floor(Math.random() * 8);
+                    var location = "../Objects/Textures/Signs/"
+                    if (banana) {
+                        location += "Banana/"
+                    } else {
+                        location += "Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_'+random+'.png')
-                    textureTemp.flipY=false
+                    const textureTemp = loader.load(location + 'sign_' + random + '.png')
+                    textureTemp.flipY = false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
 
                     })
                     child.material = newMat
                     child.castShadow = false;
-                }else if (name.substring(0, 7) === 'Sign003') {
+                } else if (name.substring(0, 7) === 'Sign003') {
                     //Replace textures
-                    var random=Math.floor(Math.random()  * 8);
-                    var location="../Objects/Textures/Signs/"
-                    if(banana){
-                        location+="Banana/"
-                    }else{
-                        location+="Normal/"
+                    var random = Math.floor(Math.random() * 8);
+                    var location = "../Objects/Textures/Signs/"
+                    if (banana) {
+                        location += "Banana/"
+                    } else {
+                        location += "Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_'+random+'.png')
-                    textureTemp.flipY=false
+                    const textureTemp = loader.load(location + 'sign_' + random + '.png')
+                    textureTemp.flipY = false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
 
                     })
                     child.material = newMat
                     child.castShadow = false;
-                }else if (name.substring(0, 7) === 'Sign004') {
+                } else if (name.substring(0, 7) === 'Sign004') {
                     //Replace textures
-                    var random=Math.floor(Math.random()  * 8);
-                    var location="../Objects/Textures/Signs/"
-                    if(banana){
-                        location+="Banana/"
-                    }else{
-                        location+="Normal/"
+                    var random = Math.floor(Math.random() * 8);
+                    var location = "../Objects/Textures/Signs/"
+                    if (banana) {
+                        location += "Banana/"
+                    } else {
+                        location += "Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_'+random+'.png')
-                    textureTemp.flipY=false
+                    const textureTemp = loader.load(location + 'sign_' + random + '.png')
+                    textureTemp.flipY = false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
 
                     })
                     child.material = newMat
                     child.castShadow = false;
-                }else if (name.substring(0, 7) === 'Sign005') {
+                } else if (name.substring(0, 7) === 'Sign005') {
                     //Replace textures
-                    var random=Math.floor(Math.random()  * 8);
-                    var location="../Objects/Textures/Signs/"
-                    if(banana){
-                        location+="Banana/"
-                    }else{
-                        location+="Normal/"
+                    var random = Math.floor(Math.random() * 8);
+                    var location = "../Objects/Textures/Signs/"
+                    if (banana) {
+                        location += "Banana/"
+                    } else {
+                        location += "Normal/"
                     }
-                    const textureTemp=loader.load(location+'sign_'+random+'.png')
-                    textureTemp.flipY=false
+                    const textureTemp = loader.load(location + 'sign_' + random + '.png')
+                    textureTemp.flipY = false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
 
                     })
                     child.material = newMat
-                }else if (name.substring(0, 7) === 'Sign006') {
+                } else if (name.substring(0, 7) === 'Sign006') {
                     //Replace textures
-                    var location="../Objects/Textures/Signs/"
-                    if(banana){
-                        location+="Banana/"
-                    }else{
-                        location+="Normal/"
+                    var location = "../Objects/Textures/Signs/"
+                    if (banana) {
+                        location += "Banana/"
+                    } else {
+                        location += "Normal/"
                     }
-                    const textureTemp=loader.load(location+'Tutorial.png')
-                    textureTemp.flipY=false
+                    const textureTemp = loader.load(location + 'Tutorial.png')
+                    textureTemp.flipY = false
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
 
                     })
                     child.material = newMat
                     child.castShadow = false;
-                }else if (name.substring(0, 7) === 'Sign007') {
+                } else if (name.substring(0, 7) === 'Sign007') {
                     //Replace textures
                     const textureTemp = child.material.map
                     const newMat = new THREE.MeshPhongMaterial({
@@ -356,7 +358,7 @@ class BuildWorld {
                     })
                     child.material = newMat
                     child.castShadow = false;
-                 } else if (name.substring(0, 5) === 'Floor') {
+                } else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     hullCollision.push(child)
                     const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
@@ -440,13 +442,13 @@ class BuildWorld {
                         emissiveIntensity: 0.5
                     })
                     child.material = newMat
-                    clouds.push(child.rotateX(180));            
+                    clouds.push(child.rotateX(180));
                 }
                 else if (name.substring(0, 10) === 'MovingDoor') {
                     var CANNONBody = threeToCannonObj.getCannonMesh(child, 'BOX')
                     world.addBody(CANNONBody);
-                    movingDoor.push(child);    
-                    movingDoor.push(CANNONBody);        
+                    movingDoor.push(child);
+                    movingDoor.push(CANNONBody);
                 }
 
 
@@ -518,28 +520,28 @@ class BuildWorld {
         //re-init arrays
 
         //Arrays of collision objects
-         hullCollision = [];
-         hullCollisionCANNON = [];
-         barrelCollision = [];
-         barrelCollisionCANNON = [];
-         boxCollision = [];
-         boxCollisionCANNON = [];
+        hullCollision = [];
+        hullCollisionCANNON = [];
+        barrelCollision = [];
+        barrelCollisionCANNON = [];
+        boxCollision = [];
+        boxCollisionCANNON = [];
 
         //Array of street lights (spotlights)
-         streetLights = [];
+        streetLights = [];
 
         //Array of glowing objects
-         glowing = [];
+        glowing = [];
 
         //Array of targets
-         targetsMoving = [];
-         targetsStill = [];
+        targetsMoving = [];
+        targetsStill = [];
 
         //Muzzle Flash object
-         muzzleFlash
+        muzzleFlash
 
         //Array of clouds to send to main
-         clouds = [];
+        clouds = [];
     }
 
     /**
@@ -641,19 +643,19 @@ class BuildWorld {
 
     static addGun(scene, banana) {
         const gltfLoader = new GLTFLoader(manager);
-        var url=""
-        if(!banana){
-        url = '../Objects/Weapons/m4_2.gltf'
-        }else{
-        url="../Objects/Weapons/Banana Gun.glb"
+        var url = ""
+        if (!banana) {
+            url = '../Objects/Weapons/m4_2.gltf'
+        } else {
+            url = "../Objects/Weapons/Banana Gun.glb"
         }
-        
-        if(scene.getObjectByName('handRight').getObjectByName('weaponsM4') || scene.getObjectByName('handRight').getObjectByName('muzzleFlash')){
-            var children=scene.getObjectByName('handRight').children
-            for(var i=0;i<children.length;i++){
-                if(children[i].name=="weaponsM4"){
+
+        if (scene.getObjectByName('handRight').getObjectByName('weaponsM4') || scene.getObjectByName('handRight').getObjectByName('muzzleFlash')) {
+            var children = scene.getObjectByName('handRight').children
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].name == "weaponsM4") {
                     scene.getObjectByName('handRight').remove(children[i])
-                }else if(children[i].name=="muzzleFlash"){
+                } else if (children[i].name == "muzzleFlash") {
                     scene.getObjectByName('handRight').remove(children[i])
                 }
             }
@@ -663,12 +665,12 @@ class BuildWorld {
 
         gltfLoader.load(url, (gltf) => {
             //for some unknown reason this code needs to be repeated here
-            if((scene.getObjectByName('handRight').getObjectByName('weaponsM4') &&banana)|| (scene.getObjectByName('handRight').getObjectByName('muzzleFlash')&&banana)){
-                var children=scene.getObjectByName('handRight').children
-                for(var i=0;i<children.length;i++){
-                    if(children[i].name=="weaponsM4"){
+            if ((scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana) || (scene.getObjectByName('handRight').getObjectByName('muzzleFlash') && banana)) {
+                var children = scene.getObjectByName('handRight').children
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].name == "weaponsM4") {
                         scene.getObjectByName('handRight').remove(children[i])
-                    }else if(children[i].name=="muzzleFlash"){
+                    } else if (children[i].name == "muzzleFlash") {
                         scene.getObjectByName('handRight').remove(children[i])
                     }
                 }
@@ -678,20 +680,20 @@ class BuildWorld {
 
 
             const weapon = gltf.scene
-            if(!banana){
-            weapon.name = 'weaponsM4'
-            }else{
-            weapon.name = 'BG'
+            if (!banana) {
+                weapon.name = 'weaponsM4'
+            } else {
+                weapon.name = 'BG'
             }
             weapon.translateX(0.2)
-            
+
             weapon.rotateX(Math.PI / 2)
-            
-            if(banana){
+
+            if (banana) {
                 weapon.translateY(-0.3)
-                weapon.scale.set(15,15,15)
+                weapon.scale.set(15, 15, 15)
             }
-            else{
+            else {
                 weapon.scale.set(0.7, 0.7, 0.7)
             }
 
@@ -710,16 +712,16 @@ class BuildWorld {
             opacity: 0.7
         }))
         //Translate muzzle flash to be in position with gun
-        if(!banana){//banana mode off
-        muzzleFlash
-            .translateZ(0.11)
-            .translateX(0.2)
-            .translateY(-1);
-        }else{//banana mode on
-             muzzleFlash
-            .translateZ(0.11)
-            .translateX(-0.1)
-            .translateY(-1);
+        if (!banana) {//banana mode off
+            muzzleFlash
+                .translateZ(0.11)
+                .translateX(0.2)
+                .translateY(-1);
+        } else {//banana mode on
+            muzzleFlash
+                .translateZ(0.11)
+                .translateX(-0.1)
+                .translateY(-1);
         }
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
@@ -790,7 +792,7 @@ class BuildWorld {
      * Function to get the moving door
      * @returns {Array.<THREE.Mesh || CANNON.Body>} The muzzle flash mesh
      */
-     static getDoor() {
+    static getDoor() {
         return movingDoor;
     }
 }
