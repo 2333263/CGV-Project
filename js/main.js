@@ -112,19 +112,12 @@ audioLoader.load("../Objects/Sound Effects/thunder.mp3", function (buffer) {
 //Audio Loader
 
 //Gunshot sound Init
-function gunshotSound() {
-	var Sounds=["../Objects/Sound Effects/rifle.mp3","../Objects/Sound Effects/PewPew.mp3","../Objects/Sound Effects/Im a banana.mp3","../Objects/Sound Effects/Bang.mp3"]
-	var location=""
-	if(banana){
-		var loc=Math.floor(Math.random()*(Sounds.length-1+1)+1)
-		location=Sounds[loc]
-	}else{
-		location=Sounds[0]
-	}
+function gunshotSound(Sound) {
+	
 	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
 	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
-	audioLoader.load(location, function (buffer) {
+	audioLoader.load(Sound, function (buffer) {
 		gunsound.setBuffer(buffer);
 		gunsound.setLoop(false);
 		if(banana){
@@ -836,7 +829,12 @@ document.addEventListener("mousedown", (e) => {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
-					gunshotSound()
+					var Sounds=["../Objects/Sound Effects/rifle.mp3","../Objects/Sound Effects/PewPew.mp3","../Objects/Sound Effects/Im a banana.mp3","../Objects/Sound Effects/Bang.mp3"]
+					var loc=0;
+					if(banana){
+						loc=Math.floor(Math.random()*(Sounds.length-1+1)+1)
+					}
+					gunshotSound(Sounds[loc])
 				}
 				//Get time of shot
 				let d = new Date();
