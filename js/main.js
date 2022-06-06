@@ -529,7 +529,6 @@ var animationID;
 let count = 0;
 var FrameRate=1000/60
 var timeTarget=0
-var frameClock = new Date();
 function animate() {
 
 	stats.begin()
