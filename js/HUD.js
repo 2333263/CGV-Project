@@ -28,7 +28,7 @@ class HUD {
         this.name="";
         this.leaderBoard=new leaderBoard();
         this.level=1
-        this.clicked=false
+        this.ricked=false
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
         /**
@@ -279,6 +279,7 @@ class HUD {
                         
                         
                         if((this.timetaken<specialtime)&& banana){
+                            this.ricked=true
                             graphics.fillText("Click for a special suprise!!", X_LEFT+200, bottom+60*scaleFitNative)}
                             else{
                                 graphics.fillText("click anywhere to return to the main menu",  X_LEFT+200, bottom+60*scaleFitNative)

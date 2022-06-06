@@ -918,10 +918,11 @@ document.addEventListener("mousedown", (e) => {
 					menu = true
 					scene.remove(playerModel)
 					scene.remove(controls.getObject())
-					if(banana &&!rolled){
+					if(banana &&!rolled &&hud.ricked==true){
 						backgroundmusic.pause()
 						homeScreen.Music = false
-							rolled=true
+						rolled=true
+						hud.ricked=false
 						window.open(
 							"https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
 					
