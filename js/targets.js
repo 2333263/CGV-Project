@@ -23,7 +23,9 @@ class Targets{
             map: loader.load(this.texturelocation+"correctTarget.jpg")
         });
         if(name=='7' && level==3){
-            this.geometry.scale(0.2,0.2,0.2)
+            this.geometry.scale(0.25,0.2,0.22)
+            position.y-=0.2
+            position.x-=0.082
         }
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
         this.cylinder.position.copy(position)
