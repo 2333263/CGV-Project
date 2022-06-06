@@ -17,10 +17,12 @@ class musicHandler{
                 }
                 else{audiourl="/Objects/Sound Effects/GameMusic.mp3"}
             this.audioLoader.load(audiourl, function (buffer) {
-                backgroundSound.setBuffer(buffer);
+               try {backgroundSound.setBuffer(buffer);
+              
                 backgroundSound.setLoop(true);
                 backgroundSound.setVolume(0.4);
-                backgroundSound.play();
+                backgroundSound.play();}
+                catch{}
             });
             this.playing=true;
         }catch (error){
