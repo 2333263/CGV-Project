@@ -304,7 +304,7 @@ class HUD {
         
         //Checks the state of the game with regards to it being paused and logic it should execute thereof
         this.isPaused = function (paused) {
-            if(paused && this.gamestate==0){
+            if(paused){
                 if(this.Paused==false) {
                     this.pausedtime =getTimeElappsed(this.startTime);
                 }

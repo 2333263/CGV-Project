@@ -776,15 +776,25 @@ function init(reset) {
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
 	if (hud.loading) {
-		document.body.removeChild(document.body.lastElementChild); //remove loading screen
-		hud.loading = false
-		hud.isPaused(false);
+		var milliseconds=1000
+		if(currentWorld==2){
+			milliseconds=5000
+		}
+		else if(currentWorld==3){
+			milliseconds=2500
+		}
+		setTimeout(doneLoading, milliseconds);
 	}
 	}
 
 	
 };
-
+function doneLoading(){
+	document.body.removeChild(document.body.lastElementChild); //remove loading screen
+		hud.loading = false
+		
+		hud.isPaused(false);
+}
 //Remove all targets from scene
 function removeTargets() {
 	while (TargetArr.length != 0) {
@@ -949,6 +959,7 @@ function checkState() {
 	}
 	else if (hud.gamestate == 1) { //level win 
 		hud.isPaused(true);
+		
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
 		if (currentWorld < 4 && changeLevel==false) {
