@@ -753,7 +753,7 @@ function init(reset) {
 		});
 		rainSound(0)
 		thunderSound(0)
-
+		changeLevel=false
 	} else {
 		//remove visual effects from previous levels
 		if (currentWorld == 3) {
