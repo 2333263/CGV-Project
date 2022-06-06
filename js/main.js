@@ -39,10 +39,10 @@ renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
-var rolled=false
+var rolled = false
 var gameWon = false
 var changeLevel = false
-var gameFailed=false
+var gameFailed = false
 //Raycast must not hit lines
 raycaster.params.Line.threshold = 0.01
 const timestep = 1 / 60;
@@ -113,17 +113,17 @@ audioLoader.load("../Objects/Sound Effects/thunder.mp3", function (buffer) {
 
 //Gunshot sound Init
 function gunshotSound(Sound) {
-	
+
 	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
 	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
 	audioLoader.load(Sound, function (buffer) {
 		gunsound.setBuffer(buffer);
 		gunsound.setLoop(false);
-		if(banana){
+		if (banana) {
 			gunsound.setVolume(0.9);
-		}else{
-		gunsound.setVolume(0.1);
+		} else {
+			gunsound.setVolume(0.1);
 		}
 		gunsound.play();
 	});
@@ -172,14 +172,14 @@ function drawSkyBox(level) {
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
 			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
 	}
-	if(level==2){
-	pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
-	"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
-	"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
-}
-	
-	
-//This function maps over the array of images, skybox related
+	if (level == 2) {
+		pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+			"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
+			"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
+	}
+
+
+	//This function maps over the array of images, skybox related
 	function createMaterialArray() {
 		const skyboxImagepaths = pathStrings;
 		const materialArray = skyboxImagepaths.map(image => {
@@ -352,6 +352,7 @@ var sparks = [];
 //Array of clouds for dynamic skybox
 var clouds = [];
 
+
 //Menu Init
 var menuScene = new THREE.Scene();
 var homeScreen = new MainMenu();
@@ -396,7 +397,7 @@ var gunEnd
 
 //Load level 1
 var currentWorld = 1;
-BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
+BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 	afterLoad();
 });
 
@@ -466,24 +467,32 @@ function afterLoad() {
 	clouds = []
 	clouds = BuildWorld.getClouds();
 
+
+
+	//console.log(monkeyHead)
+
 	//calls the method to draw the level's skybox (day)
 	switch (currentWorld) {
 		case 1:
 			rainSound(0);
 			drawSkyBox(1)
 			//Set up the main composer for the scene using preset post processing
-			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight)
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene)
+
+			//Do a volumetric pass
+			composer = POSTPROCESSINGPASSES.volumetricPass(composer, controls.getObject(), mainLight)
 			break;
 		case 3:
 			//calls the method to draw the level's skybox (evening)
 			drawSkyBox(3)
-			
+
 			stormSky();
 			if (homeScreen.soundEffects) {
 				rainSound(1);
 			}
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
-			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, false)
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene)
+
 			break;
 		case 2:
 			drawSkyBox(2);
@@ -492,9 +501,10 @@ function afterLoad() {
 			mainLight.position.set(400, 200, 1.5);
 			light.color.setHex(0xc23b05);
 			//Set up the main composer for the scene using preset post processing without volumetric lighting
-			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene, mainLight, true)
-			
-			
+			composer = POSTPROCESSINGPASSES.doPasses(renderer, controls.getObject(), scene)
+
+			//Do a volumetric pass
+			composer = POSTPROCESSINGPASSES.volumetricPass(composer, controls.getObject(), mainLight)
 			break;
 
 	}
@@ -510,8 +520,8 @@ function afterLoad() {
 	if (homeScreen.Music) {
 		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
-	
-	animationID=requestAnimationFrame(animate);
+
+	animationID = requestAnimationFrame(animate);
 }
 
 //To unload current world
@@ -522,8 +532,8 @@ var animationID;
  * Function that runs the game
  */
 let count = 0;
-var FrameRate=1000/60
-var timeTarget=0
+var FrameRate = 1000 / 60
+var timeTarget = 0
 function animate() {
 
 	stats.begin()
@@ -553,102 +563,102 @@ function animate() {
 				 init(true); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
 
-			//Make skybox follow player to make the distance to the skybox look infinite
-			skybox.position.copy(playerBody.position)
+				//Make skybox follow player to make the distance to the skybox look infinite
+				skybox.position.copy(playerBody.position)
 
-			//make clouds move
-			for (let i = 0; i < clouds.length; i = i + 2) {
-				clouds[i].position.x += 0.09
-				clouds[i].position.z += 0.05
-			}
-			for (let i = 1; i < clouds.length; i = i + 2) {
-				clouds[i].position.x += 0.05
-				clouds[i].position.z += 0.09
-			}
+				//make clouds move
+				for (let i = 0; i < clouds.length; i = i + 2) {
+					clouds[i].position.x += 0.09
+					clouds[i].position.z += 0.05
+				}
+				for (let i = 1; i < clouds.length; i = i + 2) {
+					clouds[i].position.x += 0.05
+					clouds[i].position.z += 0.09
+				}
 
-			var tempVec = new THREE.Vector3();
-			controls.getObject().getWorldDirection(tempVec)
+				var tempVec = new THREE.Vector3();
+				controls.getObject().getWorldDirection(tempVec)
 
-			//Get angle player is facing through arctan
-			var theta = Math.atan2(tempVec.x, tempVec.z);
-			var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
-			var thetaArm = Math.atan2(xz, tempVec.y);
-			playerModel.translateY(0.3)//-2
-			playerModel.rotation.set(0, theta, 0)
+				//Get angle player is facing through arctan
+				var theta = Math.atan2(tempVec.x, tempVec.z);
+				var xz = Math.sqrt(Math.pow(tempVec.x, 2) + Math.pow(tempVec.z, 2))
+				var thetaArm = Math.atan2(xz, tempVec.y);
+				playerModel.translateY(0.3)//-2
+				playerModel.rotation.set(0, theta, 0)
 
-			playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
-			playerModel.translateZ(-0.30)
+				playerModel.getObjectByName('armRightPivot').rotation.set(thetaArm + Math.PI, 0, 0)
+				playerModel.translateZ(-0.30)
 
-			if (lines.length > 0) {
-				handleTrails();
-			}
-			if (sparks.length > 0) {
-				handleSparks();
-			}
+				if (lines.length > 0) {
+					handleTrails();
+				}
+				if (sparks.length > 0) {
+					handleSparks();
+				}
 
 
-			dt = Clock.getDelta()
-			if (hud.gamestate == 0)
-				move();
-			var pos = new THREE.Vector3()
-			pos.copy(playerBody.position)
-			pos.y += 1.2
-			controls.getObject().position.copy(pos);
-			hud.updateAmmoCount(playerBody.noBullets)
-			hud.draw(currentWorld,banana);
-			MoveTargets(dt)
-			hudTexture.needsUpdate = true;
-			world.step(timestep, dt);
+				dt = Clock.getDelta()
+				if (hud.gamestate == 0)
+					move();
+				var pos = new THREE.Vector3()
+				pos.copy(playerBody.position)
+				pos.y += 1.2
+				controls.getObject().position.copy(pos);
+				hud.updateAmmoCount(playerBody.noBullets)
+				hud.draw(currentWorld, banana);
+				MoveTargets(dt)
+				hudTexture.needsUpdate = true;
+				world.step(timestep, dt);
 
-			if (currentWorld == 3) {
+				if (currentWorld == 3) {
 
-				if (Math.random() > 0.98 || flash.power > 100) {
-					count++
-					if (flash.power < 100) {
+					if (Math.random() > 0.98 || flash.power > 100) {
+						count++
+						if (flash.power < 100) {
 
-						flash.position.set(Math.random() * 30, 100 + Math.random() * 10, -30);
-					}
-					flash.power = 50 + Math.random() * 500;
-					if (count > 70) {//make it only run every 80 seconds //parseInt(0.75*60)
-						if (homeScreen.soundEffects && count > 70) {
+							flash.position.set(Math.random() * 30, 100 + Math.random() * 10, -30);
+						}
+						flash.power = 50 + Math.random() * 500;
+						if (count > 70) {//make it only run every 80 seconds //parseInt(0.75*60)
+							if (homeScreen.soundEffects && count > 70) {
 
-							thunderSound(1);
-							count = 0;
+								thunderSound(1);
+								count = 0;
+							}
+
 						}
 
 					}
 
+					cloudMeshArr.forEach(p => { p.rotation.z -= 0.002; })
+					rainGeo.translate(0, -1, 0);      //-----------------------
+					counter += 1
+					if (counter == 209) {
+						rainGeo.translate(0, 200, 0); //resets the rain gemoetry (vertically)
+						counter = 0;
+
+					}
+					rain.rotation.y += 0.002; //introduces angle
+
+
 				}
-
-				cloudMeshArr.forEach(p => { p.rotation.z -= 0.002; })
-				rainGeo.translate(0, -1, 0);      //-----------------------
-				counter += 1
-				if (counter == 209) {
-					rainGeo.translate(0, 200, 0); //resets the rain gemoetry (vertically)
-					counter = 0;
-
+				if (doorMovingBool) {
+					handleDoor()
 				}
-				rain.rotation.y += 0.002; //introduces angle
-
-
-			} 
-			if (doorMovingBool){
-				handleDoor()
+			}
+			else {
+				hud.isPaused(true);
+				checkState()
+				hud.draw(currentWorld, banana);
+				hudTexture.needsUpdate = true;
+			}
+			renderWorld()
+			timeTarget += FrameRate
+			if (Date.now() >= timeTarget) {
+				timeTarget = Date.now()
 			}
 		}
-		else {
-			hud.isPaused(true);
-			checkState()
-			hud.draw(currentWorld,banana);
-			hudTexture.needsUpdate = true;
-		}
-		renderWorld()
-		timeTarget+=FrameRate
-		if(Date.now()>=timeTarget){
-			timeTarget=Date.now()
-		}
 	}
-}
 	stats.end() //For monitoring
 	animationID = requestAnimationFrame(animate);
 };
@@ -677,7 +687,7 @@ function renderWorld() {
 //Rotates targets for appearance on the map camera
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
-		var tempCylinder = new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.01,32), TargetArr[i].getCylinder().material, currentWorld)
+		var tempCylinder = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.01, 32), TargetArr[i].getCylinder().material, currentWorld)
 		tempCylinder.position.copy(TargetArr[i].getCylinder().position)
 		mapTargetArr.push(tempCylinder)
 		scene.add(tempCylinder.rotateY(Math.PI / 2).translateY(25 - tempCylinder.position.y))
@@ -712,9 +722,9 @@ function init(reset) {
 		scene.remove(line[0])
 	}
 	if (reset) {
-		hud.Clicked=false
-		if(!hud.loading){hud.isLoading(1, banana)}
-		
+		hud.Clicked = false
+		if (!hud.loading) { hud.isLoading(1, banana) }
+
 		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 3
 			scene.add(mainLight)
@@ -723,20 +733,20 @@ function init(reset) {
 			scene.remove(scene.getObjectByName("flash"))
 			cloudMeshArr = []
 			scene.remove(scene.getObjectByName("rainDrops"))
-		}else if(currentWorld==2){
-		//undo any visual effects changed in world 2
-		mainLight.color.set(0xFFFFFF)
-		mainLight.position.set(1.5, 2.75, 1.5);
-		mainLight.position.multiplyScalar(50);
-		scene.add(mainLight)
-		light.color.set(0xFFFFFF)
-		scene.add(light)
+		} else if (currentWorld == 2) {
+			//undo any visual effects changed in world 2
+			mainLight.color.set(0xFFFFFF)
+			mainLight.position.set(1.5, 2.75, 1.5);
+			mainLight.position.multiplyScalar(50);
+			scene.add(mainLight)
+			light.color.set(0xFFFFFF)
+			scene.add(light)
 		}
 		BuildWorld.unloadCurrentLevel(scene, world)
 		scene.remove(skybox)
 		cancelAnimationFrame(animationID);
 		currentWorld = 1
-		BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
+		BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 			afterLoad();
 			hud.setStartTime()
 			init(false)
@@ -744,9 +754,9 @@ function init(reset) {
 		rainSound(0)
 		thunderSound(0)
 
-	}else{
+	} else {
 		//remove visual effects from previous levels
-		if(currentWorld==3){
+		if (currentWorld == 3) {
 			light.color.set(0xFFFFFF)
 			mainLight.color.set(0xFFFFFF)
 			mainLight.position.set(1.5, 2.75, 1.5);
@@ -754,7 +764,7 @@ function init(reset) {
 			scene.remove(mainLight);
 			scene.remove(light);
 		}
-			else if(currentWorld==2){
+		else if (currentWorld == 2) {
 			scene.add(light);
 			scene.remove(scene.getObjectByName("cloud"));
 			scene.remove(scene.getObjectByName("flash"))
@@ -789,7 +799,7 @@ function init(reset) {
 	}
 	}
 
-	
+
 };
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
@@ -841,10 +851,10 @@ document.addEventListener("mousedown", (e) => {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
-					var Sounds=["../Objects/Sound Effects/rifle.mp3","../Objects/Sound Effects/PewPew.mp3","../Objects/Sound Effects/Im a banana.mp3","../Objects/Sound Effects/Bang.mp3"]
-					var loc=0;
-					if(banana){
-						loc=Math.floor(Math.random()*(Sounds.length-1+1)+1)
+					var Sounds = ["../Objects/Sound Effects/rifle.mp3", "../Objects/Sound Effects/PewPew.mp3", "../Objects/Sound Effects/Im a banana.mp3", "../Objects/Sound Effects/Bang.mp3"]
+					var loc = 0;
+					if (banana) {
+						loc = Math.floor(Math.random() * (Sounds.length - 1 + 1) + 1)
 					}
 					gunshotSound(Sounds[loc])
 				}
@@ -925,14 +935,14 @@ document.addEventListener("mousedown", (e) => {
 						hud.ricked=false
 						window.open(
 							"https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
-					
+
 					}
 				}
-				
-				}else if(gameFailed==true){
-					gameFailed=false;
-					init(true);
-					
+
+			} else if (gameFailed == true) {
+				gameFailed = false;
+				init(true);
+
 
 			}
 
@@ -956,9 +966,9 @@ document.addEventListener("mousedown", (e) => {
 	}
 });
 function checkState() {
-	if (hud.gamestate == -1 &&gameFailed==false) { //Game failed
-		gameFailed=true
-		
+	if (hud.gamestate == -1 && gameFailed == false) { //Game failed
+		gameFailed = true
+
 	}
 	else if (hud.gamestate == 1) { //level win 
 		hud.Paused=false;
@@ -966,33 +976,33 @@ function checkState() {
 		
 		removeTargets();
 		//Check that there is a next level to load, otherwise init
-		if (currentWorld < 4 && changeLevel==false) {
+		if (currentWorld < 4 && changeLevel == false) {
 			//Code to swap levels
-			
+
 
 
 			changeLevel = true
 			currentWorld++
-			
-			if(currentWorld<4){
-			hud.isLoading(currentWorld,banana);
-			BuildWorld.unloadCurrentLevel(scene, world)
-			cancelAnimationFrame(animationID);
-			BuildWorld.loadLevel(banana,scene, world, currentWorld, function () {
-				afterLoad();
-				init(false);
-				
-				
-				changeLevel=false;
-			});
-		}else{
-			hud.gamestate=0;
+
+			if (currentWorld < 4) {
+				hud.isLoading(currentWorld, banana);
+				BuildWorld.unloadCurrentLevel(scene, world)
+				cancelAnimationFrame(animationID);
+				BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
+					afterLoad();
+					init(false);
+
+
+					changeLevel = false;
+				});
+			} else {
+				hud.gamestate = 0;
+			}
+		} else if (hud.entered == true && currentWorld >= 4) {
+			gameWon = true;
+
 		}
-		}else if(hud.entered == true && currentWorld>=4 ){ 
-			gameWon=true;
-			
-		}
-		 // Important for playe reset
+		// Important for playe reset
 	}
 }
 
@@ -1195,6 +1205,6 @@ function handleDoor() {
 	var door = BuildWorld.getDoor();
 	door[0].translateY(-0.01);
 	var offSetVec3 = door[1].shapeOffsets.pop()
-	offSetVec3.y -=0.01
+	offSetVec3.y -= 0.01
 	door[1].shapeOffsets.push(offSetVec3);
 }

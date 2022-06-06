@@ -41,6 +41,8 @@ var clouds = [];
 //Array of movable to send to main
 var movingDoor = [];
 
+//Mesh of monkey head for banana mode sun
+var monkeyHead;
 
 //Wire fences must be kept same size for optimisation
 var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
@@ -61,6 +63,7 @@ class BuildWorld {
 
     /**
      * Function to load a specified level into the scene and world
+     * @param {boolean} banana Banana check
      * @param {THREE.Scene} scene The scene that the level is loaded to
      * @param {CANNON.World} world The world that the collisions are loaded to
      * @param {int} level The level of the world as an int
@@ -451,6 +454,23 @@ class BuildWorld {
                     movingDoor.push(CANNONBody);
                 }
 
+                //Monkey head
+                else if (name.substring(0, 7) === 'Suzanne') {
+                    child.visible = false;
+                    monkeyHead = child;
+                    if (banana){
+                        child.visible = true;
+                        child.material = new THREE.MeshPhongMaterial({
+                            color: new THREE.Color('#00FF00'),
+                            emissive: new THREE.Color('#FFFFFF'),
+                            emissiveIntensity: 0.5, 
+                            transparent: true,
+                            opacity: 0.8
+                        })
+                        glowing.push(child)
+                    }
+                }
+
 
             });
 
@@ -790,6 +810,14 @@ class BuildWorld {
      */
     static getDoor() {
         return movingDoor;
+    }
+
+    /**
+     * Function to get monkey head
+     * @returns {THREE.Mesh} The muzzle flash mesh
+     */
+     static getMonkeyHead() {
+        return monkeyHead;
     }
 }
 
