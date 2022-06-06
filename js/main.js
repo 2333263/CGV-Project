@@ -516,7 +516,7 @@ function afterLoad() {
 		backgroundmusic.init(backgroundmusic.backgroundSound, banana);
 	}
 	
-	animate();
+	animationID=requestAnimationFrame(animate);
 }
 
 //To unload current world
@@ -527,9 +527,13 @@ var animationID;
  * Function that runs the game
  */
 let count = 0;
+var FrameRate=1000/60
+var timeTarget=0
+var frameClock = new Date();
 function animate() {
 
 	stats.begin()
+	if(Date.now()>=timeTarget){
 	if (menu == true) {//if we're in the menu
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
@@ -644,8 +648,12 @@ function animate() {
 			hudTexture.needsUpdate = true;
 		}
 		renderWorld()
-
+		timeTarget+=FrameRate
+		if(Date.now()>=timeTarget){
+			timeTarget=Date.now()
+		}
 	}
+}
 	stats.end() //For monitoring
 	animationID = requestAnimationFrame(animate);
 };
