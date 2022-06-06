@@ -716,6 +716,7 @@ function init(reset) {
 		scene.remove(line[0])
 	}
 	if (reset) {
+		hud.Clicked=false
 		if(!hud.loading){hud.isLoading(1, banana)}
 		
 		if (currentWorld >= 3) {
