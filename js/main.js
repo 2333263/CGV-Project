@@ -387,7 +387,8 @@ HudPlane.onBeforeRender = function (renderer) {
 
 //Add hud to separate hud scene
 sceneHUD.add(HudPlane)
-
+hud.isLoading("Start", false)
+setTimeout(doneLoading, 5000);
 
 
 //Mesh of the end of the gun (for use in bullet trails)
@@ -528,6 +529,7 @@ function animate() {
 	stats.begin()
 	if(Date.now()>=timeTarget){
 	if (menu == true) {//if we're in the menu
+		
 		orbitControls.update()//rotate around the world
 		composerMenu.render()
 		homeScreen.draw()//draw the main menu

@@ -106,18 +106,34 @@ class HUD {
             
             graphics.fillStyle = "black";
             graphics.fillRect(0,0,width,height)
-            drawImage(graphics,random,banana);
-           
             var size=60*scaleFitNative;
-                graphics.font = String(size)+"px Arial";
-                graphics.fillStyle = "rgb(255,255,255)";
-                var word=""
+            graphics.font = String(size)+"px Arial";
+            graphics.fillStyle = "rgb(255,255,255)";
+            
+            if(currentWorld=="Start"){graphics.font = String(size)+"px Courier";
+                size=80*scaleFitNative;
+                var bottom=1*height/4;
+               
+               var names=["Ben","Jeremy","Justin","Lazarus","Lior"]
+               for (let i=0; i<names.length; i++)
+               {
+                graphics.fillText(names[i], width/2-size, bottom);
+                bottom+= size}
+               
+                bottom+=2* size
+                graphics.fillText("Present", width/2-size, bottom);
+                }
+                else{
+                    drawImage(graphics,random,banana);
+           
+                    var word=""
+                     
                 if((currentWorld)==1 ||(currentWorld)==2 || (currentWorld)==3 ){
                  word = "Loading Level "+currentWorld;}
                  else {
                      word= "Loading "+currentWorld;
                  }
-            graphics.fillText(word, width/2-size/2*word.length/2, 3*height/4);
+            graphics.fillText(word, width/2-size/2*word.length/2, 3*height/4);}
             
             graphics = this.canvas.getContext("2d");
             document.body.appendChild(loadingScreen).focus;
