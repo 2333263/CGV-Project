@@ -599,7 +599,7 @@ function animate() {
 			pos.y += 1.2
 			controls.getObject().position.copy(pos);
 			hud.updateAmmoCount(playerBody.noBullets)
-			hud.draw(currentWorld);
+			hud.draw(currentWorld,banana);
 			MoveTargets(dt)
 			hudTexture.needsUpdate = true;
 			world.step(timestep, dt);
@@ -643,7 +643,7 @@ function animate() {
 		else {
 			hud.isPaused(true);
 			checkState()
-			hud.draw(currentWorld);
+			hud.draw(currentWorld,banana);
 			hudTexture.needsUpdate = true;
 		}
 		renderWorld()

@@ -28,6 +28,7 @@ class HUD {
         this.name="";
         this.leaderBoard=new leaderBoard();
         this.level=1
+        this.clicked=false
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
         /**
@@ -154,7 +155,7 @@ class HUD {
         };
 
         //Draw function of HUD, responsible for handling all the elements of the HUD
-        this.draw = function (level) 
+        this.draw = function (level,banana) 
             {graphics.clearRect(X_LEFT, Y_TOP, (X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             if(this.Paused){
                 graphics.fillStyle="rgba(0,0,0,0.6)";
@@ -173,7 +174,7 @@ class HUD {
                 graphics.fillText(word,  -size/2*word.length/2, 80);
                 return;
             }
-            if (!this.checkgameState(level)) {
+            if (!this.checkgameState(level,banana)) {
                 graphics.save();
                 drawCrossHair(this.level);
                 graphics.restore();
@@ -213,7 +214,7 @@ class HUD {
         }
 
         //Checks the gamestate and returns either a true or false value
-        this.checkgameState=function(level) {
+        this.checkgameState=function(level,banana) {
             if (this.currammo == 0 || this.currtargets == this.totaltarget) {
                 graphics.fillStyle="rgba(0,0,0,0.6)";
                 fillCustomPoly([[X_LEFT,Y_TOP],[X_RIGHT,Y_TOP],[X_RIGHT,Y_BOTTOM],[X_LEFT,Y_BOTTOM]]);
@@ -244,8 +245,17 @@ class HUD {
                         var specialtime=200 //incentive to get a good time
                          word="Try complete all 3 levels in under "+specialtime+" sec"
                         if(this.timetaken<specialtime){ //if good time acheived, told about 'banana mode'
+                            if(!banana){
                             graphics.fillStyle = "rgb(255,0,0)";
                             word="Enter 'banana' on the main menu for a suprise"
+                            }else{
+                                word="Enter 'banana' on the main menu for a suprise"
+                                if(!this.clicked){
+                                    this.clicked=true
+                                window.open(
+                                    "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
+                            }
+                        }
                         }
                        
                         graphics.fillText(word,  X_LEFT+200, bottom+60*scaleFitNative)
