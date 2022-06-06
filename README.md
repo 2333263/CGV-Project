@@ -54,3 +54,4 @@ Arcade style leaderboard stored on wits servers (database)
 - empty database
 - maybe special message to those who beat banana mode in 'specialtime'
 - Lock frames 
+- Update credits if needed?
