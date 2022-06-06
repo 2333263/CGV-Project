@@ -909,7 +909,8 @@ document.addEventListener("mousedown", (e) => {
 					scene.remove(playerModel)
 					scene.remove(controls.getObject())
 					if(banana &&!rolled){
-						
+						backgroundmusic.pause()
+						homeScreen.Music = false
 							rolled=true
 						window.open(
 							"https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");

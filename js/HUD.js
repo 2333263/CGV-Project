@@ -243,13 +243,16 @@ class HUD {
                         this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
                         var specialtime=200 //incentive to get a good time
+                        if(banana){
+                            specialtime-=10
+                        }
                          word="Try complete all 3 levels in under "+specialtime+" sec"
                         if(this.timetaken<specialtime){ //if good time acheived, told about 'banana mode'
                             if(!banana){
                             graphics.fillStyle = "rgb(255,0,0)";
                             word="Enter 'banana' on the main menu for a suprise"
                             }else{
-                            word="Click for a special suprise!!"
+                            word="Thank you for playing our game"
                                
                         }
                         }
@@ -257,7 +260,14 @@ class HUD {
                         graphics.fillText(word,  X_LEFT+200, bottom+60*scaleFitNative)
                         word=""
                         bottom+=60*scaleFitNative;
-                        graphics.fillText("click anywhere to return to the main menu",  X_LEFT+200, bottom+60*scaleFitNative)
+                        
+                        
+                        if((this.timetaken<specialtime)&& banana){
+                            graphics.fillText("Click for a special suprise!!", X_LEFT+200, bottom+60*scaleFitNative)}
+                            else{
+                                graphics.fillText("click anywhere to return to the main menu",  X_LEFT+200, bottom+60*scaleFitNative)
+                            }
+                        
                     }   
                     else{
                         if (!document.getElementById("input") &&this.entered==false) { 
