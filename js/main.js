@@ -396,7 +396,7 @@ setTimeout(doneLoading, 5000);
 var gunEnd
 
 //Load level 1
-var currentWorld = 1;
+var currentWorld = 3;
 BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 	afterLoad();
 });
