@@ -48,7 +48,7 @@ Arcade style leaderboard stored on wits servers (database)
 - loading screen when resetting level ✔
 - Monkey face sun in banana mode
 - Glowing monkey face on third level (green?)
-- Change order of requests to database (add before pull)
+- Change order of requests to database (add before pull) ❌(too slow so no leaderboard is displayed)
 - slight addujstments to spacing in UI
 - Exit to main menu from leaderboard after level 3 ✔
 - empty database
