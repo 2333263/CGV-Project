@@ -249,12 +249,8 @@ class HUD {
                             graphics.fillStyle = "rgb(255,0,0)";
                             word="Enter 'banana' on the main menu for a suprise"
                             }else{
-                                word="Enter 'banana' on the main menu for a suprise"
-                                if(!this.clicked){
-                                    this.clicked=true
-                                window.open(
-                                    "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
-                            }
+                            word="Click for a special suprise!!"
+                               
                         }
                         }
                        

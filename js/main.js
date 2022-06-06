@@ -39,6 +39,7 @@ renderer.setClearColor(0xADD8E6, 1);
 document.body.appendChild(renderer.domElement);
 const initposition = new CANNON.Vec3(0, 5, 4);
 const raycaster = new THREE.Raycaster();
+var rolled=false
 var gameWon = false
 var changeLevel = false
 var gameFailed=false
@@ -907,6 +908,13 @@ document.addEventListener("mousedown", (e) => {
 					menu = true
 					scene.remove(playerModel)
 					scene.remove(controls.getObject())
+					if(banana &&!rolled){
+						
+							rolled=true
+						window.open(
+							"https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
+					
+					}
 				}
 				
 				}else if(gameFailed==true){
