@@ -24,8 +24,8 @@ class Targets{
         });
         if(name=='7' && level==3){
             this.geometry.scale(0.25,0.2,0.22)
-          //  position.y-=0.2
-           // position.x-=0.082
+          position.y-=0.1
+            position.x-=0.05
         }
         this.cylinder=new THREE.Mesh(this.geometry,this.CrossMat)
         this.cylinder.position.copy(position)
