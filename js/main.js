@@ -1010,6 +1010,7 @@ document.addEventListener("keydown", (e) => {
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()
 		if (typedKeys.includes("banana") && !banana) {
+			if(hud.loading) doneLoading();
 			hud.isLoading("banana",true)
 			banana = true
 			homeScreen.enableBanana()
