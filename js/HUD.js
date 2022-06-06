@@ -112,7 +112,7 @@ class HUD {
                 graphics.font = String(size)+"px Arial";
                 graphics.fillStyle = "rgb(255,255,255)";
                 var word=""
-                if(typeof(currentWorld)=="int"){
+                if((currentWorld)==1 ||(currentWorld)==2 || (currentWorld)==3 ){
                  word = "Loading Level "+currentWorld;}
                  else {
                      word= "Loading "+currentWorld;
@@ -307,6 +307,7 @@ class HUD {
             if(paused){
                 if(this.Paused==false) {
                     this.pausedtime =getTimeElappsed(this.startTime);
+                   
                 }
                 this.Paused=true;
             }
@@ -314,7 +315,7 @@ class HUD {
                 if(this.Paused==true){ 
                     if(getTimeElappsed(this.startTime)>=this.pausedtime) {
                         this.startTime+=getTimeElappsed(this.startTime) - this.pausedtime
-                    }
+                                       }
                     else {
                         this.setStartTime()
                     }

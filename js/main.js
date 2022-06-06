@@ -544,7 +544,7 @@ function animate() {
 		}
 	}
 	else {
-		if (controls.isLocked) {
+		if (controls.isLocked && hud.loading==false) {
 			checkState()
 			hud.isPaused(false);
 			if (playerModel.position.y < -25) { hud.isLoading(1, banana)
@@ -958,6 +958,7 @@ function checkState() {
 		
 	}
 	else if (hud.gamestate == 1) { //level win 
+		hud.Paused=false;
 		hud.isPaused(true);
 		
 		removeTargets();
