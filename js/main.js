@@ -112,13 +112,25 @@ audioLoader.load("../Objects/Sound Effects/thunder.mp3", function (buffer) {
 
 //Gunshot sound Init
 function gunshotSound() {
+	var Sounds=["../Objects/Sound Effects/rifle.mp3","../Objects/Sound Effects/PewPew.mp3","../Objects/Sound Effects/Im a banana.mp3","../Objects/Sound Effects/Bang.mp3"]
+	var location=""
+	if(banana){
+		var loc=Math.floor(Math.random()*(Sounds.length-1+1)+1)
+		location=Sounds[loc]
+	}else{
+		location=Sounds[0]
+	}
 	const listener = new THREE.AudioListener(); //a virtual listener of all audio effects in scene
 	controls.getObject().add(listener);
 	const gunsound = new THREE.Audio(listener);
-	audioLoader.load("../Objects/Sound Effects/rifle.mp3", function (buffer) {
+	audioLoader.load(location, function (buffer) {
 		gunsound.setBuffer(buffer);
 		gunsound.setLoop(false);
+		if(banana){
+			gunsound.setVolume(0.9);
+		}else{
 		gunsound.setVolume(0.1);
+		}
 		gunsound.play();
 	});
 };
