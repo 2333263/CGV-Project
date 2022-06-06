@@ -27,6 +27,8 @@ class MainMenu{
         this.soundEffects=true;
         this.controls=true;
         this.banana=false
+        this.logo=new Image()
+        this.logo.src="../Objects/Textures/Misc/Logo.png"
         //Apply limits, courtesy of Richard Klein
         applyLimits(this.graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         this.graphics.lineWidth = pixelSize;
@@ -92,20 +94,19 @@ class MainMenu{
             var word = "CREDITS";
             g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
             g.save()
-            drawLogo(g)
+            this.drawLogo(g)
             g.restore()
             if(this.banana){
             var word = "Banana mode enabled";
             g.fillText(word,X_LEFT,Y_BOTTOM);
             }
         }
-        function drawLogo(graphics){
+       this.drawLogo=function(graphics){
             graphics.save();
-            var logo=new Image()
-            logo.src="../Objects/Textures/Misc/Logo.png"
+         
             graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
             graphics.scale(0.25*scaleFitNative,0.25*scaleFitNative)
-            graphics.drawImage(logo,0,0)
+            graphics.drawImage(this.logo,0,0)
             graphics.restore()
         }
         this.enableBanana=function(){
