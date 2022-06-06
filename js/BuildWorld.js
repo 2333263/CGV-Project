@@ -536,7 +536,9 @@ class BuildWorld {
             world.removeBody(temp)
 
         }
-        world.removeBody(movingDoor[1])
+        if(movingDoor.length > 0){
+            world.removeBody(movingDoor[1])
+        }
 
         //re-init arrays
 
