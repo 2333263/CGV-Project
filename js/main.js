@@ -853,7 +853,7 @@ document.addEventListener("mousedown", (e) => {
 				if (homeScreen.soundEffects) {
 					var Sounds = ["../Objects/Sound Effects/rifle.mp3", "../Objects/Sound Effects/PewPew.mp3", "../Objects/Sound Effects/Im a banana.mp3", "../Objects/Sound Effects/Bang.mp3","../Objects/Sound Effects/JeremyGunShotSound.mp3"]
 					var loc = 0;
-					if (banana==false) {
+					if (banana) {
 						loc = Math.floor(Math.random() * (Sounds.length - 1 + 1) + 1)
 					}
 					gunshotSound(Sounds[loc])
