@@ -21,6 +21,7 @@ class MainMenu{
         this.page=0
         this.leaderBoardPage=0
         //Variables Init
+        this.all=[]
         this.callMenu=true;
         this.graphics = this.canvas.getContext("2d");
         this.Music=true;
@@ -121,14 +122,19 @@ class MainMenu{
             var size=60*scaleFitNative
             var amount=Math.floor(height/size)-1
             this.graphics.font = String(size)+"px monospace"
-            
-            var all=lb.getAll()
+            if(this.all.length==0){
+                this.all=lb.getAll()
+            }
             this.graphics.fillStyle = "rgb(0,0,0)"
             this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
             var bottom=Y_TOP+60*scaleFitNative
+            if((pageNum*amount)>this.all.length){
+                this.leaderBoardPage--;
+                pageNum=this.leaderBoardPage
+            }
             for (var i=pageNum*amount ;i<((pageNum+1)*amount); i++){
-                if(all[i]!==undefined){
-                this.graphics.fillText(all[i],  X_LEFT+200, bottom+60*scaleFitNative)
+                if(this.all[i]!==undefined){
+                this.graphics.fillText(this.all[i],  X_LEFT+200, bottom+60*scaleFitNative)
                 bottom=bottom+60*scaleFitNative
                 }
             }
@@ -142,6 +148,13 @@ class MainMenu{
             this.graphics.scale(scaleFitNative,scaleFitNative)
             this.drawNextButton()
             this.graphics.restore()
+            if(pageNum>0){
+                this.graphics.save()
+                this.graphics.translate(X_RIGHT-250*scaleFitNative,Y_TOP)
+                this.graphics.scale(scaleFitNative,scaleFitNative)
+                this.drawReturnButton()
+                this.graphics.restore()
+            }
         }
 
         //Draws the credit screen
@@ -199,6 +212,18 @@ class MainMenu{
             this.graphics.restore()
         }
 
+        this.drawReturnButton=function(){
+            this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
+            this.graphics.fillRect(0,0,250,80)
+            this.graphics.fillStyle = 'rgb(0,0,0)';
+            this.graphics.font = "60px Courier";
+            var word = "Return";
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
+        }
+
 
         //This function simulates an on click listner for the buttons but seeing where the user clicked on the screen
         this.Clicked=function(posX,posY) {
@@ -237,6 +262,9 @@ class MainMenu{
                     }else if(posX>=X_RIGHT-210*scaleFitNative &&posY>=Y_BOTTOM-80){//if they click next
                         lb.requested=false;
                         this.leaderBoardPage++;
+                    }else if(this.leaderBoardPage>0 &&posX>=X_RIGHT-280*scaleFitNative &&posY<=Y_TOP+80*scaleFitNative){
+                        this.leaderBoardPage=0
+                        this.page=0
                     }    
                     break;
                 case(2)://if theyre on options
