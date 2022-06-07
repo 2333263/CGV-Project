@@ -52,7 +52,7 @@ Arcade style leaderboard stored on wits servers (database)
 - slight addujstments to spacing in UI
 - Exit to main menu from leaderboard after level 3 ✔
 - empty database
-- maybe special message to those who beat banana mode in 'specialtime'
-- Lock frames 
-- Update credits if needed?
-- replace gun sound in banana mode
+- maybe special message to those who beat banana mode in 'specialtime' ✔
+- Lock frames ?(might be done, stats.js disagrees though)
+- Update credits if needed? 
+- replace gun sound in banana mode ✔ (ben and laz need to add their sounds)
