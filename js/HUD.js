@@ -25,6 +25,7 @@ class HUD {
         this.entered=true;
         this.Paused=false;
         this.loading=false;
+        this.cansend=false
         this.name="";
         this.leaderBoard=new leaderBoard();
         this.level=1
@@ -244,8 +245,9 @@ class HUD {
                         this.timetaken=getTimeElappsedSec(this.startTime);
                         this.entered=false;
                         this.addInput();
+
                     }
-                    if(this.entered==true){
+                    if(this.entered==true &&this.cansend==true){
                         var size=60*scaleFitNative;
                         graphics.font = String(size)+"px monospace";
                         var top=this.leaderBoard.getNearest10(this.timetaken);
@@ -289,7 +291,9 @@ class HUD {
                     else{
                         if (!document.getElementById("input") &&this.entered==false) { 
                             this.entered=true;
-                            this.leaderBoard.addItem(this.name, this.timetaken);
+                            this.leaderBoard.addItem(this,this.name, this.timetaken, function(parent){
+                                parent.cansend=true
+                            });
                         }
                         if(this.entered==false){ 
                             this.name=(document.getElementById("input").value.toUpperCase())

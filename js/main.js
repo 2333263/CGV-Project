@@ -926,6 +926,7 @@ document.addEventListener("mousedown", (e) => {
 					init(true);
 					controls.unlock()
 					menu = true
+					hud.cansend=false
 					MainMenu.all=[]
 					scene.remove(playerModel)
 					scene.remove(controls.getObject())
@@ -1038,6 +1039,7 @@ document.addEventListener("keydown", (e) => {
 		}
 		if (e.key == "m") {
 			hud.isLoading("menu", banana)
+			hud.cansend=false
 			init(true)
 			menu = true
 			scene.remove(playerModel)

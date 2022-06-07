@@ -7,6 +7,7 @@ class leaderBoard {
         this.LeaderBoard = []
         this.top10 = []
         this.curr10 = []
+        this.cansend=false
         this.position = 0
         this.tempPos = 0
         this.startpos = 0
@@ -123,7 +124,7 @@ class leaderBoard {
 
 
 
-        this.addItem = function (key, value) {
+        this.addItem = function (parent,key, value,callback) {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 var url = "http://155.93.144.117/cgv/insert.php?NAME=" + key + "&TIME=" + value * 100
@@ -132,6 +133,7 @@ class leaderBoard {
                 http.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         var temp = http.responseText
+                        callback(parent)
                         if (temp == "[]") {
                             return;
                         }
