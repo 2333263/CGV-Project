@@ -1,5 +1,11 @@
 import * as THREE from 'three';
+/**music class
+ * @classdesc
+ */
 class musicHandler{
+    /**music handeler constructor
+    * @constructor
+    */
     constructor(camera, banana){
         this.playing=false;
         this.camera=camera

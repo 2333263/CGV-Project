@@ -11,6 +11,9 @@ var lb=new leaderBoard();
 
 
 class MainMenu{
+    /**Gun Spark constructor
+    * @constructor
+    */
     constructor() {
 
         //Canvas Init
