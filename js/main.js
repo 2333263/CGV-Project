@@ -436,7 +436,6 @@ BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 /**
- * @function afterLoad
  * adds gun to the player
  * turns on lights that need to be turned on
  * adds the targets to the world
@@ -447,6 +446,7 @@ BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
  * enables specific effects per level
  * enables the music
  * runs the animation
+ * @function afterLoad
  */
 function afterLoad() {
 
@@ -575,8 +575,8 @@ function afterLoad() {
 //Used to stop animation for level loads
 var animationID;
 /**
- * @function afterLoad
  * animate Function that runs the game
+ * @function afterLoad
  */
 let count = 0;
 var FrameRate = 1000 / 60
@@ -714,8 +714,8 @@ function animate() {
 
 //Render func
 /**
- * @function renderWorld
  * renderWorld this function renders the minimap and reset the values back to the original
+ * @function renderWorld
  */
 function renderWorld() {
 	var port = new THREE.Vector4(0, 0, 0, 0)
@@ -738,8 +738,8 @@ function renderWorld() {
 };
 
 /**
- * @function mapTargets
  * mapTargets Rotates targets for appearance on the map camera
+ * @function mapTargets
  */
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
@@ -751,8 +751,8 @@ function mapTargets() {
 };
 
 /**
- * @function worldTargets
  * worldTargets Remove the map targets from the scene
+ * @function worldTargets
  */
 function worldTargets() {
 	while (mapTargetArr.length != 0) {
@@ -763,10 +763,10 @@ function worldTargets() {
 //Moves the targets in the scene
 
 /**
- * @function addTargets
  * Function to add the targets to the scene
  * @param {THREE.Vector3} position 
  * @param {THREE.Quaternion} quaternion 
+ * @function addTargets
  */
 function addTargets(position, quaternion) {
 	for (var i = 0; i < position.length; i++) {
@@ -778,7 +778,6 @@ function addTargets(position, quaternion) {
 
 //Init for level reset
 /**
- * @function init
  * removes all bullet lines
  * if reset is true
  * reset the hud
@@ -792,6 +791,7 @@ function addTargets(position, quaternion) {
  * in general
  * reset all values of the player and the world back to their default values
  * @param {boolean} reset whether or not to just reset the current world or the entire game
+ * @function init
  */
 function init(reset) {
 	for (const line of lines) {
@@ -879,8 +879,8 @@ function init(reset) {
 
 };
 /**
- * @function doneLoading
  * doneLoading remove loading screen
+ * @function doneLoading
  */
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
@@ -889,8 +889,8 @@ function doneLoading(){
 		hud.isPaused(false);
 }
 /**
- * @function removeTargets
  * removeTargets Remove all targets from scene
+ * @function removeTargets
  */
 function removeTargets() {
 	while (TargetArr.length != 0) {
@@ -931,10 +931,10 @@ document.addEventListener("mouseup", (e) => {
 
 //Mouse-down event listener
 /**
- * @event mousedown#onclick all mouse events are performed here
  * fires the gun
  * used for when buttons are clicked
  * also reset world on failure
+ * @event mousedown#onclick all mouse events are performed here
  */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
@@ -1068,8 +1068,8 @@ document.addEventListener("mousedown", (e) => {
 	}
 });
 /**
- * @function checkState
  * checkState checks whether the game has been won or lost
+ * @function checkState
  */
 function checkState() {
 	if (hud.gamestate == -1 && gameFailed == false) { //Game failed
@@ -1166,9 +1166,9 @@ document.addEventListener("keyup", (e) => {
 
 //Target hit logic
 /**
- * @function hitTarget
  * run when a target is shot
  * @param {integer} name int representing which target is hit
+ * @function hitTarget
  */
 function HitTarget(name) {
 	TargetArr[parseInt(name)].hit();
@@ -1176,8 +1176,8 @@ function HitTarget(name) {
 
 //Movement logic
 /**
- * @function move
  * move all the logic regarding the movement of the player
+ * @function move
  */
 function move() {
 	playerBody.linearDamping = 0.9
@@ -1245,8 +1245,8 @@ function move() {
 	pipcamera.position.z = (playerBody.position.z);
 };
 /**
- * @function handleTrails
  * handleTrails draws the lines after a bullet is shot
+ * @function handleTrails
  */
 function handleTrails() {
 	var trailTime = 1
@@ -1269,8 +1269,8 @@ function handleTrails() {
 
 }
 /**
- * @function handleSparks
  * handleSparks sparks when something is shot
+ * @function handleSparks
  */
 function handleSparks() {
 	var sparklife = 0.2 //Distance spark will travel
@@ -1291,8 +1291,8 @@ function handleSparks() {
 
 }
 /**
- * @function MoveTargets
  * MoveTargets moves the targets
+ * @function MoveTargets
  */
 function MoveTargets() {
 
@@ -1308,8 +1308,8 @@ function MoveTargets() {
 	}
 }
 /**
- * @function enableMoving
  * enableMoving enables a target to move
+ * @function enableMoving
  */
 function enableMoving() {
 	if (currentWorld == 1) {
@@ -1333,8 +1333,8 @@ function enableMoving() {
 }
 
 /**
- * @function handleDoor
  * Function to handle the door moving
+ * @function handleDoor
  */
 function handleDoor() {
 	var door = BuildWorld.getDoor();
