@@ -1,3 +1,4 @@
+
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
@@ -14,6 +15,12 @@ import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
+
+/**
+ * @classdesc main class runs everything
+ */
+
+
 
 //View Init
 const width = window.innerWidth + 20;
@@ -907,7 +914,10 @@ document.addEventListener("mouseup", (e) => {
 
 //Mouse-down event listener
 /**
- * mouse listner
+ * @event onclick#mousedown all mouse events are performed here
+ * fires the gun
+ * used for when buttons are clicked
+ * also reset world on failure
  */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
