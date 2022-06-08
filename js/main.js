@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
@@ -15,13 +14,6 @@ import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
-
-/**
- * @class
- * @classdesc main class runs everything
- */
-
-
 
 //View Init
 const width = window.innerWidth + 20;
@@ -146,7 +138,7 @@ function gunshotSound(Sound) {
 /**
  * rainSound
  * play or pause the rain sound
- * @param {Boolean} control pause or play the sound 
+ * @param {int} control pause or play the sound 
  */
 function rainSound(control) {
 
@@ -160,7 +152,7 @@ function rainSound(control) {
 /**
  * thunderSound
  * randomizes pitch and plays thunder or stops the sound from playing
- * @param {Boolean} control pause or play the thunder sound
+ * @param {int} control pause or play the thunder sound
  */
 function thunderSound(control) {
 	if (control == 1) {
@@ -444,7 +436,7 @@ BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
 /**
- * afterLoad
+ * @function afterLoad
  * adds gun to the player
  * turns on lights that need to be turned on
  * adds the targets to the world
@@ -583,7 +575,8 @@ function afterLoad() {
 //Used to stop animation for level loads
 var animationID;
 /**
- *animate Function that runs the game
+ * @function afterLoad
+ * animate Function that runs the game
  */
 let count = 0;
 var FrameRate = 1000 / 60
@@ -721,7 +714,8 @@ function animate() {
 
 //Render func
 /**
- *renderWorld this function renders the minimap and reset the values back to the original
+ * @function renderWorld
+ * renderWorld this function renders the minimap and reset the values back to the original
  */
 function renderWorld() {
 	var port = new THREE.Vector4(0, 0, 0, 0)
@@ -744,7 +738,8 @@ function renderWorld() {
 };
 
 /**
- *mapTargets Rotates targets for appearance on the map camera
+ * @function mapTargets
+ * mapTargets Rotates targets for appearance on the map camera
  */
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
@@ -756,7 +751,8 @@ function mapTargets() {
 };
 
 /**
- *worldTargets Remove the map targets from the scene
+ * @function worldTargets
+ * worldTargets Remove the map targets from the scene
  */
 function worldTargets() {
 	while (mapTargetArr.length != 0) {
@@ -767,6 +763,7 @@ function worldTargets() {
 //Moves the targets in the scene
 
 /**
+ * @function addTargets
  * Function to add the targets to the scene
  * @param {THREE.Vector3} position 
  * @param {THREE.Quaternion} quaternion 
@@ -781,7 +778,7 @@ function addTargets(position, quaternion) {
 
 //Init for level reset
 /**
- * init
+ * @function init
  * removes all bullet lines
  * if reset is true
  * reset the hud
@@ -882,7 +879,8 @@ function init(reset) {
 
 };
 /**
- *doneLoading remove loading screen
+ * @function doneLoading
+ * doneLoading remove loading screen
  */
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
@@ -891,7 +889,8 @@ function doneLoading(){
 		hud.isPaused(false);
 }
 /**
- *removeTargets Remove all targets from scene
+ * @function removeTargets
+ * removeTargets Remove all targets from scene
  */
 function removeTargets() {
 	while (TargetArr.length != 0) {
@@ -1069,6 +1068,7 @@ document.addEventListener("mousedown", (e) => {
 	}
 });
 /**
+ * @function checkState
  * checkState checks whether the game has been won or lost
  */
 function checkState() {
@@ -1166,6 +1166,7 @@ document.addEventListener("keyup", (e) => {
 
 //Target hit logic
 /**
+ * @function hitTarget
  * run when a target is shot
  * @param {integer} name int representing which target is hit
  */
@@ -1175,6 +1176,7 @@ function HitTarget(name) {
 
 //Movement logic
 /**
+ * @function move
  * move all the logic regarding the movement of the player
  */
 function move() {
@@ -1243,6 +1245,7 @@ function move() {
 	pipcamera.position.z = (playerBody.position.z);
 };
 /**
+ * @function handleTrails
  * handleTrails draws the lines after a bullet is shot
  */
 function handleTrails() {
@@ -1266,6 +1269,7 @@ function handleTrails() {
 
 }
 /**
+ * @function handleSparks
  * handleSparks sparks when something is shot
  */
 function handleSparks() {
@@ -1287,6 +1291,7 @@ function handleSparks() {
 
 }
 /**
+ * @function MoveTargets
  * MoveTargets moves the targets
  */
 function MoveTargets() {
@@ -1303,6 +1308,7 @@ function MoveTargets() {
 	}
 }
 /**
+ * @function enableMoving
  * enableMoving enables a target to move
  */
 function enableMoving() {
@@ -1327,6 +1333,7 @@ function enableMoving() {
 }
 
 /**
+ * @function handleDoor
  * Function to handle the door moving
  */
 function handleDoor() {
