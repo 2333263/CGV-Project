@@ -181,7 +181,8 @@ class BuildWorld {
 
                 else if (name.substring(0, 11) === 'WindowGlass') {
                     //Make glass specular
-                    child.material.specular = new THREE.Color('#31A5E7')
+                    child.material.specular = new THREE.Color('#31A5E7');
+                    child.material.shininess = 90;
 
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
