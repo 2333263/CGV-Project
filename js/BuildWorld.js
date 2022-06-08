@@ -311,13 +311,17 @@ class BuildWorld {
                     }
 
 
-                    //Remove light ref from scene
+                    /**
+                     * Remove light ref from scene
+                     */
                     toRemove.push(child)
 
 
 
                 } else if (name.substring(0, 16) === 'StreetLightGlass') {
-                    //Don't make glass glow in level 1 && 2
+                    /**
+                     * Don't make glass glow in level 1 && 2
+                     */
                     if (level == 3) {
                         glowing.push(child)
                         const newMat = new THREE.MeshPhongMaterial({
@@ -330,13 +334,17 @@ class BuildWorld {
                     }
                 }
                 else if (name.substring(0, 6) === 'Window' || name.substring(0, 4) === 'Door' || name.substring(0, 11) === 'Pathoutline') {
-                    //Stop these from cast shadows
+                    /**
+                     * Stop these from cast shadows
+                     */
                     child.castShadow = false;
 
                 }
 
                 else if (name.substring(0, 7) === 'Sign001') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     const textureTemp = child.material.map
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
@@ -345,7 +353,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 7) === 'Sign002') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     var random = Math.floor(Math.random() * 8);
                     var location = filePath+"Textures/Signs/"
                     if (banana) {
@@ -362,7 +372,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 7) === 'Sign003') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     var random = Math.floor(Math.random() * 8);
                     var location = filePath+"Textures/Signs/"
                     if (banana) {
@@ -379,7 +391,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 7) === 'Sign004') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     var random = Math.floor(Math.random() * 8);
                     var location = filePath+"Textures/Signs/"
                     if (banana) {
@@ -396,7 +410,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 7) === 'Sign005') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     var random = Math.floor(Math.random() * 8);
                     var location = filePath+"Textures/Signs/"
                     if (banana) {
@@ -412,7 +428,9 @@ class BuildWorld {
                     })
                     child.material = newMat
                 } else if (name.substring(0, 7) === 'Sign006') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
@@ -428,7 +446,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 7) === 'Sign007') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     const textureTemp = child.material.map
                     const newMat = new THREE.MeshPhongMaterial({
                         map: textureTemp,
@@ -437,7 +457,9 @@ class BuildWorld {
                     child.material = newMat
                     child.castShadow = false;
                 } else if (name.substring(0, 5) === 'Floor') {
-                    //Replace textures and add to floor collision
+                    /**
+                     * Replace textures and add to floor collision
+                     */
                     hullCollision.push(child)
                     const textureTemp = loader.load(filePath+'Textures/Floor/Ground049B_1K_Color.jpg')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
@@ -456,13 +478,17 @@ class BuildWorld {
                 }
 
                 else if (name.substring(0, 8) === 'PathLong') {
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     child.castShadow = false;
 
                     const sizeWidth = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) * child.scale.x / 2
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z
 
-                    //Wrap texture depending on path size
+                    /**
+                     * Wrap texture depending on path size
+                     */
                     const textureTemp = loader.load(filePath+'Textures/Path/Bricks075A_1K_Color.png')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(sizeWidth, sizeHeight)
@@ -482,16 +508,22 @@ class BuildWorld {
                     var sideShown = THREE.FrontSide;
                     child.castShadow = false
                     child.receiveShadow = false
-                    //Add fence to collision detection
+                    /**
+                     * Add fence to collision detection
+                     */
                     boxCollision.push(child);
 
-                    //Replace textures
+                    /**
+                     * Replace textures
+                     */
                     const sizex = (child.geometry.boundingBox.max.x - child.geometry.boundingBox.min.x) * child.scale.x
                     const sizey = (child.geometry.boundingBox.max.y - child.geometry.boundingBox.min.y) * child.scale.y
                     const sizeWidth = Math.sqrt(Math.pow(sizex, 2) + Math.pow(sizey, 2)) / 2
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z / 2
 
-                    //Wrap texture depending on path size
+                    /**
+                     * Wrap texture depending on path size
+                     */
                     wireColor.repeat.set(sizeWidth, sizeHeight)
                     wireNormal.repeat.set(sizeWidth, sizeHeight)
                     wireAlpha.repeat.set(sizeWidth, sizeHeight)
@@ -530,7 +562,9 @@ class BuildWorld {
 
                 }
 
-                //Monkey head
+                /**
+                 * Monkey head
+                 */
                 else if (name.substring(0, 7) === 'Suzanne') {
                     child.visible = false;
                     monkeyHead = child;
@@ -555,7 +589,9 @@ class BuildWorld {
                 root.remove(i)
             }
 
-            //Add group to scene
+            /**
+             * Add group to scene
+             */
             scene.add(root);
 
 
@@ -576,7 +612,9 @@ class BuildWorld {
                 world.addBody(CANNONBody);
                 boxCollisionCANNON.push(CANNONBody)
             }
-            //Callback to ensure that the scene is loaded (will only run when scene is loaded due to .load of GLTF loader)
+            /**
+             * Callback to ensure that the scene is loaded (will only run when scene is loaded due to .load of GLTF loader)
+             */
             callback();
 
         });
@@ -591,9 +629,13 @@ class BuildWorld {
      */
     static unloadCurrentLevel(scene, world) {
 
-        //Unload THREE meshes
+        /**
+         * Unload THREE meshes
+         */
         scene.remove(scene.getObjectByName('Level_Root'))
-        //Unload CANNON collisions of different types
+        /**
+         * Unload CANNON collisions of different types
+         */
         let hullLenth = hullCollisionCANNON.length - 1
         for (var i = hullLenth; i >= 0; i--) {
             const temp = hullCollisionCANNON.pop()
@@ -616,9 +658,13 @@ class BuildWorld {
             world.removeBody(movingDoor[1])
         }
 
-        //re-init arrays
+        /**
+         * re-init arrays
+         */
 
-        //Arrays of collision objects
+        /**
+         * Arrays of collision objects
+         */
         hullCollision = [];
         hullCollisionCANNON = [];
         barrelCollision = [];
@@ -626,20 +672,30 @@ class BuildWorld {
         boxCollision = [];
         boxCollisionCANNON = [];
 
-        //Array of street lights (spotlights)
+        /**
+         * Array of street lights (spotlights)
+         */
         streetLights = [];
 
-        //Array of glowing objects
+        /**
+         * Array of glowing objects
+         */
         glowing = [];
 
-        //Array of targets
+        /**
+         * Array of targets
+         */
         targetsMoving = [];
         targetsStill = [];
 
-        //Muzzle Flash object
+        /**
+         * Muzzle Flash object
+         */
         muzzleFlash
 
-        //Array of clouds to send to main
+        /**
+         * Array of clouds to send to main
+         */
         clouds = [];
     }
 
@@ -648,12 +704,16 @@ class BuildWorld {
      * @returns {THREE.Mesh} Player mesh
      */
     static buildPlayer() {
-        //Player colours
+        /**
+         * Player colours
+         */
         const colorRed = new THREE.Color('#BC4937');
         const colorPeach = new THREE.Color('#F7C0A3');
         const colorBlack = new THREE.Color('#000000');
 
-        //Define geometries
+        /**
+         * Define geometries
+         */
         const torseGeometry = new THREE.BoxGeometry(1.2, 1.5, 0.5);
         const armGeometry = new THREE.BoxGeometry(0.4, 1.1, 0.4);
         const handGeometry = new THREE.BoxGeometry(0.36, 0.2, 0.36);
@@ -662,7 +722,9 @@ class BuildWorld {
         const legGeometry = new THREE.BoxGeometry(0.45, 0.8, 0.45);
 
 
-        //Define materials
+        /**
+         * Define materials
+         */
         const redMat = new THREE.MeshPhongMaterial({
             color: colorRed,
             side: THREE.FrontSide
@@ -676,11 +738,15 @@ class BuildWorld {
             side: THREE.FrontSide
         });
 
-        //Make main player mesh
+        /**
+         * Make main player mesh
+         */
         const torsoMesh = new THREE.Mesh(torseGeometry, redMat);
         torsoMesh.name = 'torso';
 
-        //Make arms, add pivot for rotation
+        /**
+         * Make arms, add pivot for rotation
+         */
         const armRight = new THREE.Mesh(armGeometry, redMat);
         const armRightPivot = new THREE.Object3D()
         armRightPivot.add(armRight.translateY(-0.4));
@@ -692,54 +758,72 @@ class BuildWorld {
         armLeft.name = 'armLeft';
         armLeftPivot.name = 'armLeftPivot';
 
-        //Make hands
+        /**
+         * Make hands
+         */
         const handRight = new THREE.Mesh(handGeometry, skinMat);
         handRight.name = 'handRight';
         const handLeft = new THREE.Mesh(handGeometry, skinMat);
         handLeft.name = 'handLeft';
 
-        //Make head
+        /**
+         * Make head
+         */
         const head = new THREE.Mesh(headGeometry, skinMat);
         head.name = 'head';
 
-        //Make eyes
+        /**
+         * Make eyes
+         */
         const eyeRight = new THREE.Mesh(eyeGeometry, blackMat);
         eyeRight.name = 'eyeRight';
         const eyeLeft = new THREE.Mesh(eyeGeometry, blackMat);
         eyeLeft.name = 'eyeLeft';
 
-        //Make Legs
+        /**
+         * Make Legs
+         */
         const legLeft = new THREE.Mesh(legGeometry, blackMat);
         legLeft.name = 'legLeft';
         const legRight = new THREE.Mesh(legGeometry, blackMat);
         legRight.name = 'legRight';
 
-        //Add limbs + head to torse
+        /**
+         * Add limbs + head to torse
+         */
         torsoMesh.add(armRightPivot.translateX(-0.8).translateY(0.5).rotateY(Math.PI));
         torsoMesh.add(armLeftPivot.translateX(0.8).translateY(0.5).rotateY(Math.PI));
         torsoMesh.add(head.translateY(0.7))
         torsoMesh.add(legRight.translateX(-0.25).translateY(-0.8))
         torsoMesh.add(legLeft.translateX(0.25).translateY(-0.8))
 
-        //Add eyes to head slight in front of head to avoid clipping
+        /**
+         * Add eyes to head slight in front of head to avoid clipping
+         */
         head.add(eyeLeft.translateX(0.15).translateZ(0.201).translateY(0.15));
         head.add(eyeRight.translateX(-0.15).translateZ(0.201).translateY(0.15));
 
-        //Add hands to arms
+        /**
+         * Add hands to arms
+         */
         armRight.add(handRight.translateY(-0.6));
         armLeft.add(handLeft.translateY(-0.6));
 
-        //set up arms 
+        /**
+         * set up arms 
+         */
         armRightPivot.rotateX(Math.PI / 2)
-        //armLeftPivot.rotateY(Math.PI / 4)
-
-
-
-
-
+        /**
+         * Returns the full torso mesh
+         */
         return torsoMesh;
     }
 
+    /**
+     * addGun appends the weapon to the scene
+     * @param {THREE.Mesh} scene 
+     * @param {boolean} banana 
+     */
     static addGun(scene, banana) {
         const gltfLoader = new GLTFLoader(manager);
         var url = ""
@@ -758,8 +842,6 @@ class BuildWorld {
             }
         }
 
-
-
         gltfLoader.load(url, (gltf) => {
             //for some unknown reason this code needs to be repeated here
             if ((scene.getObjectByName('handRight').getObjectByName('weaponsM4') && banana)) {
@@ -770,9 +852,6 @@ class BuildWorld {
                     }
                 }
             }
-
-
-
 
             const weapon = gltf.scene
             if (!banana) {
@@ -791,10 +870,7 @@ class BuildWorld {
             else {
                 weapon.scale.set(0.7, 0.7, 0.7)
             }
-
-
             scene.getObjectByName('handRight').add(weapon)
-
         });
 
         const muzzelFlashGeo = new THREE.ConeGeometry(0.3, 0.7, 16)
@@ -805,14 +881,22 @@ class BuildWorld {
             emissiveIntensity: 1,
             transparent: true,
             opacity: 0.7
-        }))
-        //Translate muzzle flash to be in position with gun
-        if (!banana) {//banana mode off
+        }));
+        /**
+         * Translate muzzle flash to be in position with gun
+         */
+        if (!banana) {
+            /**
+             * Banana Mode is off
+             */
             muzzleFlash
                 .translateZ(0.11)
                 .translateX(0.2)
                 .translateY(-1);
-        } else {//banana mode on
+        } else {
+            /**
+             * Banana Mode is on
+             */
             muzzleFlash
                 .translateZ(0.11)
                 .translateX(-0.1)
@@ -821,7 +905,9 @@ class BuildWorld {
         muzzleFlash.name = 'muzzleFlash'
         glowing.push(muzzleFlash)
         muzzleFlash.visible = false;
-        //Add muzzleflash to hand to ensure it will be in the glowing objects when called
+        /**
+         * Add muzzleflash to hand to ensure it will be in the glowing objects when called
+         */
         scene.getObjectByName('handRight').add(muzzleFlash)
     }
 
@@ -877,7 +963,7 @@ class BuildWorld {
 
     /**
      * Function to get the array of clouds
-     * @returns {Array.<THREE.Mesh>} The muzzle flash mesh
+     * @returns {Array.<THREE.Mesh>} The array of cloud meshes
      */
     static getClouds() {
         return clouds;
@@ -885,7 +971,7 @@ class BuildWorld {
 
     /**
      * Function to get the moving door
-     * @returns {Array.<THREE.Mesh || CANNON.Body>} The muzzle flash mesh
+     * @returns {Array.<THREE.Mesh | CANNON.Body>} The array of both the THREE.Mesh and CANON.Body of the moving door
      */
     static getDoor() {
         return movingDoor;
@@ -893,7 +979,7 @@ class BuildWorld {
 
     /**
      * Function to get monkey head
-     * @returns {THREE.Mesh} The muzzle flash mesh
+     * @returns {THREE.Mesh} The monkey head mesh
      */
      static getMonkeyHead() {
         return monkeyHead;
