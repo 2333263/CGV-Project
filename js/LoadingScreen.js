@@ -1,11 +1,13 @@
 const width=window.innerWidth+20
 const height=window.innerHeight+20
+const scaleFitNative = Math.min(width / 1900, height / 935);
 
 class LoadingScreen {
     constructor() {
         this.loading=false;
    
-    this.isLoading=function(currentWorld,banana){ var random=Math.floor(Math.random()  * 8);
+        this.isLoading=function(currentWorld,banana){
+        var random=Math.floor(Math.random()  * 8);
 
         this.loading=true
         var loadingScreen=document.createElement("canvas")
@@ -17,7 +19,7 @@ class LoadingScreen {
         loadingScreen.height = height;
        
         loadingScreen.id="loadingScreen";
-        graphics = loadingScreen.getContext("2d");
+      var  graphics = loadingScreen.getContext("2d");
         
         graphics.fillStyle = "black";
         graphics.fillRect(0,0,width,height)
@@ -50,11 +52,10 @@ class LoadingScreen {
              }
         graphics.fillText(word, width/2-size/2*word.length/2, 3*height/4);}
         
-        graphics = this.canvas.getContext("2d");
+       
         document.body.appendChild(loadingScreen).focus;
         
-    };}
-
+    };
     function drawImage(graphics, random,banana){
         graphics.save();
         var sign=new Image()
@@ -81,5 +82,8 @@ class LoadingScreen {
         
         
     };
+    };
+   
+    
 }
 export { LoadingScreen };
