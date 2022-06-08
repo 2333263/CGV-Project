@@ -1,7 +1,9 @@
 const width=window.innerWidth+20
 const height=window.innerHeight+20
 const scaleFitNative = Math.min(width / 1900, height / 935);
-
+/**
+ * @classdesc Loading screen displayed when assest are being loaded
+ */
 class LoadingScreen {
     constructor() {
         this.loading=false;
@@ -56,6 +58,13 @@ class LoadingScreen {
         document.body.appendChild(loadingScreen).focus;
         
     };
+    /**
+     * drawImage
+     * @function drawImage
+     * @param {context} graphics context canvas
+     * @param {int} random used to randomize which logo is displated 
+     * @param {boolean} banana indicates banana mode
+     */
     function drawImage(graphics, random,banana){
         graphics.save();
         var sign=new Image()
