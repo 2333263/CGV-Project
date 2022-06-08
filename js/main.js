@@ -1,3 +1,7 @@
+/**
+ * @classdesc main class runs everything
+ */
+
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
@@ -907,7 +911,7 @@ document.addEventListener("mouseup", (e) => {
 
 //Mouse-down event listener
 /**
- * mouse listner
+ * @event 
  */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
