@@ -39,7 +39,6 @@ class musicHandler{
         }
         }
         /** Pause Method.
-         * @function
          * checks if music is playing and then pauses it.
         */
         this.pause=function(){
@@ -49,7 +48,6 @@ class musicHandler{
             }
         }
         /**Play Method
-         * @function
          * If music is not playing, music starts playing
          */
         this.play=function(){
