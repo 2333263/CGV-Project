@@ -5,13 +5,15 @@ import * as THREE from 'three';
 class musicHandler{
     /**music handeler constructor
     * @constructor
-     * @param {boolean} isPlaying
-     * @param {THREE.PerspectiveCamera} camera
-     * @param {THREE.AudioListener} listner
-     * @param {THREE.Audio} backgroundSound
-     * @param {THREE.AudioLoader} audioLoader
      */
     constructor(camera, banana){
+        /**
+        * @param {boolean} isPlaying keep track of if audio is playing
+        * @param {THREE.PerspectiveCamera} camera listener is attached to camera
+        * @param {THREE.AudioListener} listner audio is attached to listener
+        * @param {THREE.Audio} backgroundSound 
+        * @param {THREE.AudioLoader} audioLoader loads the music track 
+        */
         this.playing=false;
         this.camera=camera
         this.listener = new THREE.AudioListener();
@@ -40,18 +42,14 @@ class musicHandler{
             this.playing=false
         }
         }
-        /** Pause Method.
-         * checks if music is playing and then pauses it.
-        */
+        
         this.pause=function(){
             if(this.playing==true){
             this.backgroundSound.pause();
             this.playing=false;
             }
         }
-        /**Play Method
-         * If music is not playing, music starts playing
-         */
+        
         this.play=function(){
             if(this.playing==false){
             this.backgroundSound.play();
