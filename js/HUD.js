@@ -145,9 +145,9 @@ class HUD {
             var sign=new Image()
             var path=""
             if(!banana){
-            path="../Objects/Textures/Signs/Normal/sign_"+random
+            path=filePath+"Textures/Signs/Normal/sign_"+random
             }else{
-            path="../Objects/Textures/Signs/Banana/sign_"+random
+            path=filePath+"Textures/Signs/Banana/sign_"+random
             }
             sign.src=path+".png"
             var scales=500

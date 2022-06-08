@@ -8,7 +8,7 @@ import { Reflector } from "../Dependencies/Reflector.js"
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
-const emissiveMapTex = loader.load('../Objects/Textures/WhiteEmission/square.png')
+const emissiveMapTex = loader.load(filePath+'Textures/WhiteEmission/square.png')
 
 
 const width = window.innerWidth + 20
@@ -45,16 +45,16 @@ var movingDoor = [];
 var monkeyHead;
 
 //Wire fences must be kept same size for optimisation
-var wireColor = loader.load('../Objects/Textures/Fence/Fence003_0_5K_Color.png')
-var wireNormal = loader.load('../Objects/Textures/Fence/Fence003_0_5K_NormalGL.png')
-var wireAlpha = loader.load('../Objects/Textures/Fence/Fence003_1K_Opacity.png')
+var wireColor = loader.load(filePath+'Textures/Fence/Fence003_0_5K_Color.png')
+var wireNormal = loader.load(filePath+'Textures/Fence/Fence003_0_5K_NormalGL.png')
+var wireAlpha = loader.load(filePath+'Textures/Fence/Fence003_1K_Opacity.png')
 wireColor.wrapS = wireColor.wrapT = THREE.RepeatWrapping;
 wireNormal.wrapS = wireNormal.wrapT = THREE.RepeatWrapping;
 wireAlpha.wrapS = wireAlpha.wrapT = THREE.RepeatWrapping;
 const models = {
-    level1body: { url: '../Objects/Level_1/Level_1.glb' },
-    level2body: { url: '../Objects/Level_1/Level_2.glb' },
-    level3body: { url: '../Objects/Level_1/Level_3.glb' }
+    level1body: { url: filePath+'Level_1/Level_1.glb' },
+    level2body: { url: filePath+'Level_1/Level_2.glb' },
+    level3body: { url: filePath+'Level_1/Level_3.glb' }
 };
 
 class BuildWorld {
@@ -364,10 +364,10 @@ class BuildWorld {
                 } else if (name.substring(0, 5) === 'Floor') {
                     //Replace textures and add to floor collision
                     hullCollision.push(child)
-                    const textureTemp = loader.load('../Objects/Textures/Floor/Ground049B_1K_Color.jpg')
+                    const textureTemp = loader.load(filePath+'Textures/Floor/Ground049B_1K_Color.jpg')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(11, 11)
-                    const normal = loader.load('../Objects/Textures/Floor/Ground049B_1K_NormalGL.jpg')
+                    const normal = loader.load(filePath+'Textures/Floor/Ground049B_1K_NormalGL.jpg')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(11, 11)
 
@@ -388,10 +388,10 @@ class BuildWorld {
                     const sizeHeight = (child.geometry.boundingBox.max.z - child.geometry.boundingBox.min.z) * child.scale.z
 
                     //Wrap texture depending on path size
-                    const textureTemp = loader.load('../Objects/Textures/Path/Bricks075A_1K_Color.png')
+                    const textureTemp = loader.load(filePath+'Textures/Path/Bricks075A_1K_Color.png')
                     textureTemp.wrapS = textureTemp.wrapT = THREE.RepeatWrapping;
                     textureTemp.repeat.set(sizeWidth, sizeHeight)
-                    const normal = loader.load('../Objects/Textures/Path/Bricks075A_1K_NormalGL.png')
+                    const normal = loader.load(filePath+'Textures/Path/Bricks075A_1K_NormalGL.png')
                     normal.wrapS = normal.wrapT = THREE.RepeatWrapping;
                     normal.repeat.set(sizeWidth, sizeHeight)
 
@@ -669,7 +669,7 @@ class BuildWorld {
         const gltfLoader = new GLTFLoader(manager);
         var url = ""
         if (!banana) {
-            url = '../Objects/Weapons/m4_2.gltf'
+            url = filePath+'Weapons/m4_2.gltf'
         } else {
             url = filePath+"Weapons/Banana Gun.glb"
         }
