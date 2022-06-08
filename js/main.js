@@ -1021,7 +1021,7 @@ var typedKeys = ""
 //var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
-	if (controls.isLocked) {
+	if (controls.isLocked && !hud.loading) {
 		pressedKeys[e.key] = true;
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()

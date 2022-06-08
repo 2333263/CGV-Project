@@ -1,20 +1,32 @@
+/**
+ * Imports
+ */
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GLTFLoader } from '../Dependencies/GLTFLoader.js';
 import { threeToCannonObj } from './ThreeToCannonObj.js'
 import { Reflector } from "../Dependencies/Reflector.js"
 
-
+/**
+ * THREE Texture Loader and Loading Manager
+ */
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
+/**
+ * Emissive map texture Init
+ */
 const emissiveMapTex = loader.load(filePath+'Textures/WhiteEmission/square.png')
 
-
+/**
+ * Window width and height Init
+ */
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
 
-//Arrays of collision objects
+/**
+ * Arrays of objects colissions boxes init
+ */
 var hullCollision = [];
 var hullCollisionCANNON = [];
 var barrelCollision = [];
@@ -22,29 +34,45 @@ var barrelCollisionCANNON = [];
 var boxCollision = [];
 var boxCollisionCANNON = [];
 
-//Array of street lights (spotlights)
+/**
+ * Array of street lights (spotlights)
+ */
 var streetLights = [];
 
-//Array of glowing objects
+/**
+ * Array of glowing objects
+ */
 var glowing = [];
 
-//Array of targets
+/**
+ * Array of targets Init
+ */
 var targetsMoving = [];
 var targetsStill = [];
 
-//Muzzle Flash object
+/**
+ * Muzzle Flash Object Init
+ */
 var muzzleFlash
 
-//Array of clouds to send to main
+/**
+ * Array of clouds (sent to main.js)
+ */
 var clouds = [];
 
-//Array of movable to send to main
+/**
+ * movingDoor array
+ */
 var movingDoor = [];
 
-//Mesh of monkey head for banana mode sun
+/**
+ * Monkey head mesh from Blendr for the sun in banana mode
+ */
 var monkeyHead;
 
-//Wire fences must be kept same size for optimisation
+/**
+ * Wire fences must be kept same size for optimisation
+ */
 var wireColor = loader.load(filePath+'Textures/Fence/Fence003_0_5K_Color.png')
 var wireNormal = loader.load(filePath+'Textures/Fence/Fence003_0_5K_NormalGL.png')
 var wireAlpha = loader.load(filePath+'Textures/Fence/Fence003_1K_Opacity.png')
@@ -57,9 +85,12 @@ const models = {
     level3body: { url: filePath+'Level_1/Level_3.glb' }
 };
 
+/**
+ * BuildWorld class, creates the world
+ * @classdesc
+ */
 class BuildWorld {
-    constructor() {
-    }
+    constructor() {}
 
     /**
      * Function to load a specified level into the scene and world
@@ -75,7 +106,9 @@ class BuildWorld {
         var url;
         const toRemove = [];
 
-        //Select which level to load with switch 
+        /**
+         * Select which level to load with switch 
+         */
         switch (level) {
             case 1:
                 url = models.level1body.url
@@ -87,7 +120,9 @@ class BuildWorld {
                 url = models.level3body.url
                 break;
             default:
-                //In Case the level is defined incorrectly, load level 1
+                /**
+                 * In Case the level is defined incorrectly, load level 1
+                 */
                 url = models.level1body.url
         }
         const gltfLoader = new GLTFLoader(manager);
@@ -96,49 +131,66 @@ class BuildWorld {
 
             const root = gltf.scene;
 
-            //Add scene to object
+            /**
+             * Add scene to object
+             */
             root.name = 'Level_Root'
 
 
             root.traverse(function (child) {
 
-                //Traverse through all objects to get the collision
+                /**
+                 * Traverse through all objects to get the collision
+                 */
 
-                //Change Material for lighting purposes
+                /**
+                 * Change Material for lighting purposes
+                 */
                 if (child instanceof THREE.Mesh && !(child.name.substring(0, 4) === 'Sign' || child.name.substring(0, 6) === 'Mirror' || child.name.substring(0, 6) === 'Refrac')) {
                     const colourTemp = new THREE.Color(child.material.color)
                     const newMat = new THREE.MeshPhongMaterial({
                         color: colourTemp,
-                        //specular: new THREE.Color('#31A5E7'),
                         shininess: 10
                     })
                     child.material = newMat
                 }
                 var name = child.name
-                //Enable shadows for all objects
+                /**
+                 * Enable shadows for all objects
+                 */
                 child.castShadow = true;
                 child.receiveShadow = true;
                 if (name.substring(0, 4) === 'Base') {
-                    //Add houses to collision detection
+                    /**
+                     * Add houses to collision detection
+                     */
                     hullCollision.push(child)
 
                 }
                 else if (name.substring(0, 6) === 'Target') {
-                    //Add targets to respective arrays
+                    /**
+                     * Add targets to respective arrays
+                     */
                     if (name.substring(6, 10) === 'Move') {
                         targetsMoving.push(child);
                     } else if (name.substring(6, 10) === 'Path') {
-                        //Don't add target paths to scene
+                        /**
+                         * Don't add target paths to scene
+                         */
                         child.visible = false
                     } else {
                         targetsStill.push(child);
                     }
 
-                    //Remove target ref from scene
+                    /**
+                     * Remove target ref from scene
+                     */
                     toRemove.push(child);
                 }
                 else if (name.substring(0, 6) === 'Mirror') {
-                    //Add Mirror
+                    /**
+                     * Add Mirror
+                     */
                     const mirrorGeo = new THREE.PlaneGeometry(3, 3);
                     const mirror = new Reflector(mirrorGeo, {
                         clipBias: 0.003,
@@ -151,12 +203,16 @@ class BuildWorld {
 
                     root.add(mirror)
 
-                    //Remove mirror from scene
+                    /**
+                     * Remove mirror from scene
+                     */
                     toRemove.push(child)
                 }
 
                 else if (name.substring(0, 6) === 'Refrac') {
-                    //Add Refractor
+                    /**
+                     * Add Refractor
+                     */
                     const RefracGeo = new THREE.PlaneGeometry(6, 7.5);
                     const RefracMat = new THREE.MeshPhysicalMaterial({
                         roughness: 0.05,
@@ -172,35 +228,51 @@ class BuildWorld {
 
                     root.add(refractor)
 
-                    //Remove Refractor from scene
+                    /**
+                     * Remove Refractor from scene
+                     */
                     toRemove.push(child)
                 }
                 else if (name.substring(0, 11) === 'InvisHitbox') {
-                    //Add the invisible hitboxes
+                    /**
+                     * Add the invisible hitboxes
+                     */
                     toRemove.push(child)
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 4) === 'Wall') {
-                    //Add walls to collision detection
+                    /**
+                     * Add walls to collision detection
+                     */
                     hullCollision.push(child)
                 }
                 else if (name.substring(0, 8) === 'TrashBin') {
-                    //Add trash bins to collision detection, crates handled with invis
+                    /**
+                     * Add trash bins to collision detection, crates handled with invis
+                     */
                     boxCollision.push(child)
                 }
 
                 else if (name.substring(0, 11) === 'WindowGlass') {
-                    //Make glass specular
+                    /**
+                     * Make glass specular
+                     */
                     child.material.specular = new THREE.Color('#31A5E7')
 
                 }
                 else if (name.substring(0, 15) === 'StreetLightSpot') {
-                    //Add spotlights to the street lights
+                    /**
+                     * Add spotlights to the street lights
+                     */
                     if (level == 3) {
-                        //Create light
+                        /**
+                         * Create light
+                         */
                         const streetLight = new THREE.SpotLight('#FFFFE0')
 
-                        //Adjust light properties
+                        /**
+                         * Adjust light properties
+                         */
                         streetLight.power = 2
                         streetLight.decay = 2
                         streetLight.castShadow = true;
@@ -214,9 +286,10 @@ class BuildWorld {
                             child.position.y,
                             child.position.z
                         )
-                        //Create light target
+                        /**
+                         * Create light target
+                         */
                         const target = new THREE.Object3D
-
                         //position.copy was creating problems, do it manually
                         target.position.set(child.children[0].position.x + child.position.x,
                             child.children[0].position.y + child.position.y,
@@ -224,14 +297,16 @@ class BuildWorld {
                         );
 
                         root.add(target)
-
-
                         streetLight.target = target
 
-                        //Add light to lights array
+                        /**
+                         * Add light to lights array
+                         */
                         streetLights.push(streetLight)
 
-                        //Add light to scene
+                        /**
+                         * Add light to scene
+                         */
                         root.add(streetLight)
                     }
 
