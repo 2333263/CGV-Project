@@ -971,7 +971,7 @@ class BuildWorld {
 
     /**
      * Function to get the moving door
-     * @returns {[THREE.Mesh, CANNON.Body]} The array of both the THREE.Mesh and CANON.Body of the moving door
+     * @returns @type {[THREE.Mesh, CANNON.Body]} The array of both the THREE.Mesh and CANON.Body of the moving door
      */
     static getDoor() {
         return movingDoor;
