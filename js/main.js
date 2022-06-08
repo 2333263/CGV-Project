@@ -7,6 +7,7 @@ import Stats from "stats";
 import { SPARK } from '../js/Spark.js';
 import { PointerLockControls } from '../Dependencies/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
+import { LoadingScreen }  from "../js/LoadingScreen.js" ;
 import { Targets } from '../js/targets.js';
 import { BuildWorld } from '../js/BuildWorld.js';
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
@@ -56,7 +57,7 @@ let rain = new THREE.Points();
 const rainInit = [32, 200, -32];
 let counter = 0;
 
-
+const Load= new LoadingScreen()
 //Canon world Init
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
@@ -414,7 +415,7 @@ HudPlane.onBeforeRender = function (renderer) {
 
 //Add hud to separate hud scene
 sceneHUD.add(HudPlane)
-hud.isLoading("Start", false)
+Load.isLoading("Start", false)
 setTimeout(doneLoading, 5000);
 
 
@@ -594,10 +595,10 @@ function animate() {
 		}
 	}
 	else {
-		if (controls.isLocked && hud.loading==false) {
+		if (controls.isLocked && Load.loading==false) {
 			checkState()
 			hud.isPaused(false);
-			if (playerModel.position.y < -25) { hud.isLoading(1, banana)
+			if (playerModel.position.y < -25) { Load.isLoading(1, banana)
 				 init(true); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
 
@@ -786,7 +787,7 @@ function init(reset) {
 	if (reset) {
 		hud.Clicked = false
 		doorMovingBool=false
-		if (!hud.loading) { hud.isLoading(1, banana) }
+		if (!Load.loading) { Load.isLoading(1, banana) }
 
 		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 3
@@ -850,7 +851,7 @@ function init(reset) {
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
-	if (hud.loading) {
+	if (Load.loading) {
 		var milliseconds=1000
 		if(currentWorld==2){
 			milliseconds=5000
@@ -869,7 +870,7 @@ function init(reset) {
  */
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
-		hud.loading = false
+		Load.loading = false
 		
 		hud.isPaused(false);
 }
@@ -919,7 +920,7 @@ document.addEventListener("mousedown", (e) => {
 
 
 		if (controls.isLocked == true) {
-			if (playerBody.noBullets > 0 && hud.loading==false) { //if player has any bullets 
+			if (playerBody.noBullets > 0 && Load.loading==false) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
 					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3",filePath+"Sound Effects/Pop.mp3",filePath+"Sound Effects/Meow.mp3",filePath+"Sound Effects/BEN.mp3",filePath+"Sound Effects/Villager.mp3",filePath+"Sound Effects/Grunt.mp3"]
@@ -1058,7 +1059,7 @@ function checkState() {
 			currentWorld++
 
 			if (currentWorld < 4) {
-				hud.isLoading(currentWorld, banana);
+				Load.isLoading(currentWorld, banana);
 				BuildWorld.unloadCurrentLevel(scene, world)
 				cancelAnimationFrame(animationID);
 				BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
@@ -1089,13 +1090,13 @@ var typedKeys = ""
 //var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
 document.addEventListener("keydown", (e) => {
-	if (controls.isLocked && !hud.loading) {
+	if (controls.isLocked && !Load.loading) {
 		pressedKeys[e.key] = true;
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()
 		if (typedKeys.includes("banana") && !banana) {
-			if(hud.loading) doneLoading();
-			hud.isLoading("banana",true)
+			if(Load.loading) doneLoading();
+			Load.isLoading("banana",true)
 			banana = true
 			homeScreen.enableBanana()
 			backgroundmusic.pause()
@@ -1109,7 +1110,7 @@ document.addEventListener("keydown", (e) => {
 			init(true);
 		}
 		if (e.key == "m") {
-			hud.isLoading("menu", banana)
+			Load.isLoading("menu", banana)
 			hud.cansend=false
 			init(true)
 			menu = true
