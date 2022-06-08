@@ -854,7 +854,7 @@ document.addEventListener("mousedown", (e) => {
 			if (playerBody.noBullets > 0 && hud.loading==false) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
-					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3",filePath+"Sound Effects/Pop.mp3",filePath+"Sound Effects/Meow.mp3",filePath+"Sound Effects/BEN.mp3"]
+					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3",filePath+"Sound Effects/Pop.mp3",filePath+"Sound Effects/Meow.mp3",filePath+"Sound Effects/BEN.mp3",filePath+"Sound Effects/Villager.mp3",filePath+"Sound Effects/Grunt.mp3"]
 					var loc = 0;
 					if (banana) {
 						loc = Math.floor(Math.random() * (Sounds.length - 1 + 1) + 1)
