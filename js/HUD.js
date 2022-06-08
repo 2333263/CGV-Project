@@ -58,6 +58,7 @@ class HUD {
 
         /**
          * Creates the start time of the level
+         * @function setStartTime
          */
         this.setStartTime=function(){
             let d = new Date();
