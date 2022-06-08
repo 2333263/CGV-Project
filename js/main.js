@@ -81,7 +81,7 @@ orbitControls.update();
 
 //Music Init
 var banana = false
-var backgroundmusic = new musicHandler(controls.getObject(), banana)
+var backgroundmusic = new musicHandler(controls.getObject())
 let gunsound;
 const audioLoader = new THREE.AudioLoader();
 
