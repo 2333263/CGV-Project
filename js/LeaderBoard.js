@@ -86,9 +86,9 @@ class leaderBoard {
 
         /**
          * addItem
-         * @param {class}parent leaderBoard.js 
-         * @param {string}key name of player added to leaderboard
-         * @param {float}value time (score) of player
+         * @param {class} parent leaderBoard.js 
+         * @param {string} key name of player added to leaderboard
+         * @param {float} value time (score) of player
          * @callback callback
          */
         this.addItem = function (parent,key, value,callback) {
