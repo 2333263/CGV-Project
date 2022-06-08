@@ -114,7 +114,7 @@ class leaderBoard {
             this.LeaderBoard.push(new Entry(key, value))
         }
         /**
-         * addSpaces
+         * @private @function addSpaces
          * @param {string} word any string
          * @param {int} spaces number of spaces for display purposes
          * @return {string}
