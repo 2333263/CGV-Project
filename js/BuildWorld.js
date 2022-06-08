@@ -882,6 +882,9 @@ class BuildWorld {
             transparent: true,
             opacity: 0.7
         }));
+        /**
+         * Translate muzzle flash to be in position with gun
+         */
         if (!banana) {
             /**
              * Banana Mode is off
@@ -952,7 +955,7 @@ class BuildWorld {
 
     /**
      * Function to get the muzzle flash
-     * @returns {THREE.Mesh} The muzzle flash mesh
+     * @returns {THREE.Mesh} The muzzleFlash mesh
      */
     static getMuzzleFlashMesh() {
         return muzzleFlash;
