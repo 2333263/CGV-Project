@@ -17,6 +17,7 @@ import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
 
 /**
+ * @class
  * @classdesc main class runs everything
  */
 
