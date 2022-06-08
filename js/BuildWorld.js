@@ -7,26 +7,14 @@ import { GLTFLoader } from '../Dependencies/GLTFLoader.js';
 import { threeToCannonObj } from './ThreeToCannonObj.js'
 import { Reflector } from "../Dependencies/Reflector.js"
 
-/**
- * THREE Texture Loader and Loading Manager
- */
 const loader = new THREE.TextureLoader();
 const manager = new THREE.LoadingManager();
 
-/**
- * Emissive map texture Init
- */
 const emissiveMapTex = loader.load(filePath+'Textures/WhiteEmission/square.png')
 
-/**
- * Window width and height Init
- */
 const width = window.innerWidth + 20
 const height = window.innerHeight + 20
 
-/**
- * Arrays of objects colissions boxes init
- */
 var hullCollision = [];
 var hullCollisionCANNON = [];
 var barrelCollision = [];
@@ -34,45 +22,21 @@ var barrelCollisionCANNON = [];
 var boxCollision = [];
 var boxCollisionCANNON = [];
 
-/**
- * Array of street lights (spotlights)
- */
 var streetLights = [];
 
-/**
- * Array of glowing objects
- */
 var glowing = [];
 
-/**
- * Array of targets Init
- */
 var targetsMoving = [];
 var targetsStill = [];
 
-/**
- * Muzzle Flash Object Init
- */
 var muzzleFlash
 
-/**
- * Array of clouds (sent to main.js)
- */
 var clouds = [];
 
-/**
- * movingDoor array
- */
 var movingDoor = [];
 
-/**
- * Monkey head mesh from Blendr for the sun in banana mode
- */
 var monkeyHead;
 
-/**
- * Wire fences must be kept same size for optimisation
- */
 var wireColor = loader.load(filePath+'Textures/Fence/Fence003_0_5K_Color.png')
 var wireNormal = loader.load(filePath+'Textures/Fence/Fence003_0_5K_NormalGL.png')
 var wireAlpha = loader.load(filePath+'Textures/Fence/Fence003_1K_Opacity.png')
