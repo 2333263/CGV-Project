@@ -16,6 +16,7 @@ class leaderBoard {
         /**
          * getNearest10 
          * @param {float} time score from player 
+         * @returns {list} close
          */
         this.getNearest10 = function (time) {
             if (this.requested == false) {
@@ -116,6 +117,7 @@ class leaderBoard {
          * addSpaces
          * @param {string} word any string
          * @param {int} spaces number of spaces for display purposes
+         * @return {string}
          */
         function addSpaces(word, spaces) {
             var temp = ""
@@ -130,6 +132,7 @@ class leaderBoard {
          * getPos
          * @param {int} CB which class is calling
          * @param {float} time score of player
+         * @returns {int}
          */
         this.getPos = function (CB, time) {
             if(CB==0){
