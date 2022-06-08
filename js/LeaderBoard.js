@@ -3,9 +3,6 @@ import { Entry } from "./lbObject.js"
  * @classdesc LeaderBoard class used to interact with php
  */
 class leaderBoard {
-    /**
-     * @constructor leaderBoard constructor
-     */
     constructor() {
         this.document = document
         this.requested = false;
