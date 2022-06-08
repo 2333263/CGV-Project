@@ -5,9 +5,7 @@ const height=window.innerHeight+20
 class HUD {
     constructor(currammo, totalammo, totaltarget, currtargets) {
 
-        /**
-         * Varible Init
-         */
+        //Variable Init
         this.currammo = currammo;
         this.totalammo = totalammo;
         this.document = document;
@@ -24,7 +22,6 @@ class HUD {
         this.timepaused=0;
         this.entered=true;
         this.Paused=false;
-        
         this.cansend=false
         this.name="";
         this.leaderBoard=new leaderBoard();
@@ -32,9 +29,7 @@ class HUD {
         this.ricked=false
         var scaleFitNative = Math.min(width / 1900, height / 935);
 
-        /**
-         * XY Scalings
-         */
+        //XY Dimensions Init
         var X_LEFT = (-width / 2);
         var X_RIGHT = (width / 2);
         var Y_BOTTOM = (height / 2);
@@ -92,6 +87,7 @@ class HUD {
             document.body.appendChild(input).focus;
             input.focus();
         };
+       
         //Sets the entered value of the HUD to true when called
         this.setEntered=function(){
             this.entered=true
