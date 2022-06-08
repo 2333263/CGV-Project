@@ -153,7 +153,7 @@ function rainSound(control) {
 /**
  * thunderSound
  * randomizes pitch and plays thunder or stops the sound from playing
- * @param {Boolean} control pause or play the thunder sound
+ * @param {int} control pause or play the thunder sound
  */
 function thunderSound(control) {
 	if (control == 1) {
