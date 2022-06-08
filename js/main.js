@@ -1026,7 +1026,7 @@ document.addEventListener("mousedown", (e) => {
 					controls.unlock()
 					menu = true
 					hud.cansend=false
-					MainMenu.all=[]
+					homeScreen.all=[]
 					scene.remove(playerModel)
 					scene.remove(controls.getObject())
 					if(banana &&!rolled &&hud.ricked==true){
@@ -1151,7 +1151,7 @@ document.addEventListener("keydown", (e) => {
 			menu = true
 			scene.remove(playerModel)
 			scene.remove(controls.getObject())
-			MainMenu.all=[]
+			homeScreen.all=[]
 		}
 	}
 });

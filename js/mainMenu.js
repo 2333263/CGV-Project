@@ -299,14 +299,16 @@ class MainMenu{
                             this.leaderBoardPage--;
                         }else{
                             this.page=0
+                            this.all=[]
                         }
                         return(4)
                     }else if(posX>=X_RIGHT-210*scaleFitNative &&posY>=Y_BOTTOM-80){//if they click next
                         lb.requested=false;
                         this.leaderBoardPage++;
-                    }else if(this.leaderBoardPage>0 &&posX>=X_RIGHT-280*scaleFitNative &&posY<=Y_TOP+80*scaleFitNative){
+                    }else if(this.leaderBoardPage>0 &&posX>=X_RIGHT-280*scaleFitNative &&posY<=Y_TOP+80*scaleFitNative){//if they click the return button
                         this.leaderBoardPage=0
                         this.page=0
+                        
                     }    
                     break;
                 case(2)://if theyre on options
