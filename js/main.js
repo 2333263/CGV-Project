@@ -911,7 +911,10 @@ document.addEventListener("mouseup", (e) => {
 
 //Mouse-down event listener
 /**
- * @event 
+ * @event onclick#mousedown all mouse events are performed here
+ * fires the gun
+ * used for when buttons are clicked
+ * also reset world on failure
  */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
