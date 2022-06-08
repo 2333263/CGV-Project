@@ -7,13 +7,7 @@ class musicHandler{
     * @constructor
      */
     constructor(camera, banana){
-        /**
-        * @param {boolean} isPlaying keep track of if audio is playing
-        * @param {THREE.PerspectiveCamera} camera listener is attached to camera
-        * @param {THREE.AudioListener} listner audio is attached to listener
-        * @param {THREE.Audio} backgroundSound 
-        * @param {THREE.AudioLoader} audioLoader loads the music track 
-        */
+        
         this.playing=false;
         this.camera=camera
         this.listener = new THREE.AudioListener();
@@ -57,7 +51,13 @@ class musicHandler{
             }
         }
     }
-    
+    /**
+        * @param {boolean} isPlaying keep track of if audio is playing
+        * @param {THREE.PerspectiveCamera} camera listener is attached to camera
+        * @param {THREE.AudioListener} listner audio is attached to listener
+        * @param {THREE.Audio} backgroundSound 
+        * @param {THREE.AudioLoader} audioLoader loads the music track 
+        */
     
     }
 
