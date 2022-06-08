@@ -120,6 +120,7 @@ class MainMenu{
         /**
          * drawLogo
          * draws the team's banana logo
+         * @param {context}  graphics from canvas.getContext("2d")
          */
        this.drawLogo=function(graphics){
             graphics.save();
@@ -140,7 +141,7 @@ class MainMenu{
         /**
          * drawLeaderboard
         *Draws the leaderboard on the screen
-        * 
+        * @param {int} pageNum used to display subset of leaderboard entries
         */
         this.drawLeaderboard=function(pageNum){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
@@ -264,6 +265,8 @@ class MainMenu{
         /**
          * Clicked
          * This function simulates an on click listner for the buttons but seeing where the user clicked on the screen
+         * @param {float} posX x-vlaue for position of mouse pointer
+         * @param {float} posY y-vlaue for position of mouse pointer
         */
         this.Clicked=function(posX,posY) {
             var centerX=(width/2)
@@ -362,6 +365,7 @@ class MainMenu{
         /**
          * toggleMusicButton
          *  On or off button
+         * @param {boolean} on music on/off
          */
         this.toggleMusicButton=function(on){
             this.graphics.save();
@@ -379,6 +383,7 @@ class MainMenu{
         /**
          * toggleSoundEffect
          * On or off button
+         * @param {boolean} on music on/off
          */
         this.toggleSoundEffects=function(on){
             this.graphics.save();
@@ -396,6 +401,7 @@ class MainMenu{
         /**
          * toggleControls
          *  On or off button
+         * @param {boolean} on music on/off
          */
         this.toggleControls=function(on){
             this.graphics.save();
@@ -416,6 +422,7 @@ class MainMenu{
         /**
          * drawToggleButton
          * draws a Toggle Button
+         * @param {boolean} on music on/off
          */
         this.drawToggleButton=function(on){
             this.graphics.save()
@@ -448,6 +455,7 @@ class MainMenu{
         /**
          * drawToggleControls
          * draws another toggle button with different words
+         * @param {boolean} on music on/off
          */
         this.drawToggleControls=function(on){
             this.graphics.save()
@@ -482,6 +490,12 @@ class MainMenu{
         /**
          * Apply Limits function, courtesy of Dr. Richard Klein
          * monitor scaling
+         * @param {canvas} g graphics context
+         * @param {int} xleft based on monitor
+         * @param {int} xright based on monitor
+         * @param {int} ytop based on monitor
+         * @param {int} ybottom based on monitor
+         * @param {boolean} preserveAspect boolean, always true
          */
         function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
            if (preserveAspect) {
