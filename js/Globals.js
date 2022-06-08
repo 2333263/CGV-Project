@@ -1,4 +1,6 @@
-//target paths for level 1
+/**
+ * Target paths for level 1
+ */
 const Level1=[[
     [34.605236, 15.817407, 3.262785],
     [44.997704, 15.817407, 3.262785],
@@ -18,7 +20,9 @@ const Level1=[[
 ]
 
 ]
-//target paths for level 2
+/**
+ * Target paths for level 2
+ */
 const Level2=[[
     [66.769981, 8.775950, -20.917683],
     [66.769981, 8.775950, -32.703281],
@@ -44,7 +48,9 @@ const Level2=[[
 ]
 
 ]
-//target paths for level 3
+/**
+ * Target paths for level 3
+ */
 const Level3=[[
     [66.769981, 8.775950, -20.917683],
     [66.769981, 8.775950, -32.703281],
@@ -70,5 +76,11 @@ const Level3=[[
 ]
 ]
 
+/**
+ * filePath
+ */
 const filePath="../Objects/"
+/**
+ * httpUrls
+ */
 const httpUrls="https://lamp.ms.wits.ac.za/~cgv37-2022/php/GetDatabase.php?File="
