@@ -260,9 +260,9 @@ class HUD {
                         graphics.fillText("Congrats your position is "+this.leaderBoard.getPos(0,this.timetaken)+" with a time of "+this.timetaken, X_LEFT+200*scaleFitNative,bottom+60*scaleFitNative);
                         this.leaderBoard.Cequest++;
                         bottom+=60*scaleFitNative;
-                        var specialtime=200 //incentive to get a good time
+                        var specialtime=160 //incentive to get a good time
                         if(banana){
-                            specialtime-=10
+                            specialtime-=35
                         }
                          word="Try complete all 3 levels in under "+specialtime+" sec"
                         if(this.timetaken<specialtime){ //if good time acheived, told about 'banana mode'

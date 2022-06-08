@@ -647,10 +647,12 @@ function animate() {
 				}
 			}
 			else {
+				if(!gameWon){
 				hud.isPaused(true);
 				checkState()
 				hud.draw(currentWorld, banana);
 				hudTexture.needsUpdate = true;
+				}
 			}
 			renderWorld()
 			timeTarget += FrameRate
@@ -849,7 +851,7 @@ document.addEventListener("mousedown", (e) => {
 
 
 		if (controls.isLocked == true) {
-			if (playerBody.noBullets > 0) { //if player has any bullets 
+			if (playerBody.noBullets > 0 && hud.loading==false) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
 					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3"]
