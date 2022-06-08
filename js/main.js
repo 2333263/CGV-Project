@@ -390,6 +390,7 @@ HudPlane.onBeforeRender = function (renderer) {
 //Add hud to separate hud scene
 sceneHUD.add(HudPlane)
 Load.isLoading("Start", false)
+Load.loading=true;
 setTimeout(doneLoading, 5000);
 
 
@@ -954,7 +955,7 @@ document.addEventListener("mousedown", (e) => {
 
 		}
 		else {
-			if (menu == true) {
+			if (menu == true && Load.loading==false) {
 				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
 				if (ButtonClicked == 0) {
 					hud.setStartTime()
