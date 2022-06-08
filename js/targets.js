@@ -12,7 +12,7 @@ class Targets{
      */
     constructor(name, position, quaternion,level,scene,banana){
         this.geometry=new THREE.CylinderGeometry(1,1,0.01,32);
-        this.texturelocation="../Objects/Textures/Targets/"
+        this.texturelocation=filePath+"Textures/Targets/"
         if(banana){
             this.texturelocation+="B_"
         }

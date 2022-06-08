@@ -91,7 +91,7 @@ RainListener.name = "RainListener"
 controls.getObject().add(RainListener);
 const RainSound = new THREE.Audio(RainListener);
 RainSound.name = "rain"
-audioLoader.load("../Objects/Sound Effects/soft-rain-ambient.mp3", function (buffer) {
+audioLoader.load(filePath+"Sound Effects/soft-rain-ambient.mp3", function (buffer) {
 	RainSound.setBuffer(buffer);
 	RainSound.setLoop(false);
 	RainSound.setVolume(0.7);
@@ -102,7 +102,7 @@ const ThunderListner = new THREE.AudioListener(); //a virtual listener of all au
 ThunderListner.name = "thunderSound"
 controls.getObject().add(ThunderListner);
 const ThunderSound = new THREE.Audio(ThunderListner);
-audioLoader.load("../Objects/Sound Effects/thunder.mp3", function (buffer) {
+audioLoader.load(filePath+"Sound Effects/thunder.mp3", function (buffer) {
 	ThunderSound.setBuffer(buffer);
 	ThunderSound.setLoop(false);
 	ThunderSound.setVolume(0.5);
@@ -163,19 +163,19 @@ function drawSkyBox(level) {
 	scene.remove(skybox)
 	let pathStrings
 	if (level == 1) {
-		pathStrings = ["../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png",
-			"../Objects/Textures/Skybox/blueskyimg.png", "../Objects/Textures/Skybox/blueskyimg.png"]
+		pathStrings = [filePath+"Textures/Skybox/blueskyimg.png", filePath+"Textures/Skybox/blueskyimg.png",
+			filePath+"Textures/Skybox/blueskyimg.png", filePath+"Textures/Skybox/blueskyimg.png",
+			filePath+"Textures/Skybox/blueskyimg.png", filePath+"Textures/Skybox/blueskyimg.png"]
 	}
 	if (level == 3) {
-		pathStrings = ["../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
-			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg",
-			"../Objects/Textures/Skybox/dark-blue-sky.jpg", "../Objects/Textures/Skybox/dark-blue-sky.jpg"]
+		pathStrings = [filePath+"Textures/Skybox/dark-blue-sky.jpg", filePath+"Textures/Skybox/dark-blue-sky.jpg",
+			filePath+"Textures/Skybox/dark-blue-sky.jpg", filePath+"Textures/Skybox/dark-blue-sky.jpg",
+			filePath+"Textures/Skybox/dark-blue-sky.jpg", filePath+"Textures/Skybox/dark-blue-sky.jpg"]
 	}
 	if (level == 2) {
-		pathStrings = ["../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
-			"../Objects/Textures/Skybox/level3 Skybox/BlueTop.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png",
-			"../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png", "../Objects/Textures/Skybox/level3 Skybox/GradientSky-01.png"]
+		pathStrings = [filePath+"Textures/Skybox/level3 Skybox/GradientSky-01.png", filePath+"Textures/Skybox/level3 Skybox/GradientSky-01.png",
+			filePath+"Textures/Skybox/level3 Skybox/BlueTop.png", filePath+"Textures/Skybox/level3 Skybox/GradientSky-01.png",
+			filePath+"Textures/Skybox/level3 Skybox/GradientSky-01.png", filePath+"Textures/Skybox/level3 Skybox/GradientSky-01.png"]
 	}
 
 
@@ -203,7 +203,7 @@ function stormSky() {
 	let loader = new THREE.TextureLoader();
 	let cloudGeo = new THREE.PlaneBufferGeometry();
 	let cloudMaterial = new THREE.MeshLambertMaterial();
-	loader.load("../Objects/Textures/Skybox/cloud/cloudTex.png", function (texture) {
+	loader.load(filePath+"Textures/Skybox/cloud/cloudTex.png", function (texture) {
 		cloudGeo = new THREE.PlaneBufferGeometry(200, 200);
 		cloudMaterial = new THREE.MeshPhongMaterial({
 			map: texture,
@@ -723,6 +723,7 @@ function init(reset) {
 	}
 	if (reset) {
 		hud.Clicked = false
+		doorMovingBool=false
 		if (!hud.loading) { hud.isLoading(1, banana) }
 
 		if (currentWorld >= 3) {
@@ -851,7 +852,7 @@ document.addEventListener("mousedown", (e) => {
 			if (playerBody.noBullets > 0) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
-					var Sounds = ["../Objects/Sound Effects/rifle.mp3", "../Objects/Sound Effects/PewPew.mp3", "../Objects/Sound Effects/Im a banana.mp3", "../Objects/Sound Effects/Bang.mp3","../Objects/Sound Effects/JeremyGunShotSound.mp3","../Objects/Sound Effects/Pew.mp3"]
+					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3"]
 					var loc = 0;
 					if (banana) {
 						loc = Math.floor(Math.random() * (Sounds.length - 1 + 1) + 1)

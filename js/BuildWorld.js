@@ -272,7 +272,7 @@ class BuildWorld {
                 } else if (name.substring(0, 7) === 'Sign002') {
                     //Replace textures
                     var random = Math.floor(Math.random() * 8);
-                    var location = "../Objects/Textures/Signs/"
+                    var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
                     } else {
@@ -289,7 +289,7 @@ class BuildWorld {
                 } else if (name.substring(0, 7) === 'Sign003') {
                     //Replace textures
                     var random = Math.floor(Math.random() * 8);
-                    var location = "../Objects/Textures/Signs/"
+                    var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
                     } else {
@@ -306,7 +306,7 @@ class BuildWorld {
                 } else if (name.substring(0, 7) === 'Sign004') {
                     //Replace textures
                     var random = Math.floor(Math.random() * 8);
-                    var location = "../Objects/Textures/Signs/"
+                    var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
                     } else {
@@ -323,7 +323,7 @@ class BuildWorld {
                 } else if (name.substring(0, 7) === 'Sign005') {
                     //Replace textures
                     var random = Math.floor(Math.random() * 8);
-                    var location = "../Objects/Textures/Signs/"
+                    var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
                     } else {
@@ -338,7 +338,7 @@ class BuildWorld {
                     child.material = newMat
                 } else if (name.substring(0, 7) === 'Sign006') {
                     //Replace textures
-                    var location = "../Objects/Textures/Signs/"
+                    var location = filePath+"Textures/Signs/"
                     if (banana) {
                         location += "Banana/"
                     } else {
@@ -670,7 +670,7 @@ class BuildWorld {
         if (!banana) {
             url = '../Objects/Weapons/m4_2.gltf'
         } else {
-            url = "../Objects/Weapons/Banana Gun.glb"
+            url = filePath+"Weapons/Banana Gun.glb"
         }
 
         if (scene.getObjectByName('handRight').getObjectByName('weaponsM4')) {

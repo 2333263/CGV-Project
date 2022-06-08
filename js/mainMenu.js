@@ -29,7 +29,7 @@ class MainMenu{
         this.controls=true;
         this.banana=false
         this.logo=new Image()
-        this.logo.src="../Objects/Textures/Misc/Logo.png"
+        this.logo.src=filePath+"Textures/Misc/Logo.png"
         //Apply limits, courtesy of Richard Klein
         applyLimits(this.graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
         this.graphics.lineWidth = pixelSize;
