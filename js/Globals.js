@@ -71,3 +71,4 @@ const Level3=[[
 ]
 
 const filePath="../Objects/"
+const httpUrls="https://lamp.ms.wits.ac.za/~cgv37-2022/php/GetDatabase.php?File="

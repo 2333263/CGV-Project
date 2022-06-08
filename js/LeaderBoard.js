@@ -38,7 +38,7 @@ class leaderBoard {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 http.parent = this
-                const url = "http://155.93.144.117/cgv/extract10.php";
+                const url = httpUrls+"extract10.php";
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
@@ -65,7 +65,7 @@ class leaderBoard {
                 var http = new XMLHttpRequest()
                 http.parent = this
 
-                const url = "http://155.93.144.117/cgv/extractNearest10.php?Time=" + (time * 100)
+                const url = httpUrls+"extractNearest10.php?Time=" + (time * 100)
 
                 http.open("GET", url, true)
                 http.send();
@@ -98,7 +98,7 @@ class leaderBoard {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
                 http.parent = this
-                const url = "http://155.93.144.117/cgv/extract.php"
+                const url = httpUrls+"extract.php"
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
@@ -126,8 +126,9 @@ class leaderBoard {
 
         this.addItem = function (parent,key, value,callback) {
             if (this.requested == false) {
+                key=key.replaceAll("&","")
                 var http = new XMLHttpRequest()
-                var url = "http://155.93.144.117/cgv/insert.php?NAME=" + key + "&TIME=" + value * 100
+                var url = httpUrls+"insert.php?NAME=" + key.replaceAll("`", "")+ "`TIME=" + value * 100
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
@@ -159,7 +160,7 @@ class leaderBoard {
                 if (this.requested == false) {
                     var http = new XMLHttpRequest()
                     http.parent = this
-                    const url = "http://155.93.144.117/cgv/extractpos.php?Time=" + time * 100
+                    const url = httpUrls+"extractpos.php?Time=" + time * 100
                     http.open("GET", url, true)
                     http.send();
                     http.onreadystatechange = function () {
@@ -177,7 +178,7 @@ class leaderBoard {
             }else{
                 var http = new XMLHttpRequest()
                 http.parent = this
-                const url = "http://155.93.144.117/cgv/extractpos.php?Time=" + time * 100
+                const url = httpUrls+"extractpos.php?Time=" + time * 100
                 http.open("GET", url, true)
                 http.send();
                 http.onreadystatechange = function () {
