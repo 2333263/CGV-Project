@@ -5,8 +5,8 @@ const sparkDist = 1.5
 //Essentially speed
 const lifeTime = 0.2
 
-/**Gun Spark
- * @classdesc
+/**
+ * @classdesc Gun Spark
  */
 class SPARK{
     
