@@ -955,7 +955,7 @@ class BuildWorld {
 
     /**
      * Function to get the muzzle flash
-     * @returns {THREE.Mesh} The muzzleFlash mesh
+     * @returns {THREE.Mesh} The muzzle flash mesh
      */
     static getMuzzleFlashMesh() {
         return muzzleFlash;
@@ -963,7 +963,7 @@ class BuildWorld {
 
     /**
      * Function to get the array of clouds
-     * @returns {Array.<THREE.Mesh>} The muzzle flash mesh
+     * @returns {Array.<THREE.Mesh>} The array of cloud meshes
      */
     static getClouds() {
         return clouds;
@@ -971,7 +971,7 @@ class BuildWorld {
 
     /**
      * Function to get the moving door
-     * @returns {Array.<THREE.Mesh || CANNON.Body>} The muzzle flash mesh
+     * @returns {[THREE.Mesh, CANNON.Body]} The array of both the THREE.Mesh and CANON.Body of the moving door
      */
     static getDoor() {
         return movingDoor;
@@ -979,7 +979,7 @@ class BuildWorld {
 
     /**
      * Function to get monkey head
-     * @returns {THREE.Mesh} The muzzle flash mesh
+     * @returns {THREE.Mesh} The monkey head mesh
      */
      static getMonkeyHead() {
         return monkeyHead;
