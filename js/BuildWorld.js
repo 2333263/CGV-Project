@@ -450,8 +450,9 @@ class BuildWorld {
                 else if (name.substring(0, 10) === 'MovingDoor') {
                     var CANNONBody = threeToCannonObj.getCannonMesh(child, 'BOX')
                     world.addBody(CANNONBody);
-                    movingDoor.push(child);
-                    movingDoor.push(CANNONBody);
+                    var tempArr=[child,CANNONBody]
+                    movingDoor=tempArr
+
                 }
 
                 //Monkey head
