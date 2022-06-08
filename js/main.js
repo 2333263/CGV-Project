@@ -111,6 +111,10 @@ audioLoader.load(filePath+"Sound Effects/thunder.mp3", function (buffer) {
 });
 
 //Audio Loader
+/**
+ * Method plays the given sound when the gun is shot
+ * @param {String} Sound the url of the sound it needs to play
+ */
 
 //Gunshot sound Init
 function gunshotSound(Sound) {
@@ -129,6 +133,11 @@ function gunshotSound(Sound) {
 		gunsound.play();
 	});
 };
+
+/**
+ * play or pause the rain sound
+ * @param {Boolean} control pause or play the sound 
+ */
 function rainSound(control) {
 
 	if (control == 1) {
@@ -138,6 +147,10 @@ function rainSound(control) {
 		RainSound.pause();
 	}
 };
+/**
+ * randomizes pitch and plays thunder or stops the sound from playing
+ * @param {Boolean} control pause or play the thunder sound
+ */
 function thunderSound(control) {
 	if (control == 1) {
 		if (ThunderSound.isPlaying == false) {
@@ -160,6 +173,10 @@ var doorMovingStartTime;
 
 //Skybox Init
 var skybox;
+/**
+ * changes and loads the skybox for the level the player is on
+ * @param {integer} level the current level the player is are
+ */
 function drawSkyBox(level) {
 	scene.remove(skybox)
 	let pathStrings
@@ -181,6 +198,10 @@ function drawSkyBox(level) {
 
 
 	//This function maps over the array of images, skybox related
+	/**
+	 * maps the textures to each face of the skybox
+	 * @returns {THREE.MeshBasicMaterial} material array
+	 */
 	function createMaterialArray() {
 		const skyboxImagepaths = pathStrings;
 		const materialArray = skyboxImagepaths.map(image => {
@@ -200,6 +221,11 @@ function drawSkyBox(level) {
 }
 
 //storm clouds
+/**
+ * creates the storm cloud effect
+ * creates the light called flash
+ * creates the raindrops
+ */
 function stormSky() {
 	let loader = new THREE.TextureLoader();
 	let cloudGeo = new THREE.PlaneBufferGeometry();
@@ -404,6 +430,18 @@ BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 });
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
+/**
+ * adds gun to the player
+ * turns on lights that need to be turned on
+ * adds the targets to the world
+ * adds the moving targets to the world
+ * adds the hud to the world
+ * adds the clouds to the world
+ * sets the position of the end of the gun
+ * enables specific effects per level
+ * enables the music
+ * runs the animation
+ */
 function afterLoad() {
 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -668,6 +706,9 @@ function animate() {
 };
 
 //Render func
+/**
+ * this function renders the minimap and reset the values back to the original
+ */
 function renderWorld() {
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
@@ -688,7 +729,9 @@ function renderWorld() {
 	renderer.render(sceneHUD, HudCamera)
 };
 
-//Rotates targets for appearance on the map camera
+/**
+ * Rotates targets for appearance on the map camera
+ */
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.01, 32), TargetArr[i].getCylinder().material, currentWorld)
@@ -698,7 +741,9 @@ function mapTargets() {
 	}
 };
 
-//Remove the map targets from the scene
+/**
+ * Remove the map targets from the scene
+ */
 function worldTargets() {
 	while (mapTargetArr.length != 0) {
 		scene.remove(mapTargetArr.pop());
@@ -721,6 +766,21 @@ function addTargets(position, quaternion) {
 };
 
 //Init for level reset
+/**
+ * removes all bullet lines
+ * if reset is true
+ * reset the hud
+ * undo all graphical changes of current world
+ * unload the world
+ * reset current world to 1
+ * load world 1
+ * if reset is false
+ * undo graphical effects from current world
+ * 
+ * in general
+ * reset all values of the player and the world back to their default values
+ * @param {boolean} reset whether or not to just reset the current world or the entire game
+ */
 function init(reset) {
 	for (const line of lines) {
 		scene.remove(line[0])
@@ -806,13 +866,18 @@ function init(reset) {
 
 
 };
+/**
+ * remove loading screen
+ */
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
 		Load.loading = false
 		
 		hud.isPaused(false);
 }
-//Remove all targets from scene
+/**
+ * Remove all targets from scene
+ */
 function removeTargets() {
 	while (TargetArr.length != 0) {
 		scene.remove(TargetArr.pop().getCylinder())
@@ -842,6 +907,9 @@ document.addEventListener("mouseup", (e) => {
 
 
 //Mouse-down event listener
+/**
+ * mouse listner
+ */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
 
