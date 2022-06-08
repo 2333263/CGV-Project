@@ -1,6 +1,11 @@
 import { Entry } from "./lbObject.js"
-
+/**
+ * @classdesc LeaderBoard class used to interact with php
+ */
 class leaderBoard {
+    /**
+     * @constructor leaderBoard constructor
+     */
     constructor() {
         this.document = document
         this.requested = false;
@@ -11,55 +16,10 @@ class leaderBoard {
         this.position = 0
         this.tempPos = 0
         this.startpos = 0
-        this.Sort = function () {
-            var items = Object.keys(this.LeaderBoard).map(
-                (key) => { return [key, this.LeaderBoard[key]] }
-            )
-            items.sort((first, second) => { return first[1] - second[1] })
-            var keys = items.map(
-                (e) => { return e[0] });
-
-            return keys
-        }
-        this.keys = this.Sort()
-
-        this.getBoard = function () {
-
-            var keys = this.Sort()
-            var temp = ""
-            for (var i = 0; i < keys.length; i++) {
-
-                temp += String(keys[i]) + ":" + this.LeaderBoard[keys[i]];
-                if (i != keys.length - 1) temp += ","
-            }
-            return (temp)
-        }
-        this.getTop10 = function () {
-            if (this.requested == false) {
-                var http = new XMLHttpRequest()
-                http.parent = this
-                const url = httpUrls+"extract10.php";
-                http.open("GET", url, true)
-                http.send();
-                http.onreadystatechange = function () {
-                    this.parent.top10 = [];
-                    if (this.readyState == 4 && this.status == 200) {
-                        var temp = JSON.parse(http.responseText)
-                        for (var i = 0; i < temp.length; i++) {
-                            this.parent.top10.push(new Entry(temp[i].name, temp[i].time / 100))
-                        }
-                    }
-                }
-            }
-            var top = []
-            for (var i = 0; i < this.top10.length; i++) {
-                var temp = (i + 1) + ")" + "  " + this.top10[i].name + addSpaces(this.top10[i].name, 10) + this.top10[i].time;
-                top.push(temp)
-
-            }
-
-            return (top)
-        }
+        /**
+         * getNearest10 
+         * @param {float} time score from player 
+         */
         this.getNearest10 = function (time) {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
@@ -94,6 +54,10 @@ class leaderBoard {
 
             return (close)
         }
+        /**
+         * getAll 
+         * @returns {list} all entries in the leaderboard
+         */
         this.getAll = function () {
             if (this.requested == false) {
                 var http = new XMLHttpRequest()
@@ -123,7 +87,13 @@ class leaderBoard {
         }
 
 
-
+        /**
+         * addItem
+         * @param {class}parent leaderBoard.js 
+         * @param {string}key name of player added to leaderboard
+         * @param {float}value time (score) of player
+         * @callback callback
+         */
         this.addItem = function (parent,key, value,callback) {
             if (this.requested == false) {
                 key=key.replaceAll("&","")
@@ -145,7 +115,11 @@ class leaderBoard {
 
             this.LeaderBoard.push(new Entry(key, value))
         }
-
+        /**
+         * addSpaces
+         * @param {string} word any string
+         * @param {int} spaces number of spaces for display purposes
+         */
         function addSpaces(word, spaces) {
             var temp = ""
             for (var i = word.length; i < spaces; i++) {
@@ -155,6 +129,11 @@ class leaderBoard {
 
         }
 
+        /**
+         * getPos
+         * @param {int} CB which class is calling
+         * @param {float} time score of player
+         */
         this.getPos = function (CB, time) {
             if(CB==0){
                 if (this.requested == false) {
