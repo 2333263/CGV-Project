@@ -86,6 +86,7 @@ class leaderBoard {
 
 
         /**
+         * @private
          * addItem
          * @param {class} parent leaderBoard.js 
          * @param {string} key name of player added to leaderboard

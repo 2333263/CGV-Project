@@ -60,6 +60,7 @@ class LoadingScreen {
     };
     /**
      * drawImage
+     * @private
      * @function drawImage
      * @param {context} graphics context canvas
      * @param {int} random used to randomize which logo is displated 
