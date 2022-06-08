@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { threeToCannon, ShapeType } from 'three-to-cannon';
 
+/**
+ * @classdesc threeToCannonObj class, used for converting a THREE obj to a CANNON body
+ */
 class threeToCannonObj{
     constructor(){}
     /**

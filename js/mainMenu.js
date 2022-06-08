@@ -8,9 +8,15 @@ var Y_BOTTOM = (height / 2);
 var Y_TOP = (-height / 2);
 var pixelSize;
 var lb=new leaderBoard(); 
-
+/**
+ * @classdesc Main menu class. Used to disaply canvas with onclick listeners
+ */
 
 class MainMenu{
+    /** 
+     * @constructor 
+     * 
+    */
     constructor() {
 
         //Canvas Init
@@ -35,11 +41,17 @@ class MainMenu{
         this.graphics.lineWidth = pixelSize;
         
         //----------------------------------------Functions----------------------------------------
+        /** 
+         * getMenu
+         * returns a canvas reference
+         */
         this.getMenu=function(){
             return this.canvas
         };
-
-        //This function draws a different screen depending on what page the person is on
+        /** 
+         * draw
+         * This function draws a different screen depending on what page the person is on
+         */
         this.draw=function() {
            switch(this.page){
                case 0://main menu
@@ -58,8 +70,11 @@ class MainMenu{
            }
         }
         
+        /**
+         * drawMainMenu
+         * Draws MainMenu
+         */
         
-        //Draws MainMenu
         this.drawMainMenu=function(){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             
@@ -102,6 +117,11 @@ class MainMenu{
             g.fillText(word,X_LEFT,Y_BOTTOM);
             }
         }
+        /**
+         * drawLogo
+         * draws the team's banana logo
+         * @param {context}  graphics from canvas.getContext("2d")
+         */
        this.drawLogo=function(graphics){
             graphics.save();
          
@@ -110,11 +130,19 @@ class MainMenu{
             graphics.drawImage(this.logo,0,0)
             graphics.restore()
         }
+        /** 
+         * enableBanana
+         * called when user types banana. Activates banana mode.
+         */
         this.enableBanana=function(){
             this.banana=true
         }
 
-        //Draws the leaderboard on the screen
+        /**
+         * drawLeaderboard
+        *Draws the leaderboard on the screen
+        * @param {int} pageNum used to display subset of leaderboard entries
+        */
         this.drawLeaderboard=function(pageNum){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
@@ -157,7 +185,10 @@ class MainMenu{
             }
         }
 
-        //Draws the credit screen
+        /**
+         * drawCredits
+         * Draws the credit screen
+         */
         this.drawCredits=function() {
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
@@ -186,7 +217,9 @@ class MainMenu{
             this.graphics.restore()
         }
 
-        //Draw Back Button
+        /**
+         * Draw Back Button
+         * */
         this.drawBackButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
             this.graphics.fillRect(0,0,180,80)
@@ -199,7 +232,9 @@ class MainMenu{
             this.graphics.restore()
         }
 
-        //Draws Next Button
+        /**
+         * Draws Next Button
+         * */
         this.drawNextButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
             this.graphics.fillRect(0,0,180,80)
@@ -211,7 +246,9 @@ class MainMenu{
             this.graphics.fillText(word,0,0)
             this.graphics.restore()
         }
-
+        /**
+         * Draws Return Button
+         * */
         this.drawReturnButton=function(){
             this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
             this.graphics.fillRect(0,0,250,80)
@@ -225,7 +262,12 @@ class MainMenu{
         }
 
 
-        //This function simulates an on click listner for the buttons but seeing where the user clicked on the screen
+        /**
+         * Clicked
+         * This function simulates an on click listner for the buttons but seeing where the user clicked on the screen
+         * @param {float} posX x-vlaue for position of mouse pointer
+         * @param {float} posY y-vlaue for position of mouse pointer
+        */
         this.Clicked=function(posX,posY) {
             var centerX=(width/2)
             var centerY=height/2
@@ -298,7 +340,10 @@ class MainMenu{
                     break;
             }
         }
-
+        /**
+         * drawOptions
+         * draws canvas to present user with options to change music, sound effects and controls
+         */
         this.drawOptions=function(){
             this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
             this.graphics.fillStyle="rgba(255,255,255,0.6)"
@@ -317,7 +362,11 @@ class MainMenu{
             this.drawBackButton()
             this.graphics.restore()
         }
-
+        /**
+         * toggleMusicButton
+         *  On or off button
+         * @param {boolean} on music on/off
+         */
         this.toggleMusicButton=function(on){
             this.graphics.save();
             this.graphics.translate(X_LEFT+50,Y_TOP+250);
@@ -331,6 +380,11 @@ class MainMenu{
             this.graphics.restore();
             this.graphics.restore();
         }
+        /**
+         * toggleSoundEffect
+         * On or off button
+         * @param {boolean} on music on/off
+         */
         this.toggleSoundEffects=function(on){
             this.graphics.save();
             this.graphics.translate(X_LEFT+50,Y_TOP+500);
@@ -344,6 +398,11 @@ class MainMenu{
             this.graphics.restore();
             this.graphics.restore();
         }
+        /**
+         * toggleControls
+         *  On or off button
+         * @param {boolean} on music on/off
+         */
         this.toggleControls=function(on){
             this.graphics.save();
             this.graphics.translate(X_LEFT+50,Y_TOP+750);
@@ -360,7 +419,11 @@ class MainMenu{
 
 
 
-
+        /**
+         * drawToggleButton
+         * draws a Toggle Button
+         * @param {boolean} on music on/off
+         */
         this.drawToggleButton=function(on){
             this.graphics.save()
             this.graphics.fillStyle="black";
@@ -389,6 +452,11 @@ class MainMenu{
             this.graphics.restore();
         }
 
+        /**
+         * drawToggleControls
+         * draws another toggle button with different words
+         * @param {boolean} on music on/off
+         */
         this.drawToggleControls=function(on){
             this.graphics.save()
             this.graphics.fillStyle="black";
@@ -419,7 +487,16 @@ class MainMenu{
 
 
 
-        //Apply Limits function, courtesy of Richard Klein
+        /**
+         * Apply Limits function, courtesy of Dr. Richard Klein
+         * monitor scaling
+         * @param {canvas} g graphics context
+         * @param {int} xleft based on monitor
+         * @param {int} xright based on monitor
+         * @param {int} ytop based on monitor
+         * @param {int} ybottom based on monitor
+         * @param {boolean} preserveAspect boolean, always true
+         */
         function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
            if (preserveAspect) {
                 // Adjust the limits to match the aspect ratio of the drawing area.

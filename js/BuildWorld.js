@@ -47,8 +47,7 @@ const models = {
 };
 
 /**
- * BuildWorld class, creates the world
- * @classdesc
+ * @classdesc BuildWorld class, creates the world
  */
 class BuildWorld {
     constructor() {}

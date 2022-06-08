@@ -1,7 +1,9 @@
 import * as THREE from '../Dependencies/three.module.js';
 
 const loader = new THREE.TextureLoader();
-
+/**
+ * @classdesc Targets class, used to handle the target logic and init
+ */
 class Targets{
     /**
      * 

@@ -29,6 +29,9 @@ const searchImage = new Image();
 searchImage.src = POSTPROCESSING.SMAAEffect.searchImageDataURL;
 const smaaEffect = new POSTPROCESSING.SMAAEffect(searchImage, areaImage, 1);
 
+/**
+ * @classdesc POSTPROCESSINGPASSES class, applies various post processing passes
+ */
 class POSTPROCESSINGPASSES {
     constructor() { }
     /**

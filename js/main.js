@@ -1,3 +1,4 @@
+
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
@@ -7,12 +8,19 @@ import Stats from "stats";
 import { SPARK } from '../js/Spark.js';
 import { PointerLockControls } from '../Dependencies/PointerLockControls.js';
 import { HUD } from "../js/HUD.js";
+import { LoadingScreen }  from "../js/LoadingScreen.js" ;
 import { Targets } from '../js/targets.js';
 import { BuildWorld } from '../js/BuildWorld.js';
 import { POSTPROCESSINGPASSES } from '../js/PostProcessingPasses.js';
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { MainMenu } from '/js/mainMenu.js';
 import { musicHandler } from './MusicHandler.js';
+
+/**
+ * @classdesc main class runs everything
+ */
+
+
 
 //View Init
 const width = window.innerWidth + 20;
@@ -56,7 +64,7 @@ let rain = new THREE.Points();
 const rainInit = [32, 200, -32];
 let counter = 0;
 
-
+const Load= new LoadingScreen()
 //Canon world Init
 const world = new CANNON.World({
 	gravity: new CANNON.Vec3(0, -35, 0) //Middle value is gravity in the y direction 
@@ -110,6 +118,11 @@ audioLoader.load(filePath+"Sound Effects/thunder.mp3", function (buffer) {
 });
 
 //Audio Loader
+/**
+ * gunshotSound
+ * Method plays the given sound when the gun is shot
+ * @param {String} Sound the url of the sound it needs to play
+ */
 
 //Gunshot sound Init
 function gunshotSound(Sound) {
@@ -128,6 +141,12 @@ function gunshotSound(Sound) {
 		gunsound.play();
 	});
 };
+
+/**
+ * rainSound
+ * play or pause the rain sound
+ * @param {Boolean} control pause or play the sound 
+ */
 function rainSound(control) {
 
 	if (control == 1) {
@@ -137,6 +156,11 @@ function rainSound(control) {
 		RainSound.pause();
 	}
 };
+/**
+ * thunderSound
+ * randomizes pitch and plays thunder or stops the sound from playing
+ * @param {Boolean} control pause or play the thunder sound
+ */
 function thunderSound(control) {
 	if (control == 1) {
 		if (ThunderSound.isPlaying == false) {
@@ -159,6 +183,11 @@ var doorMovingStartTime;
 
 //Skybox Init
 var skybox;
+/**
+ * drawSkyBox
+ * changes and loads the skybox for the level the player is on
+ * @param {integer} level the current level the player is are
+ */
 function drawSkyBox(level) {
 	scene.remove(skybox)
 	let pathStrings
@@ -180,6 +209,11 @@ function drawSkyBox(level) {
 
 
 	//This function maps over the array of images, skybox related
+	/**
+	 * createMaterialArray
+	 * maps the textures to each face of the skybox
+	 * @returns {THREE.MeshBasicMaterial} material array
+	 */
 	function createMaterialArray() {
 		const skyboxImagepaths = pathStrings;
 		const materialArray = skyboxImagepaths.map(image => {
@@ -199,6 +233,12 @@ function drawSkyBox(level) {
 }
 
 //storm clouds
+/**
+ * stormSky
+ * creates the storm cloud effect
+ * creates the light called flash
+ * creates the raindrops
+ */
 function stormSky() {
 	let loader = new THREE.TextureLoader();
 	let cloudGeo = new THREE.PlaneBufferGeometry();
@@ -388,7 +428,7 @@ HudPlane.onBeforeRender = function (renderer) {
 
 //Add hud to separate hud scene
 sceneHUD.add(HudPlane)
-hud.isLoading("Start", false)
+Load.isLoading("Start", false)
 setTimeout(doneLoading, 5000);
 
 
@@ -402,6 +442,19 @@ BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
 });
 
 //WORLD BUILDER THE ANTITHESIS TO JORMUNGANDR
+/**
+ * afterLoad
+ * adds gun to the player
+ * turns on lights that need to be turned on
+ * adds the targets to the world
+ * adds the moving targets to the world
+ * adds the hud to the world
+ * adds the clouds to the world
+ * sets the position of the end of the gun
+ * enables specific effects per level
+ * enables the music
+ * runs the animation
+ */
 function afterLoad() {
 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -529,7 +582,7 @@ function afterLoad() {
 //Used to stop animation for level loads
 var animationID;
 /**
- * Function that runs the game
+ *animate Function that runs the game
  */
 let count = 0;
 var FrameRate = 1000 / 60
@@ -556,10 +609,10 @@ function animate() {
 		}
 	}
 	else {
-		if (controls.isLocked && hud.loading==false) {
+		if (controls.isLocked && Load.loading==false) {
 			checkState()
 			hud.isPaused(false);
-			if (playerModel.position.y < -25) { hud.isLoading(1, banana)
+			if (playerModel.position.y < -25) { Load.isLoading(1, banana)
 				 init(true); } // if player out of bounds, reset level
 			playerModel.position.copy(playerBody.position);
 
@@ -666,6 +719,9 @@ function animate() {
 };
 
 //Render func
+/**
+ *renderWorld this function renders the minimap and reset the values back to the original
+ */
 function renderWorld() {
 	var port = new THREE.Vector4(0, 0, 0, 0)
 	renderer.getViewport(port)
@@ -686,7 +742,9 @@ function renderWorld() {
 	renderer.render(sceneHUD, HudCamera)
 };
 
-//Rotates targets for appearance on the map camera
+/**
+ *mapTargets Rotates targets for appearance on the map camera
+ */
 function mapTargets() {
 	for (var i = 0; i < TargetArr.length; i++) {
 		var tempCylinder = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.01, 32), TargetArr[i].getCylinder().material, currentWorld)
@@ -696,7 +754,9 @@ function mapTargets() {
 	}
 };
 
-//Remove the map targets from the scene
+/**
+ *worldTargets Remove the map targets from the scene
+ */
 function worldTargets() {
 	while (mapTargetArr.length != 0) {
 		scene.remove(mapTargetArr.pop());
@@ -719,6 +779,22 @@ function addTargets(position, quaternion) {
 };
 
 //Init for level reset
+/**
+ * init
+ * removes all bullet lines
+ * if reset is true
+ * reset the hud
+ * undo all graphical changes of current world
+ * unload the world
+ * reset current world to 1
+ * load world 1
+ * if reset is false
+ * undo graphical effects from current world
+ * 
+ * in general
+ * reset all values of the player and the world back to their default values
+ * @param {boolean} reset whether or not to just reset the current world or the entire game
+ */
 function init(reset) {
 	for (const line of lines) {
 		scene.remove(line[0])
@@ -726,7 +802,7 @@ function init(reset) {
 	if (reset) {
 		hud.Clicked = false
 		doorMovingBool=false
-		if (!hud.loading) { hud.isLoading(1, banana) }
+		if (!Load.loading) { Load.isLoading(1, banana) }
 
 		if (currentWorld >= 3) {
 			//undoes any environmental changes done by world 3
@@ -790,7 +866,7 @@ function init(reset) {
 	controls.getObject().position.copy(playerBody.position)
 	controls.getObject().lookAt(0, 5, 0)
 	playerBody.quaternion.copy(controls.getObject().quaternion)
-	if (hud.loading) {
+	if (Load.loading) {
 		var milliseconds=1000
 		if(currentWorld==2){
 			milliseconds=5000
@@ -804,13 +880,18 @@ function init(reset) {
 
 
 };
+/**
+ *doneLoading remove loading screen
+ */
 function doneLoading(){
 	document.body.removeChild(document.body.lastElementChild); //remove loading screen
-		hud.loading = false
+		Load.loading = false
 		
 		hud.isPaused(false);
 }
-//Remove all targets from scene
+/**
+ *removeTargets Remove all targets from scene
+ */
 function removeTargets() {
 	while (TargetArr.length != 0) {
 		scene.remove(TargetArr.pop().getCylinder())
@@ -818,16 +899,25 @@ function removeTargets() {
 };
 
 //Event listener for lock
+/**
+ * @event lock#lock when the mouse is captured
+ */
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
 });
 
 //Event listener for unlock
+/**
+ * @event unlocked#unlocked when the mouse is returned
+ */
 controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
 });
 
 //Mouse-up event listener
+/**
+ * @event mouseup#mouseUp when the player stops clicking
+ */
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
 	try {
@@ -840,6 +930,12 @@ document.addEventListener("mouseup", (e) => {
 
 
 //Mouse-down event listener
+/**
+ * @event mousedown#onclick all mouse events are performed here
+ * fires the gun
+ * used for when buttons are clicked
+ * also reset world on failure
+ */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
 
@@ -851,7 +947,7 @@ document.addEventListener("mousedown", (e) => {
 
 
 		if (controls.isLocked == true) {
-			if (playerBody.noBullets > 0 && hud.loading==false) { //if player has any bullets 
+			if (playerBody.noBullets > 0 && Load.loading==false) { //if player has any bullets 
 				playerBody.noBullets--; //decrement bullet count
 				if (homeScreen.soundEffects) {
 					var Sounds = [filePath+"Sound Effects/rifle.mp3", filePath+"Sound Effects/PewPew.mp3", filePath+"Sound Effects/Im a banana.mp3", filePath+"Sound Effects/Bang.mp3",filePath+"Sound Effects/JeremyGunShotSound.mp3",filePath+"Sound Effects/Pew.mp3",filePath+"Sound Effects/Pop.mp3",filePath+"Sound Effects/Meow.mp3",filePath+"Sound Effects/BEN.mp3",filePath+"Sound Effects/Villager.mp3",filePath+"Sound Effects/Grunt.mp3"]
@@ -953,8 +1049,9 @@ document.addEventListener("mousedown", (e) => {
 
 		}
 		else {
-			if (menu == true) {
-				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)
+			if (menu == true ) {
+				if( Load.loading==false){
+				var ButtonClicked = homeScreen.Clicked(e.clientX, e.clientY)}
 				if (ButtonClicked == 0) {
 					hud.setStartTime()
 					scene.add(playerModel)
@@ -970,6 +1067,9 @@ document.addEventListener("mousedown", (e) => {
 		}
 	}
 });
+/**
+ * checkState checks whether the game has been won or lost
+ */
 function checkState() {
 	if (hud.gamestate == -1 && gameFailed == false) { //Game failed
 		gameFailed = true
@@ -990,7 +1090,7 @@ function checkState() {
 			currentWorld++
 
 			if (currentWorld < 4) {
-				hud.isLoading(currentWorld, banana);
+				Load.isLoading(currentWorld, banana);
 				BuildWorld.unloadCurrentLevel(scene, world)
 				cancelAnimationFrame(animationID);
 				BuildWorld.loadLevel(banana, scene, world, currentWorld, function () {
@@ -1020,14 +1120,17 @@ const pressedKeys = {};
 var typedKeys = ""
 //var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
+/**
+ * @event keydown#keydown event when a key is pressed
+ */
 document.addEventListener("keydown", (e) => {
-	if (controls.isLocked && !hud.loading) {
+	if (controls.isLocked && !Load.loading) {
 		pressedKeys[e.key] = true;
 	} else if (menu == true) {
 		typedKeys += e.key.toLowerCase()
 		if (typedKeys.includes("banana") && !banana) {
-			if(hud.loading) doneLoading();
-			hud.isLoading("banana",true)
+			if(Load.loading) doneLoading();
+			Load.isLoading("banana",true)
 			banana = true
 			homeScreen.enableBanana()
 			backgroundmusic.pause()
@@ -1041,7 +1144,7 @@ document.addEventListener("keydown", (e) => {
 			init(true);
 		}
 		if (e.key == "m") {
-			hud.isLoading("menu", banana)
+			Load.isLoading("menu", banana)
 			hud.cansend=false
 			init(true)
 			menu = true
@@ -1053,16 +1156,26 @@ document.addEventListener("keydown", (e) => {
 });
 
 //Keyup event listener
+/**
+ * @event keyup#keyup events when key is no longer being pressed
+ */
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
 });
 
 //Target hit logic
+/**
+ * run when a target is shot
+ * @param {integer} name int representing which target is hit
+ */
 function HitTarget(name) {
 	TargetArr[parseInt(name)].hit();
 };
 
 //Movement logic
+/**
+ * move all the logic regarding the movement of the player
+ */
 function move() {
 	playerBody.linearDamping = 0.9
 	playerBody.angularDamping = 0.9
@@ -1128,7 +1241,9 @@ function move() {
 	pipcamera.position.x = (playerBody.position.x);
 	pipcamera.position.z = (playerBody.position.z);
 };
-
+/**
+ * handleTrails draws the lines after a bullet is shot
+ */
 function handleTrails() {
 	var trailTime = 1
 	var d = new Date();
@@ -1149,7 +1264,9 @@ function handleTrails() {
 
 
 }
-
+/**
+ * handleSparks sparks when something is shot
+ */
 function handleSparks() {
 	var sparklife = 0.2 //Distance spark will travel
 	var d = new Date();
@@ -1168,7 +1285,9 @@ function handleSparks() {
 	}
 
 }
-
+/**
+ * MoveTargets moves the targets
+ */
 function MoveTargets() {
 
 	var d = new Date();
@@ -1182,7 +1301,9 @@ function MoveTargets() {
 		}
 	}
 }
-
+/**
+ * enableMoving enables a target to move
+ */
 function enableMoving() {
 	if (currentWorld == 1) {
 		for (var i = 0; i < Level1.length; i++) {
