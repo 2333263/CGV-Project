@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-/**music class
- * @classdesc
+/**
+ * @classdesc music class used to load the correct music track
  */
 class musicHandler{
     /**music handeler constructor
