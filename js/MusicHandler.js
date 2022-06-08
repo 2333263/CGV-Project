@@ -5,7 +5,12 @@ import * as THREE from 'three';
 class musicHandler{
     /**music handeler constructor
     * @constructor
-    */
+     * @param {boolean} isPlaying
+     * @param {THREE.PerspectiveCamera} camera
+     * @param {THREE.AudioListener} listner
+     * @param {THREE.Audio} backgroundSound
+     * @param {THREE.AudioLoader} audioLoader
+     */
     constructor(camera, banana){
         this.playing=false;
         this.camera=camera
@@ -35,12 +40,18 @@ class musicHandler{
             this.playing=false
         }
         }
+        /** Pause Method.
+         * checks if music is playing and then pauses it.
+        */
         this.pause=function(){
             if(this.playing==true){
             this.backgroundSound.pause();
             this.playing=false;
             }
         }
+        /**Play Method
+         * If music is not playing, music starts playing
+         */
         this.play=function(){
             if(this.playing==false){
             this.backgroundSound.play();
@@ -48,6 +59,8 @@ class musicHandler{
             }
         }
     }
+    
+    
     }
 
 export {musicHandler}
