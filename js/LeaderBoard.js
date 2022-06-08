@@ -114,10 +114,10 @@ class leaderBoard {
             this.LeaderBoard.push(new Entry(key, value))
         }
         /**
-         * addSpaces
          * @param {string} word any string
          * @param {int} spaces number of spaces for display purposes
          * @return {string}
+         * @function addSpaces
          */
         function addSpaces(word, spaces) {
             var temp = ""
