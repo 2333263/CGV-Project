@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Spark.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Spark.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as THREE from 'three';
+
+
+const sparkDist = 1.5
+//Essentially speed
+const lifeTime = 0.2
+
+/**
+ * @classdesc Gun Spark
+ */
+class SPARK {
+    /**Spark object on bullet collision
+    * @constructor
+    * @param {THREE.Vector3} startPos Position where the spark is created
+    * @param {int} startTime Time when the spark was created in seconds
+    * @param {THREE.Scene} scene The scene where the spark must be created
+    */
+    constructor(startPos, startTime, scene) {
+        this.startTime = startTime;
+        this.startPos = startPos;
+        this.startLoc = {
+            x: startPos.x,
+            y: startPos.y,
+            z: startPos.z
+        }
+
+        //Create mesh sparks
+        this.endLocs = [];
+        this.particles = [];
+        //this.spark
+
+        for (var i = 0; i &lt; 18; i++) {
+
+            const endLoc = {
+                x: startPos.x,
+                y: startPos.y,
+                z: startPos.z
+            }
+            endLoc.x += THREE.MathUtils.randFloat(-sparkDist, sparkDist);
+            endLoc.y += THREE.MathUtils.randFloat(-sparkDist, sparkDist);
+            endLoc.z += THREE.MathUtils.randFloat(-sparkDist, sparkDist);
+            this.endLocs.push(endLoc);
+            const sparkGeo = new THREE.BoxGeometry(0.10, 0.10, 0.10);
+            const sparkMat = new THREE.MeshPhongMaterial({
+                color: new THREE.Color('#FFFF00'),
+                emissive: new THREE.Color('#FFFF00'),
+                emissiveIntensity: 1,
+                transparent: true,
+                opacity: 1
+            });
+            const spark = new THREE.Mesh(sparkGeo, sparkMat);
+
+            spark.position.copy(new THREE.Vector3(this.startLoc.x, this.startLoc.y, this.startLoc.z));
+            const randRot = THREE.MathUtils.randInt(-Math.PI, Math.PI);
+
+            spark.rotation.set(randRot, randRot, randRot)
+
+            scene.add(spark)
+            this.particles.push(spark)
+        }
+
+        /**
+        * Function to update the position of the spark based on linear interpolation
+        * @param {int} currTime Current time in seconds
+        */
+        this.updatePos = function (currTime) {
+            const timeScale = (currTime - this.startTime) / lifeTime;
+
+            //Update particle properties over time using interpolation (THREE.MathUtils.lerp)
+            for (let i = 0; i &lt; this.endLocs.length; i++) {
+                const currLoc = {
+                    x: THREE.MathUtils.lerp(this.startLoc.x, this.endLocs[i].x, timeScale),
+                    y: THREE.MathUtils.lerp(this.startLoc.y, this.endLocs[i].y, timeScale),
+                    z: THREE.MathUtils.lerp(this.startLoc.z, this.endLocs[i].z, timeScale)
+                }
+                //Move particles outwards
+                this.particles[i].position.copy(new THREE.Vector3(currLoc.x, currLoc.y, currLoc.z));
+
+                //Scale particle sizes
+                var scaleValue = THREE.MathUtils.lerp(1, 0, timeScale)
+                if (scaleValue &lt; 0) {
+                    scaleValue = 0;
+                }
+                this.particles[i].scale.set(scaleValue, scaleValue, scaleValue)
+            }
+        }
+
+        /**
+         * Gets the time of spark creation
+         * @returns {int} Time when the spark was created in seconds
+         */
+        this.getCreateTime = function () {
+            return this.startTime;
+        }
+
+        /**
+         * Functions to delete and dispose of the object in the scene
+         */
+        this.delete = function () {
+            for (const spark of this.particles) {
+                //Delete and dispose
+                spark.geometry.dispose();
+                spark.material.dispose();
+                scene.remove(spark)
+
+            }
+        }
+
+
+    }
+
+} export { SPARK }</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BuildWorld.html">BuildWorld</a></li><li><a href="Entry.html">Entry</a></li><li><a href="leaderBoard.html">leaderBoard</a></li><li><a href="LoadingScreen.html">LoadingScreen</a></li><li><a href="MainMenu.html">MainMenu</a></li><li><a href="musicHandler.html">musicHandler</a></li><li><a href="POSTPROCESSINGPASSES.html">POSTPROCESSINGPASSES</a></li><li><a href="SPARK.html">SPARK</a></li><li><a href="Targets.html">Targets</a></li><li><a href="threeToCannonObj.html">threeToCannonObj</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTargets">addTargets</a></li><li><a href="global.html#afterLoad">afterLoad</a></li><li><a href="global.html#checkState">checkState</a></li><li><a href="global.html#doneLoading">doneLoading</a></li><li><a href="global.html#drawSkyBox">drawSkyBox</a></li><li><a href="global.html#enableMoving">enableMoving</a></li><li><a href="global.html#filePath">filePath</a></li><li><a href="global.html#gunshotSound">gunshotSound</a></li><li><a href="global.html#handleDoor">handleDoor</a></li><li><a href="global.html#handleSparks">handleSparks</a></li><li><a href="global.html#handleTrails">handleTrails</a></li><li><a href="global.html#hitTarget">hitTarget</a></li><li><a href="global.html#httpUrls">httpUrls</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#Level1">Level1</a></li><li><a href="global.html#Level2">Level2</a></li><li><a href="global.html#Level3">Level3</a></li><li><a href="global.html#mapTargets">mapTargets</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#MoveTargets">MoveTargets</a></li><li><a href="global.html#rainSound">rainSound</a></li><li><a href="global.html#removeTargets">removeTargets</a></li><li><a href="global.html#renderWorld">renderWorld</a></li><li><a href="global.html#setStartTime">setStartTime</a></li><li><a href="global.html#stormSky">stormSky</a></li><li><a href="global.html#thunderSound">thunderSound</a></li><li><a href="global.html#worldTargets">worldTargets</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Jun 09 2022 11:04:21 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

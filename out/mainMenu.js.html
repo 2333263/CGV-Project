@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mainMenu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: mainMenu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {leaderBoard} from "../js/LeaderBoard.js"
+const width=window.innerWidth+20;
+const height=window.innerHeight+20;
+var scaleFitNative = Math.min(width / 1900, height / 935);
+var X_LEFT = (-width / 2);    // The xy limits for the coordinate system.
+var X_RIGHT = (width / 2);
+var Y_BOTTOM = (height / 2);
+var Y_TOP = (-height / 2);
+var pixelSize;
+var lb=new leaderBoard(); 
+/**
+ * @classdesc Main menu class. Used to disaply canvas with onclick listeners
+ */
+
+class MainMenu{
+    /** 
+     * @constructor 
+     * 
+    */
+    constructor() {
+
+        //Canvas Init
+        this.canvas = document.createElement("canvas")
+        this.canvas.id = "mainMenu";
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.page=0
+        this.leaderBoardPage=0
+        //Variables Init
+        this.all=[]
+        this.callMenu=true;
+        this.graphics = this.canvas.getContext("2d");
+        this.Music=true;
+        this.soundEffects=true;
+        this.controls=true;
+        this.banana=false
+        this.logo=new Image()
+        this.logo.src=filePath+"Textures/Misc/Logo.png"
+        //Apply limits, courtesy of Richard Klein
+        applyLimits(this.graphics, X_LEFT, X_RIGHT, Y_TOP, Y_BOTTOM, false);
+        this.graphics.lineWidth = pixelSize;
+        
+        //----------------------------------------Functions----------------------------------------
+        /** 
+         * getMenu
+         * returns a canvas reference
+         */
+        this.getMenu=function(){
+            return this.canvas
+        };
+        /** 
+         * draw
+         * This function draws a different screen depending on what page the person is on
+         */
+        this.draw=function() {
+           switch(this.page){
+               case 0://main menu
+                   this.drawMainMenu();
+                   break;
+                case 1://leaderboard
+                    this.drawLeaderboard(this.leaderBoardPage);
+                    break;
+                case 2://options
+                    this.drawOptions();
+                    break;
+                case 3://credits
+                    this.drawCredits();
+                    break;
+                
+           }
+        }
+        
+        /**
+         * drawMainMenu
+         * Draws MainMenu
+         */
+        
+        this.drawMainMenu=function(){
+            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+            
+            var g = this.graphics;
+            g.fillStyle = "rgba(172, 166, 166, 0.90)";
+            var size = 1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+            g.font = String(size)+"px Courier";
+            g.fillRect(X_LEFT*50/100,
+                       Y_TOP*20/100,
+                      -X_LEFT,
+                       Y_TOP*20/100)
+            g.fillRect(X_LEFT*50/100,
+                       Y_TOP*-10/100,
+                      -X_LEFT,
+                       Y_TOP*20/100)
+            g.fillRect(X_LEFT*50/100,
+                       Y_TOP*-40/100,
+                      -X_LEFT,
+                       Y_TOP*20/100)
+            g.fillRect(X_LEFT*50/100,
+                       Y_TOP*-70/100,
+                      -X_LEFT,
+                       Y_TOP*20/100);
+      
+            //Words
+            g.fillStyle = 'rgb(0,0,0)';
+            var word = "PLAY";
+            g.fillText(word,X_LEFT*7/100,Y_TOP*26/100);
+            var word = "LEADERBOARD";
+            g.fillText(word,X_LEFT*20/100,Y_TOP*-4/100);
+            var word = "OPTIONS";
+            g.fillText(word,X_LEFT*12/100,Y_TOP*-34/100);
+            var word = "CREDITS";
+            g.fillText(word,X_LEFT*12/100,Y_TOP*-64/100);
+            g.save()
+            this.drawLogo(g)
+            g.restore()
+            if(this.banana){
+            var word = "Banana mode enabled";
+            g.fillText(word,X_LEFT,Y_BOTTOM);
+            }
+        }
+        /**
+         * drawLogo
+         * draws the team's banana logo
+         * @param {context}  graphics from canvas.getContext("2d")
+         */
+       this.drawLogo=function(graphics){
+            graphics.save();
+         
+            graphics.translate(X_LEFT-X_LEFT*85/100,Y_TOP-Y_TOP*5/100)
+            graphics.scale(0.25*scaleFitNative,0.25*scaleFitNative)
+            graphics.drawImage(this.logo,0,0)
+            graphics.restore()
+        }
+        /** 
+         * enableBanana
+         * called when user types banana. Activates banana mode.
+         */
+        this.enableBanana=function(){
+            this.banana=true
+        }
+
+        /**
+         * drawLeaderboard
+        *Draws the leaderboard on the screen
+        * @param {int} pageNum used to display subset of leaderboard entries
+        */
+        this.drawLeaderboard=function(pageNum){
+            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+            this.graphics.fillStyle="rgba(255,255,255,0.6)"
+            this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            var size=60*scaleFitNative
+            var amount=Math.floor(height/size)-1
+            this.graphics.font = String(size)+"px monospace"
+            if(this.all.length==0){
+                this.all=lb.getAll()
+            }
+            this.graphics.fillStyle = "rgb(0,0,0)"
+            this.graphics.fillText("Top Players:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
+            var bottom=Y_TOP+60*scaleFitNative
+            if((pageNum*amount)>this.all.length){
+                this.leaderBoardPage--;
+                pageNum=this.leaderBoardPage
+            }
+            for (var i=pageNum*amount ;i&lt;((pageNum+1)*amount); i++){
+                if(this.all[i]!==undefined){
+                this.graphics.fillText(this.all[i],  X_LEFT+200, bottom+60*scaleFitNative)
+                bottom=bottom+60*scaleFitNative
+                }
+            }
+            this.graphics.save()
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
+            this.drawBackButton()
+            this.graphics.restore()
+            this.graphics.save()
+            this.graphics.translate(X_RIGHT-180*scaleFitNative,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative)
+            this.drawNextButton()
+            this.graphics.restore()
+            if(pageNum>0){
+                this.graphics.save()
+                this.graphics.translate(X_RIGHT-250*scaleFitNative,Y_TOP)
+                this.graphics.scale(scaleFitNative,scaleFitNative)
+                this.drawReturnButton()
+                this.graphics.restore()
+            }
+        }
+
+        /**
+         * drawCredits
+         * Draws the credit screen
+         */
+        this.drawCredits=function() {
+            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP)
+            this.graphics.fillStyle="rgba(255,255,255,0.6)"
+            this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+        /*put the credits in here----> */var credits=[ 
+            "H.Developers","Justin Knopfmacher: 2356115 ","Lior Becker: 2333263","Benjamin Servant: 2420656","Stuart 'Lazarus' Groves: 2356823","Jeremy Stott: 2368841",
+            "H.Models","Unless otherwise stated, all were handcrafted by developement team in JS code or Blender","Lamp Post Model: Algirdas Lalys is licensed under CC BY 4.0 - https://bit.ly/3NfeBnj","Banan Gun with Scope: Used with permission from Microsoft - from Microsofts 3D Library",
+            "H.Textures","Unless otherwise stated, handcrafted by developement team in JS code,", "PowerPoint, or under CC0", "Icons used in textures from Microsoft 365 illustrations","Skybox Texture:Pieter ‘Spiney’ Verhoeven: http://www.spiney.me/ ",
+            "H.Audio", "BGM: Original compositions by Jeremy Stott", "Gun sound effect: rifle by Konita Tutorials on opengameart.org.","Banana gun soundeffects recorded by developers.","Rain and thunder sounds by SoundForYou from Pixabay",
+            "H.Dependencies","Cannon es", "ThreeToCannon", "Three.js modules: Orbit controls, Pointer lock controls", "Post Processing", "Stats.js"]
+            var size=35*scaleFitNative
+            this.graphics.font = "bold "+String(size)+"px monospace";
+            this.graphics.fillStyle = "rgb(0,0,0)"
+            this.graphics.fillText("Credits:", X_LEFT+200*scaleFitNative, Y_TOP+50*scaleFitNative)
+            var bottom=Y_TOP+50*scaleFitNative
+            for(var i=0;i&lt;credits.length;i++){
+                if(credits[i].startsWith("H.")) this.graphics.font="bold "+String(size)+"px monospace"; //H. used to indicate headings so that they can be made bold
+                else  this.graphics.font = String(size)+"px monospace"
+                this.graphics.fillText(credits[i].replace("H.",""),  X_LEFT+200, bottom+35*scaleFitNative)
+                bottom=bottom+35*scaleFitNative
+            }
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(1*scaleFitNative,1*scaleFitNative)
+            this.drawBackButton()  
+            this.graphics.restore()
+        }
+
+        /**
+         * Draw Back Button
+         * */
+        this.drawBackButton=function(){
+            this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
+            this.graphics.fillRect(0,0,180,80)
+            this.graphics.fillStyle = 'rgb(0,0,0)';
+            this.graphics.font = "60px Courier";
+            var word = "BACK";
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
+        }
+
+        /**
+         * Draws Next Button
+         * */
+        this.drawNextButton=function(){
+            this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
+            this.graphics.fillRect(0,0,180,80)
+            this.graphics.fillStyle = 'rgb(0,0,0)';
+            this.graphics.font = "60px Courier";
+            var word = "NEXT";
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
+        }
+        /**
+         * Draws Return Button
+         * */
+        this.drawReturnButton=function(){
+            this.graphics.fillStyle = "rgba(172, 166, 166, 0.90)";
+            this.graphics.fillRect(0,0,250,80)
+            this.graphics.fillStyle = 'rgb(0,0,0)';
+            this.graphics.font = "60px Courier";
+            var word = "Return";
+            this.graphics.save()
+            this.graphics.translate(15,55)
+            this.graphics.fillText(word,0,0)
+            this.graphics.restore()
+        }
+
+
+        /**
+         * Clicked
+         * This function simulates an on click listner for the buttons but seeing where the user clicked on the screen
+         * @param {float} posX x-vlaue for position of mouse pointer
+         * @param {float} posY y-vlaue for position of mouse pointer
+        */
+        this.Clicked=function(posX,posY) {
+            var centerX=(width/2)
+            var centerY=height/2
+            var scale=(1/3000*Y_BOTTOM*60/100*X_RIGHT*60/100)
+            //converts click coords to canvas coords
+            posX=(posX-centerX)
+            posY=(posY-centerY)
+            switch (this.page){//checks different locations based on which screen theyre on
+                case(0)://if on first page
+                    if(posX>=X_LEFT*50/100 &amp;&amp; posX&lt;=(X_LEFT*50/100)+X_RIGHT){//check to see if theyre clicking in the right place on the x plane
+                        if(posY&lt;=Y_TOP*20/100 &amp;&amp; posY>=(Y_TOP*20/100)+(Y_TOP*20/100)){//if they click in the same Y position as the play button, return 0
+                            return(0)
+                        }else if(posY&lt;=Y_TOP*-10/100 &amp;&amp; posY>=(Y_TOP*-10/100)+(Y_TOP*20/100)){//if they click in the same position as the leader board return 1
+                            this.page=1
+                            return (1) 
+                        }else if(posY&lt;=Y_TOP*-40/100 &amp;&amp; posY>=(Y_TOP*-40/100)+(Y_TOP*20/100)){//if they click in the same Y position as the options button return 2
+                            this.page=2 //for now this is 0, we need to change it to 2 when we add a page for it
+                            return(2)
+                        }else if(posY&lt;=Y_TOP*-70/100 &amp;&amp; posY>=(Y_TOP*-70/100)+(Y_TOP*20/100)){ //if they click in the same Y position as the credits button return 3
+                            this.page=3
+                            return(3)
+                        }
+                    }
+                break;
+                case(1)://if theyre on the leaderboard
+                    if(posX&lt;=X_LEFT+180*scaleFitNative &amp;&amp; posY>=Y_BOTTOM-80){//if they click the back button
+                        lb.requested=false;
+                        if(this.leaderBoardPage!=0){
+                            this.leaderBoardPage--;
+                        }else{
+                            this.page=0
+                            this.all=[]
+                        }
+                        return(4)
+                    }else if(posX>=X_RIGHT-210*scaleFitNative &amp;&amp;posY>=Y_BOTTOM-80){//if they click next
+                        lb.requested=false;
+                        this.leaderBoardPage++;
+                    }else if(this.leaderBoardPage>0 &amp;&amp;posX>=X_RIGHT-280*scaleFitNative &amp;&amp;posY&lt;=Y_TOP+80*scaleFitNative){//if they click the return button
+                        this.leaderBoardPage=0
+                        this.page=0
+                        
+                    }    
+                    break;
+                case(2)://if theyre on options
+                    if(posX&lt;=X_LEFT+180*scaleFitNative &amp;&amp; posY>=Y_BOTTOM-80){//press the back button
+                        this.page=0
+                    }else if(posX>=X_LEFT+50+900*0.75 &amp;&amp; posX&lt;=X_LEFT+50+900*0.75+250*0.75){//toggle button left side is clicked
+                        if(posY>=Y_TOP+250-70*0.75 &amp;&amp; posY&lt;=Y_TOP+250-70*0.75+100*0.75){//left side music
+                            this.Music=true;   
+                        }else if(posY>=Y_TOP+500-70*0.75 &amp;&amp; posY&lt;=Y_TOP+500-70*0.75+100*0.75){//left side sound
+                            this.soundEffects=true;
+                        }else if(posY>=Y_TOP+750-70*0.75 &amp;&amp; posY&lt;=Y_TOP+750-70*0.75+100*0.75){//left side controls
+                            this.controls=true;
+                        }
+
+                    }else if(posX>=X_LEFT+50+900*0.75+250*0.75 &amp;&amp; posX&lt;=X_LEFT+50+900*0.75+500*0.75){//right side toggle button is clicked
+                        if(posY>=Y_TOP+250-70*0.75 &amp;&amp; posY&lt;=Y_TOP+250-70*0.75+100*0.75){//right side music
+                            this.Music=false;
+                            
+                        }else if(posY>=Y_TOP+500-70*0.75 &amp;&amp; posY&lt;=Y_TOP+500-70*0.75+100*0.75){//right side sound
+                            this.soundEffects=false;
+                        }else if(posY>=Y_TOP+750-70*0.75 &amp;&amp; posY&lt;=Y_TOP+750-70*0.75+100*0.75){//right side controls
+                            this.controls=false
+                        }
+                    }
+                    break;
+                case(3)://if theyre on credits
+                    if(posX&lt;=X_LEFT+180*scaleFitNative &amp;&amp; posY>=Y_BOTTOM-80){//if they click the back button
+                        this.page=0
+                        return(4)
+                    }
+                    break;
+            }
+        }
+        /**
+         * drawOptions
+         * draws canvas to present user with options to change music, sound effects and controls
+         */
+        this.drawOptions=function(){
+            this.graphics.clearRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            this.graphics.fillStyle="rgba(255,255,255,0.6)"
+            this.graphics.fillRect(X_LEFT,Y_TOP,(X_RIGHT-X_LEFT),Y_BOTTOM-Y_TOP);
+            var size = 2/3000*Y_BOTTOM*60/100*X_RIGHT*60/100;
+            this.graphics.font = String(size)+"px Courier";
+            var word = "OPTIONS";
+            this.graphics.fillStyle="black"
+            this.graphics.fillText(word,-300*scaleFitNative,Y_TOP+90*scaleFitNative);
+            this.toggleMusicButton(this.Music)
+            this.toggleSoundEffects(this.soundEffects);
+            this.toggleControls(this.controls)
+            this.graphics.save();
+            this.graphics.translate(X_LEFT,Y_BOTTOM-80*scaleFitNative)
+            this.graphics.scale(scaleFitNative,scaleFitNative);
+            this.drawBackButton()
+            this.graphics.restore()
+        }
+        /**
+         * toggleMusicButton
+         *  On or off button
+         * @param {boolean} on music on/off
+         */
+        this.toggleMusicButton=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+250);
+            var word="Music:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleButton(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+        /**
+         * toggleSoundEffect
+         * On or off button
+         * @param {boolean} on music on/off
+         */
+        this.toggleSoundEffects=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+500);
+            var word="Sound Effects:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleButton(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+        /**
+         * toggleControls
+         *  On or off button
+         * @param {boolean} on music on/off
+         */
+        this.toggleControls=function(on){
+            this.graphics.save();
+            this.graphics.translate(X_LEFT+50,Y_TOP+750);
+            var word="Controls:"
+            this.graphics.font = "70px Courier";
+            this.graphics.fillText(word,0,0);
+            this.graphics.save();
+            this.graphics.scale(0.75,0.75)
+            this.graphics.translate(900,-70)
+            this.drawToggleControls(on);
+            this.graphics.restore();
+            this.graphics.restore();
+        }
+
+
+
+        /**
+         * drawToggleButton
+         * draws a Toggle Button
+         * @param {boolean} on music on/off
+         */
+        this.drawToggleButton=function(on){
+            this.graphics.save()
+            this.graphics.fillStyle="black";
+            this.graphics.fillRect(0,0,500,100)
+            if(on){
+            this.graphics.save();
+            this.graphics.fillStyle="rgb(90,90,90)";
+            this.graphics.scale(0.5,1);
+            this.graphics.fillRect(0,0,500,100);
+            this.graphics.restore();
+            }else{
+            this.graphics.save();
+            this.graphics.fillStyle="rgb(90,90,90)";
+            this.graphics.scale(0.5,1);
+            this.graphics.translate(500,0)
+            this.graphics.fillRect(0,0,500,100);
+            this.graphics.restore();
+            }
+            this.graphics.fillStyle="white";
+            var word="ON"
+            var size=60
+            this.graphics.font=String(size)+"px Courier"
+            this.graphics.fillText(word,25,65)
+            var word="OFF"
+            this.graphics.fillText(word,350,65)
+            this.graphics.restore();
+        }
+
+        /**
+         * drawToggleControls
+         * draws another toggle button with different words
+         * @param {boolean} on music on/off
+         */
+        this.drawToggleControls=function(on){
+            this.graphics.save()
+            this.graphics.fillStyle="black";
+            this.graphics.fillRect(0,0,500,100)
+            if(on){
+                this.graphics.save();
+                this.graphics.fillStyle="rgb(90,90,90)";
+                this.graphics.scale(0.5,1);
+                this.graphics.fillRect(0,0,500,100);
+                this.graphics.restore();
+                }else{
+                this.graphics.save();
+                this.graphics.fillStyle="rgb(90,90,90)";
+                this.graphics.scale(0.5,1);
+                this.graphics.translate(500,0)
+                this.graphics.fillRect(0,0,500,100);
+                this.graphics.restore();
+                }
+            this.graphics.fillStyle="white";
+            var word="AWDS"
+            var size=60
+            this.graphics.font=String(size)+"px Courier"
+            this.graphics.fillText(word,25,65)
+            var word="ARROWS"
+            this.graphics.fillText(word,265,65)
+            this.graphics.restore();
+        }
+
+
+
+        /**
+         * Apply Limits function, courtesy of Dr. Richard Klein
+         * monitor scaling
+         * @param {canvas} g graphics context
+         * @param {int} xleft based on monitor
+         * @param {int} xright based on monitor
+         * @param {int} ytop based on monitor
+         * @param {int} ybottom based on monitor
+         * @param {boolean} preserveAspect boolean, always true
+         */
+        function applyLimits(g, xleft, xright, ytop, ybottom, preserveAspect) {
+           if (preserveAspect) {
+                // Adjust the limits to match the aspect ratio of the drawing area.
+                var displayAspect = Math.abs(height / width);
+                var requestedAspect = Math.abs((ybottom - ytop) / (xright - xleft));
+                var excess;
+                if (displayAspect > requestedAspect) {
+                    excess = (ybottom - ytop) * (displayAspect / requestedAspect - 1);
+                    ybottom += excess / 2;
+                    ytop -= excess / 2;
+                }
+                else if (displayAspect &lt; requestedAspect) {
+                    excess = (xright - xleft) * (requestedAspect / displayAspect - 1);
+                    xright += excess / 2;
+                    xleft -= excess / 2;
+                }
+            }
+            var pixelWidth = Math.abs((xright - xleft) / width);
+            var pixelHeight = Math.abs((ybottom - ytop) / height);
+            pixelSize = Math.min(pixelWidth, pixelHeight);
+            g.scale(width / (xright - xleft), height / (ybottom - ytop));
+            g.translate(-xleft, -ytop);
+        }
+    }
+}
+export{MainMenu}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BuildWorld.html">BuildWorld</a></li><li><a href="Entry.html">Entry</a></li><li><a href="leaderBoard.html">leaderBoard</a></li><li><a href="LoadingScreen.html">LoadingScreen</a></li><li><a href="MainMenu.html">MainMenu</a></li><li><a href="musicHandler.html">musicHandler</a></li><li><a href="POSTPROCESSINGPASSES.html">POSTPROCESSINGPASSES</a></li><li><a href="SPARK.html">SPARK</a></li><li><a href="Targets.html">Targets</a></li><li><a href="threeToCannonObj.html">threeToCannonObj</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTargets">addTargets</a></li><li><a href="global.html#afterLoad">afterLoad</a></li><li><a href="global.html#checkState">checkState</a></li><li><a href="global.html#doneLoading">doneLoading</a></li><li><a href="global.html#drawSkyBox">drawSkyBox</a></li><li><a href="global.html#enableMoving">enableMoving</a></li><li><a href="global.html#filePath">filePath</a></li><li><a href="global.html#gunshotSound">gunshotSound</a></li><li><a href="global.html#handleDoor">handleDoor</a></li><li><a href="global.html#handleSparks">handleSparks</a></li><li><a href="global.html#handleTrails">handleTrails</a></li><li><a href="global.html#hitTarget">hitTarget</a></li><li><a href="global.html#httpUrls">httpUrls</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#Level1">Level1</a></li><li><a href="global.html#Level2">Level2</a></li><li><a href="global.html#Level3">Level3</a></li><li><a href="global.html#mapTargets">mapTargets</a></li><li><a href="global.html#move">move</a></li><li><a href="global.html#MoveTargets">MoveTargets</a></li><li><a href="global.html#rainSound">rainSound</a></li><li><a href="global.html#removeTargets">removeTargets</a></li><li><a href="global.html#renderWorld">renderWorld</a></li><li><a href="global.html#setStartTime">setStartTime</a></li><li><a href="global.html#stormSky">stormSky</a></li><li><a href="global.html#thunderSound">thunderSound</a></li><li><a href="global.html#worldTargets">worldTargets</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Jun 09 2022 11:04:21 GMT+0200 (South Africa Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
