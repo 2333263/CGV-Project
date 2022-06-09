@@ -3,14 +3,14 @@
  */
 class Entry{
     /**
-     * @constructor Entry Constructor
-     * @param {string} Name
-     * @param {float} Time 
+     * Entry Constructor
+     * @constructor 
+     * @param {string} Name player name
+     * @param {float} Time player score
      */
-constructor(Name,Time){
-    this.name=Name;
-    this.time=Time;
-
-}
+    constructor(Name,Time){
+        this.name=Name;
+        this.time=Time;
+    }
 }
 export {Entry}
