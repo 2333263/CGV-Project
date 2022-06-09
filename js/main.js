@@ -900,7 +900,7 @@ function removeTargets() {
 
 //Event listener for lock
 /**
- * @event lock#lock when the mouse is captured
+ * @listens lock#lock when the mouse is captured
  */
 controls.addEventListener('lock', () => {
 	controls.enabled = true;
@@ -908,7 +908,7 @@ controls.addEventListener('lock', () => {
 
 //Event listener for unlock
 /**
- * @event unlocked#unlocked when the mouse is returned
+ * @listens unlocked#unlocked when the mouse is returned
  */
 controls.addEventListener('unlocked', () => {
 	controls.enabled = false;
@@ -916,7 +916,7 @@ controls.addEventListener('unlocked', () => {
 
 //Mouse-up event listener
 /**
- * @event mouseup#mouseUp when the player stops clicking
+ * @listens mouseup#mouseUp when the player stops clicking
  */
 document.addEventListener("mouseup", (e) => {
 	//Remove muzzle flash on mouse up
@@ -934,7 +934,7 @@ document.addEventListener("mouseup", (e) => {
  * fires the gun
  * used for when buttons are clicked
  * also reset world on failure
- * @event mousedown#onclick all mouse events are performed here
+ * @listens mousedown#onclick all mouse events are performed here
  */
 document.addEventListener("mousedown", (e) => {
 	if (e.button == 0) {
@@ -1122,7 +1122,7 @@ var typedKeys = ""
 //var banana=false          //declared higher up (for music reasons)
 //Keydown event listener
 /**
- * @event keydown#keydown event when a key is pressed
+ * @listens keydown#keydown event when a key is pressed
  */
 document.addEventListener("keydown", (e) => {
 	if (controls.isLocked && !Load.loading) {
@@ -1158,7 +1158,7 @@ document.addEventListener("keydown", (e) => {
 
 //Keyup event listener
 /**
- * @event keyup#keyup events when key is no longer being pressed
+ * @listens keyup#keyup events when key is no longer being pressed
  */
 document.addEventListener("keyup", (e) => {
 	pressedKeys[e.key] = false;
